@@ -48,16 +48,16 @@ async function scoringMaestro(direccionParsed) {
             if (result.rows.length === 0) {
                 // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                 query = `
-                SELECT *,ST_AsText("SP_GEOMETRY") AS coordenadas
-                FROM carto_geolocalizador
-                WHERE tipo_vialidad = $1
-                AND nombre_vialidad like '%' || $2 || '%'
-                AND municipio = $3
-                AND estado = $4
-                AND ((CAST(l_refaddr AS INTEGER) <= $5 AND CAST(l_nrefaddr AS INTEGER) >= $5)
-  			    OR (CAST(r_refaddr AS INTEGER) <= $5 AND CAST(r_nrefaddr AS INTEGER) >= $5))
-                ;
-            `;
+                    SELECT *,ST_AsText("SP_GEOMETRY") AS coordenadas
+                    FROM carto_geolocalizador
+                    WHERE tipo_vialidad = $1
+                    AND nombre_vialidad like '%' || $2 || '%'
+                    AND municipio = $3
+                    AND estado = $4
+                    AND ((CAST(l_refaddr AS INTEGER) <= $5 AND CAST(l_nrefaddr AS INTEGER) >= $5)
+                    OR (CAST(r_refaddr AS INTEGER) <= $5 AND CAST(r_nrefaddr AS INTEGER) >= $5))
+                    ;
+                `;
                 values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1];
                 const result = await pgClient.query(query, values);
                 for (let i = 0; i < result.rows.length; i++) {
@@ -75,16 +75,16 @@ async function scoringMaestro(direccionParsed) {
                 if (result.rows.length === 0) {
                     // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                     query = `
-                    SELECT *,ST_AsText("SP_GEOMETRY") AS coordenadas
-                    FROM carto_geolocalizador
-                    WHERE tipo_vialidad = $1
-                    AND nombre_vialidad like '%' || $2 || '%'
-                    AND codigo_postal = $3 
-                    AND estado = $4
-                    AND ((CAST(l_refaddr AS INTEGER) <= $5 AND CAST(l_nrefaddr AS INTEGER) >= $5)
-  			        OR (CAST(r_refaddr AS INTEGER) <= $5 AND CAST(r_nrefaddr AS INTEGER) >= $5))
-                    ;
-                `;
+                        SELECT *,ST_AsText("SP_GEOMETRY") AS coordenadas
+                        FROM carto_geolocalizador
+                        WHERE tipo_vialidad = $1
+                        AND nombre_vialidad like '%' || $2 || '%'
+                        AND codigo_postal = $3 
+                        AND estado = $4
+                        AND ((CAST(l_refaddr AS INTEGER) <= $5 AND CAST(l_nrefaddr AS INTEGER) >= $5)
+                        OR (CAST(r_refaddr AS INTEGER) <= $5 AND CAST(r_nrefaddr AS INTEGER) >= $5))
+                        ;
+                    `;
                     values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1];
                     const result = await pgClient.query(query, values);
                     for (let i = 0; i < result.rows.length; i++) {
@@ -102,16 +102,16 @@ async function scoringMaestro(direccionParsed) {
                     if (result.rows.length === 0) {
                         // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                         query = `
-                        SELECT *,ST_AsText("SP_GEOMETRY") AS coordenadas
-                        FROM carto_geolocalizador
-                        WHERE tipo_vialidad = $1
-                        AND nombre_vialidad like '%' || $2 || '%'
-                        AND codigo_postal = $3 
-                        AND municipio = $4
-                        AND ((CAST(l_refaddr AS INTEGER) <= $5 AND CAST(l_nrefaddr AS INTEGER) >= $5)
-  			            OR (CAST(r_refaddr AS INTEGER) <= $5 AND CAST(r_nrefaddr AS INTEGER) >= $5))
-                        ;
-                    `;
+                            SELECT *,ST_AsText("SP_GEOMETRY") AS coordenadas
+                            FROM carto_geolocalizador
+                            WHERE tipo_vialidad = $1
+                            AND nombre_vialidad like '%' || $2 || '%'
+                            AND codigo_postal = $3 
+                            AND municipio = $4
+                            AND ((CAST(l_refaddr AS INTEGER) <= $5 AND CAST(l_nrefaddr AS INTEGER) >= $5)
+                            OR (CAST(r_refaddr AS INTEGER) <= $5 AND CAST(r_nrefaddr AS INTEGER) >= $5))
+                            ;
+                        `;
                         values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1];
                         const result = await pgClient.query(query, values);
                         for (let i = 0; i < result.rows.length; i++) {
@@ -129,15 +129,15 @@ async function scoringMaestro(direccionParsed) {
                         if (result.rows.length === 0) {
                             // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                             query = `
-                            SELECT *,ST_AsText("SP_GEOMETRY") AS coordenadas
-                            FROM carto_geolocalizador
-                            WHERE tipo_vialidad = $1
-                            AND nombre_vialidad like '%' || $2 || '%'
-                            AND codigo_postal = $3
-                            AND ((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
-  			                OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4))
-                            ;
-                        `;
+                                SELECT *,ST_AsText("SP_GEOMETRY") AS coordenadas
+                                FROM carto_geolocalizador
+                                WHERE tipo_vialidad = $1
+                                AND nombre_vialidad like '%' || $2 || '%'
+                                AND codigo_postal = $3
+                                AND ((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
+                                OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4))
+                                ;
+                            `;
                             values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.NUMEXTNUM1];
                             const result = await pgClient.query(query, values);
                             for (let i = 0; i < result.rows.length; i++) {
@@ -155,15 +155,15 @@ async function scoringMaestro(direccionParsed) {
                             if (result.rows.length === 0) {
                                 // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                                 query = `
-                                SELECT *,ST_AsText("SP_GEOMETRY") AS coordenadas
-                                FROM carto_geolocalizador
-                                WHERE tipo_vialidad = $1
-                                AND nombre_vialidad like '%' || $2 || '%'
-                                AND municipio = $3
-                                AND ((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
-  			                    OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4))
-                                ;
-                            `;
+                                    SELECT *,ST_AsText("SP_GEOMETRY") AS coordenadas
+                                    FROM carto_geolocalizador
+                                    WHERE tipo_vialidad = $1
+                                    AND nombre_vialidad like '%' || $2 || '%'
+                                    AND municipio = $3
+                                    AND ((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
+                                    OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4))
+                                    ;
+                                `;
                                 values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1];
                                 const result = await pgClient.query(query, values);
                                 for (let i = 0; i < result.rows.length; i++) {
@@ -178,33 +178,6 @@ async function scoringMaestro(direccionParsed) {
                                     };
                                 }
                                 rows = rows.concat(result.rows);
-                            }
-                            if (result.rows.length === 0) {
-                                // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
-                                query = `
-                                SELECT *,ST_AsText("SP_GEOMETRY") AS coordenadas
-                                FROM carto_geolocalizador
-                                WHERE tipo_vialidad = $1
-                                AND nombre_vialidad like '%' || $2 || '%'
-                                AND codigo_postal = $3
-                                AND ((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
-  			                    OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4))
-                                ;
-                            `;
-                                values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.NUMEXTNUM1];
-                                const result = await pgClient.query(query, values);
-                                for (let i = 0; i < result.rows.length; i++) {
-                                    result.rows[i].scoring = {
-                                        fiability: 90,
-                                        tipo_viabilidad: 100,
-                                        nombre_viabilidad: 100,
-                                        codigo_postal: 100,
-                                        municipio: 0,
-                                        estado: 0,
-                                        numero_exterior: 100
-                                    };
-                                }
-                                rows = rows.concat(result.rows);
                                 if (result.rows.length === 0) {
                                     // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                                     query = `
@@ -212,46 +185,47 @@ async function scoringMaestro(direccionParsed) {
                                         FROM carto_geolocalizador
                                         WHERE tipo_vialidad = $1
                                         AND nombre_vialidad like '%' || $2 || '%'
-                                        AND codigo_postal = $3 
-                                        AND municipio = $4
-                                        AND estado = $5
+                                        AND codigo_postal = $3
+                                        AND ((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
+                                        OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4))
                                         ;
                                     `;
-                                    values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
+                                    values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.NUMEXTNUM1];
                                     const result = await pgClient.query(query, values);
                                     for (let i = 0; i < result.rows.length; i++) {
                                         result.rows[i].scoring = {
-                                            fiability: 85,
+                                            fiability: 90,
                                             tipo_viabilidad: 100,
                                             nombre_viabilidad: 100,
                                             codigo_postal: 100,
-                                            municipio: 100,
-                                            estado: 100,
-                                            numero_exterior: 0
+                                            municipio: 0,
+                                            estado: 0,
+                                            numero_exterior: 100
                                         };
                                     }
                                     rows = rows.concat(result.rows);
                                     if (result.rows.length === 0) {
                                         // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                                         query = `
-                                             SELECT *,ST_AsText("SP_GEOMETRY") AS coordenadas
-                                             FROM carto_geolocalizador
-                                             WHERE tipo_vialidad = $1
-                                             AND nombre_vialidad like '%' || $2 || '%'
-                                             AND codigo_postal = $3
-                                             AND municipio = $4
-                                             ;
-                                         `;
-                                        values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO];
+                                            SELECT *,ST_AsText("SP_GEOMETRY") AS coordenadas
+                                            FROM carto_geolocalizador
+                                            WHERE tipo_vialidad = $1
+                                            AND nombre_vialidad like '%' || $2 || '%'
+                                            AND codigo_postal = $3 
+                                            AND municipio = $4
+                                            AND estado = $5
+                                            ;
+                                        `;
+                                        values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
                                         const result = await pgClient.query(query, values);
                                         for (let i = 0; i < result.rows.length; i++) {
                                             result.rows[i].scoring = {
-                                                fiability: 80,
+                                                fiability: 85,
                                                 tipo_viabilidad: 100,
                                                 nombre_viabilidad: 100,
                                                 codigo_postal: 100,
                                                 municipio: 100,
-                                                estado: 0,
+                                                estado: 100,
                                                 numero_exterior: 0
                                             };
                                         }
@@ -263,20 +237,20 @@ async function scoringMaestro(direccionParsed) {
                                                 FROM carto_geolocalizador
                                                 WHERE tipo_vialidad = $1
                                                 AND nombre_vialidad like '%' || $2 || '%'
-                                                AND municipio = $3
-                                                AND estado = $4
+                                                AND codigo_postal = $3
+                                                AND municipio = $4
                                                 ;
                                             `;
-                                            values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
+                                            values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO];
                                             const result = await pgClient.query(query, values);
                                             for (let i = 0; i < result.rows.length; i++) {
                                                 result.rows[i].scoring = {
                                                     fiability: 80,
                                                     tipo_viabilidad: 100,
                                                     nombre_viabilidad: 100,
-                                                    codigo_postal: 0,
+                                                    codigo_postal: 100,
                                                     municipio: 100,
-                                                    estado: 100,
+                                                    estado: 0,
                                                     numero_exterior: 0
                                                 };
                                             }
@@ -288,19 +262,19 @@ async function scoringMaestro(direccionParsed) {
                                                     FROM carto_geolocalizador
                                                     WHERE tipo_vialidad = $1
                                                     AND nombre_vialidad like '%' || $2 || '%'
-                                                    AND codigo_postal = $3
+                                                    AND municipio = $3
                                                     AND estado = $4
                                                     ;
                                                 `;
-                                                values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.ESTADO];
+                                                values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
                                                 const result = await pgClient.query(query, values);
                                                 for (let i = 0; i < result.rows.length; i++) {
                                                     result.rows[i].scoring = {
                                                         fiability: 80,
                                                         tipo_viabilidad: 100,
                                                         nombre_viabilidad: 100,
-                                                        codigo_postal: 100,
-                                                        municipio: 0,
+                                                        codigo_postal: 0,
+                                                        municipio: 100,
                                                         estado: 100,
                                                         numero_exterior: 0
                                                     };
@@ -312,47 +286,46 @@ async function scoringMaestro(direccionParsed) {
                                                         SELECT *,ST_AsText("SP_GEOMETRY") AS coordenadas
                                                         FROM carto_geolocalizador
                                                         WHERE tipo_vialidad = $1
-                                                        AND codigo_postal = $2 
-                                                        AND municipio = $3
+                                                        AND nombre_vialidad like '%' || $2 || '%'
+                                                        AND codigo_postal = $3
                                                         AND estado = $4
-                                                        AND ((CAST(l_refaddr AS INTEGER) <= $5 AND CAST(l_nrefaddr AS INTEGER) >= $5)
-  			                                            OR (CAST(r_refaddr AS INTEGER) <= $5 AND CAST(r_nrefaddr AS INTEGER) >= $5))
                                                         ;
                                                     `;
-                                                    values = [direccionParsed.TIPOVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1];
+                                                    values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.ESTADO];
                                                     const result = await pgClient.query(query, values);
                                                     for (let i = 0; i < result.rows.length; i++) {
                                                         result.rows[i].scoring = {
-                                                            fiability: 50,
+                                                            fiability: 80,
                                                             tipo_viabilidad: 100,
-                                                            nombre_viabilidad: 0,
+                                                            nombre_viabilidad: 100,
                                                             codigo_postal: 100,
-                                                            municipio: 100,
+                                                            municipio: 0,
                                                             estado: 100,
-                                                            numero_exterior: 100
+                                                            numero_exterior: 0
                                                         };
                                                     }
                                                     rows = rows.concat(result.rows);
                                                     if (result.rows.length === 0) {
                                                         // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                                                         query = `
-                                                             SELECT *,ST_AsText("SP_GEOMETRY") AS coordenadas
-                                                             FROM carto_geolocalizador
-                                                             WHERE tipo_vialidad = $1
-                                                             AND municipio = $2
-                                                             AND estado = $3
-                                                             AND ((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
-  			                                                 OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4))
-                                                             ;
-                                                         `;
-                                                        values = [direccionParsed.TIPOVIAL, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1];
+                                                            SELECT *,ST_AsText("SP_GEOMETRY") AS coordenadas
+                                                            FROM carto_geolocalizador
+                                                            WHERE tipo_vialidad = $1
+                                                            AND codigo_postal = $2 
+                                                            AND municipio = $3
+                                                            AND estado = $4
+                                                            AND ((CAST(l_refaddr AS INTEGER) <= $5 AND CAST(l_nrefaddr AS INTEGER) >= $5)
+                                                            OR (CAST(r_refaddr AS INTEGER) <= $5 AND CAST(r_nrefaddr AS INTEGER) >= $5))
+                                                            ;
+                                                        `;
+                                                        values = [direccionParsed.TIPOVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1];
                                                         const result = await pgClient.query(query, values);
                                                         for (let i = 0; i < result.rows.length; i++) {
                                                             result.rows[i].scoring = {
-                                                                fiability: 45,
+                                                                fiability: 50,
                                                                 tipo_viabilidad: 100,
                                                                 nombre_viabilidad: 0,
-                                                                codigo_postal: 0,
+                                                                codigo_postal: 100,
                                                                 municipio: 100,
                                                                 estado: 100,
                                                                 numero_exterior: 100
@@ -365,53 +338,26 @@ async function scoringMaestro(direccionParsed) {
                                                                 SELECT *,ST_AsText("SP_GEOMETRY") AS coordenadas
                                                                 FROM carto_geolocalizador
                                                                 WHERE tipo_vialidad = $1
-                                                                AND codigo_postal = $2
-                                                                AND municipio = $3
+                                                                AND municipio = $2
+                                                                AND estado = $3
                                                                 AND ((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
-  			                                                    OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4))
+                                                                OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4))
                                                                 ;
                                                             `;
-                                                            values = [direccionParsed.TIPOVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1];
+                                                            values = [direccionParsed.TIPOVIAL, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1];
                                                             const result = await pgClient.query(query, values);
                                                             for (let i = 0; i < result.rows.length; i++) {
                                                                 result.rows[i].scoring = {
                                                                     fiability: 45,
                                                                     tipo_viabilidad: 100,
                                                                     nombre_viabilidad: 0,
-                                                                    codigo_postal: 100,
+                                                                    codigo_postal: 0,
                                                                     municipio: 100,
-                                                                    estado: 0,
+                                                                    estado: 100,
                                                                     numero_exterior: 100
                                                                 };
                                                             }
                                                             rows = rows.concat(result.rows);
-                                                            if (result.rows.length === 0) {
-                                                                // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
-                                                                query = `
-                                                                     SELECT *,ST_AsText("SP_GEOMETRY") AS coordenadas
-                                                                     FROM carto_geolocalizador
-                                                                     WHERE tipo_vialidad = $1
-                                                                     AND codigo_postal = $2
-                                                                     AND estado = $3
-                                                                     AND ((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
-  			                                                         OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4))
-                                                                     ;
-                                                                 `;
-                                                                values = [direccionParsed.TIPOVIAL, direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1];
-                                                                const result = await pgClient.query(query, values);
-                                                                for (let i = 0; i < result.rows.length; i++) {
-                                                                    result.rows[i].scoring = {
-                                                                        fiability: 45,
-                                                                        tipo_viabilidad: 100,
-                                                                        nombre_viabilidad: 0,
-                                                                        codigo_postal: 100,
-                                                                        municipio: 0,
-                                                                        estado: 100,
-                                                                        numero_exterior: 100
-                                                                    };
-                                                                }
-                                                                rows = rows.concat(result.rows);
-                                                            }
                                                             if (result.rows.length === 0) {
                                                                 // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                                                                 query = `
@@ -420,23 +366,77 @@ async function scoringMaestro(direccionParsed) {
                                                                     WHERE tipo_vialidad = $1
                                                                     AND codigo_postal = $2
                                                                     AND municipio = $3
-                                                                    AND estado = $4
+                                                                    AND ((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
+                                                                    OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4))
                                                                     ;
                                                                 `;
-                                                                values = [direccionParsed.TIPOVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
+                                                                values = [direccionParsed.TIPOVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1];
                                                                 const result = await pgClient.query(query, values);
                                                                 for (let i = 0; i < result.rows.length; i++) {
                                                                     result.rows[i].scoring = {
-                                                                        fiability: 35,
+                                                                        fiability: 45,
                                                                         tipo_viabilidad: 100,
                                                                         nombre_viabilidad: 0,
                                                                         codigo_postal: 100,
                                                                         municipio: 100,
-                                                                        estado: 100,
-                                                                        numero_exterior: 0
+                                                                        estado: 0,
+                                                                        numero_exterior: 100
                                                                     };
                                                                 }
                                                                 rows = rows.concat(result.rows);
+                                                                if (result.rows.length === 0) {
+                                                                    // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+                                                                    query = `
+                                                                        SELECT *,ST_AsText("SP_GEOMETRY") AS coordenadas
+                                                                        FROM carto_geolocalizador
+                                                                        WHERE tipo_vialidad = $1
+                                                                        AND codigo_postal = $2
+                                                                        AND estado = $3
+                                                                        AND ((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
+                                                                        OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4))
+                                                                        ;
+                                                                    `;
+                                                                    values = [direccionParsed.TIPOVIAL, direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1];
+                                                                    const result = await pgClient.query(query, values);
+                                                                    for (let i = 0; i < result.rows.length; i++) {
+                                                                        result.rows[i].scoring = {
+                                                                            fiability: 45,
+                                                                            tipo_viabilidad: 100,
+                                                                            nombre_viabilidad: 0,
+                                                                            codigo_postal: 100,
+                                                                            municipio: 0,
+                                                                            estado: 100,
+                                                                            numero_exterior: 100
+                                                                        };
+                                                                    }
+                                                                    rows = rows.concat(result.rows);
+                                                                    if (result.rows.length === 0) {
+                                                                        // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+                                                                        query = `
+                                                                            SELECT *,ST_AsText("SP_GEOMETRY") AS coordenadas
+                                                                            FROM carto_geolocalizador
+                                                                            WHERE tipo_vialidad = $1
+                                                                            AND codigo_postal = $2
+                                                                            AND municipio = $3
+                                                                            AND estado = $4
+                                                                            ;
+                                                                        `;
+                                                                        values = [direccionParsed.TIPOVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
+                                                                        const result = await pgClient.query(query, values);
+                                                                        for (let i = 0; i < result.rows.length; i++) {
+                                                                            result.rows[i].scoring = {
+                                                                                fiability: 35,
+                                                                                tipo_viabilidad: 100,
+                                                                                nombre_viabilidad: 0,
+                                                                                codigo_postal: 100,
+                                                                                municipio: 100,
+                                                                                estado: 100,
+                                                                                numero_exterior: 0
+                                                                            };
+                                                                        }
+                                                                        rows = rows.concat(result.rows);
+                                                                    }
+                                                                }
                                                             }
                                                         }
                                                     }
@@ -476,6 +476,226 @@ async function scoringMaestro(direccionParsed) {
                 };
             }
             rows = rows.concat(result.rows);
+            if (result.rows.length === 0) {
+                // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+                query = `
+                    SELECT *,ST_AsText("SP_GEOMETRY") AS coordenadas
+                    FROM carto_geolocalizador
+                    WHERE tipo_vialidad = $1
+                    AND nombre_vialidad like '%' || $2 || '%'
+                    AND municipio = $3
+                    AND estado = $4
+                    ;
+                `;
+                values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
+                const result = await pgClient.query(query, values);
+                for (let i = 0; i < result.rows.length; i++) {
+                    result.rows[i].scoring = {
+                        fiability: 90,
+                        tipo_viabilidad: 100,
+                        nombre_viabilidad: 100,
+                        codigo_postal: 0,
+                        municipio: 100,
+                        estado: 100
+                    };
+                }
+                rows = rows.concat(result.rows);
+                if (result.rows.length === 0) {
+                    // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+                    query = `
+                        SELECT *,ST_AsText("SP_GEOMETRY") AS coordenadas
+                        FROM carto_geolocalizador
+                        WHERE tipo_vialidad = $1
+                        AND nombre_vialidad like '%' || $2 || '%'
+                        AND codigo_postal = $3 
+                        AND estado = $4
+                        ;
+                    `;
+                    values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.ESTADO];
+                    const result = await pgClient.query(query, values);
+                    for (let i = 0; i < result.rows.length; i++) {
+                        result.rows[i].scoring = {
+                            fiability: 90,
+                            tipo_viabilidad: 100,
+                            nombre_viabilidad: 100,
+                            codigo_postal: 100,
+                            municipio: 0,
+                            estado: 100
+                        };
+                    }
+                    rows = rows.concat(result.rows);
+                    if (result.rows.length === 0) {
+                        // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+                        query = `
+                            SELECT *,ST_AsText("SP_GEOMETRY") AS coordenadas
+                            FROM carto_geolocalizador
+                            WHERE tipo_vialidad = $1
+                            AND nombre_vialidad like '%' || $2 || '%'
+                            AND codigo_postal = $3 
+                            AND municipio = $4
+                            ;
+                        `;
+                        values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO];
+                        const result = await pgClient.query(query, values);
+                        for (let i = 0; i < result.rows.length; i++) {
+                            result.rows[i].scoring = {
+                                fiability: 90,
+                                tipo_viabilidad: 100,
+                                nombre_viabilidad: 100,
+                                codigo_postal: 100,
+                                municipio: 100,
+                                estado: 0
+                            };
+                        }
+                        rows = rows.concat(result.rows);
+                        if (result.rows.length === 0) {
+                            // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+                            query = `
+                                SELECT *,ST_AsText("SP_GEOMETRY") AS coordenadas
+                                FROM carto_geolocalizador
+                                WHERE tipo_vialidad = $1
+                                AND nombre_vialidad like '%' || $2 || '%'
+                                AND codigo_postal = $3
+                                ;
+                            `;
+                            values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP];
+                            const result = await pgClient.query(query, values);
+                            for (let i = 0; i < result.rows.length; i++) {
+                                result.rows[i].scoring = {
+                                    fiability: 80,
+                                    tipo_viabilidad: 100,
+                                    nombre_viabilidad: 100,
+                                    codigo_postal: 100,
+                                    municipio: 0,
+                                    estado: 0
+                                };
+                            }
+                            rows = rows.concat(result.rows);
+                            if (result.rows.length === 0) {
+                                // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+                                query = `
+                                        SELECT *,ST_AsText("SP_GEOMETRY") AS coordenadas
+                                        FROM carto_geolocalizador
+                                        WHERE tipo_vialidad = $1
+                                        AND nombre_vialidad like '%' || $2 || '%'
+                                        AND municipio = $3
+                                        ;
+                                    `;
+                                values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.MUNICIPIO];
+                                const result = await pgClient.query(query, values);
+                                for (let i = 0; i < result.rows.length; i++) {
+                                    result.rows[i].scoring = {
+                                        fiability: 80,
+                                        tipo_viabilidad: 100,
+                                        nombre_viabilidad: 100,
+                                        codigo_postal: 0,
+                                        municipio: 100,
+                                        estado: 0
+                                    };
+                                }
+                                rows = rows.concat(result.rows);
+                                if (result.rows.length === 0) {
+                                    // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+                                    query = `
+                                                SELECT *,ST_AsText("SP_GEOMETRY") AS coordenadas
+                                                FROM carto_geolocalizador
+                                                WHERE tipo_vialidad = $1
+                                                AND codigo_postal = $2 
+                                                AND municipio = $3
+                                                AND estado = $4
+                                                ;
+                                            `;
+                                    values = [direccionParsed.TIPOVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
+                                    const result = await pgClient.query(query, values);
+                                    for (let i = 0; i < result.rows.length; i++) {
+                                        result.rows[i].scoring = {
+                                            fiability: 50,
+                                            tipo_viabilidad: 100,
+                                            nombre_viabilidad: 0,
+                                            codigo_postal: 100,
+                                            municipio: 100,
+                                            estado: 100
+                                        };
+                                    }
+                                    rows = rows.concat(result.rows);
+                                    if (result.rows.length === 0) {
+                                        // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+                                        query = `
+                                                    SELECT *,ST_AsText("SP_GEOMETRY") AS coordenadas
+                                                    FROM carto_geolocalizador
+                                                    WHERE tipo_vialidad = $1
+                                                    AND municipio = $2
+                                                    AND estado = $3
+                                                    ;
+                                                `;
+                                        values = [direccionParsed.TIPOVIAL, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
+                                        const result = await pgClient.query(query, values);
+                                        for (let i = 0; i < result.rows.length; i++) {
+                                            result.rows[i].scoring = {
+                                                fiability: 40,
+                                                tipo_viabilidad: 100,
+                                                nombre_viabilidad: 0,
+                                                codigo_postal: 0,
+                                                municipio: 100,
+                                                estado: 100
+                                            };
+                                        }
+                                        rows = rows.concat(result.rows);
+                                        if (result.rows.length === 0) {
+                                            // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+                                            query = `
+                                                        SELECT *,ST_AsText("SP_GEOMETRY") AS coordenadas
+                                                        FROM carto_geolocalizador
+                                                        WHERE tipo_vialidad = $1
+                                                        AND codigo_postal = $2
+                                                        AND municipio = $3
+                                                        ;
+                                                    `;
+                                            values = [direccionParsed.TIPOVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO];
+                                            const result = await pgClient.query(query, values);
+                                            for (let i = 0; i < result.rows.length; i++) {
+                                                result.rows[i].scoring = {
+                                                    fiability: 40,
+                                                    tipo_viabilidad: 100,
+                                                    nombre_viabilidad: 0,
+                                                    codigo_postal: 100,
+                                                    municipio: 100,
+                                                    estado: 0
+                                                };
+                                            }
+                                            rows = rows.concat(result.rows);
+                                            if (result.rows.length === 0) {
+                                                // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+                                                query = `
+                                                            SELECT *,ST_AsText("SP_GEOMETRY") AS coordenadas
+                                                            FROM carto_geolocalizador
+                                                            WHERE tipo_vialidad = $1
+                                                            AND codigo_postal = $2
+                                                            AND estado = $3
+                                                            ;
+                                                        `;
+                                                values = [direccionParsed.TIPOVIAL, direccionParsed.CP, direccionParsed.ESTADO];
+                                                const result = await pgClient.query(query, values);
+                                                for (let i = 0; i < result.rows.length; i++) {
+                                                    result.rows[i].scoring = {
+                                                        fiability: 40,
+                                                        tipo_viabilidad: 100,
+                                                        nombre_viabilidad: 0,
+                                                        codigo_postal: 100,
+                                                        municipio: 0,
+                                                        estado: 100
+                                                    };
+                                                }
+                                                rows = rows.concat(result.rows);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
         else if (direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1) {
             // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
