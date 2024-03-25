@@ -22,18 +22,21 @@ app.post('/geolocalizar', async (req, res) => {
         const direccionParsed = parseDireccion(direccion);
         console.log(direccionParsed);
         
-        const rows= await scoringMaestro(direccionParsed)
+        const results= await scoringMaestro(direccionParsed);
+
+        // Ordenar scoring mas alto primero
+        const sortedResults = results.sort((a, b) => b.scoring.fiability - a.scoring.fiability);
 
         // Devolver las coordenadas encontradas
-        if (rows.length > 0) {
-            res.status(200).json({ok:true,results:rows});
+        if (results.length > 0) {
+            res.status(200).json({ok:true,results:sortedResults});
         } else {
-            res.status(404).json({ error: 'Dirección especificada no encontrada.' });
+            res.status(404).json({ ok:false,error: 'Sin resultados.' });
         }
     } catch (error) {
         // Manejar cualquier error que pueda ocurrir durante el proceso de geolocalización
         console.error('Error al geolocalizar dirección:', error);
-        res.status(500).json({ error: 'Error al geolocalizar dirección.' });
+        res.status(500).json({ ok:false,error: 'Contacte al Administrador.' });
     }
 });
 

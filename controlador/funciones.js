@@ -1,7 +1,7 @@
 const estados = require("../data/estados");
 const municipiosEstado = require("../data/municipios.json");
 const tiposAsentamiento = require("../data/tipoAsentamiento");
-const tiposVialidad = require("../data/tipoViabilidad");
+const tiposVialidad = require("../data/tipoVialidad");
 const diccionarioAbreviaciones = require("../data/diccionarioAbreviaciones.json");
 
 
@@ -65,7 +65,7 @@ function parseDireccion(direccion) {
             }
         }
         if(activo){
-            direccionParsed.LOCALIDAD = componente;
+            direccionParsed.COLONIA = componente;
         }
         activo=true;
         // Buscar el nombre de la localidad, municipio/delegación, estado/distrito federal
@@ -168,8 +168,8 @@ function formatearDireccionParsed(direccionParsed) {
     if (direccionParsed.CP) {
         componentes.push(direccionParsed.CP);
     }
-    if (direccionParsed.LOCALIDAD) {
-        componentes.push(direccionParsed.LOCALIDAD);
+    if (direccionParsed.COLONIA) {
+        componentes.push(direccionParsed.COLONIA);
     }
     if (direccionParsed.MUNICIPIO) {
         componentes.push(direccionParsed.MUNICIPIO);
