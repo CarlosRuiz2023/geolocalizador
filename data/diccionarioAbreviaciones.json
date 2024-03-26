@@ -8,5 +8,6 @@
     "COL":"COLONIA",
     "MZ":"MANZANA",
     "FRACC":"FRACCIONAMIENTO",
-    "GTO":"GUANAJUATO"
+    "GTO":"GUANAJUATO",
+    "PRIV":"PRIVADA"
 }

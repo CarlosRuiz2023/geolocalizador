@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: true })); // x-www-form-urlencoded
 app.post('/geolocalizar', async (req, res) => {
     try {
         // Obtener la dirección proporcionada por el usuario desde el cuerpo de la solicitud
-        const { direccion } = req.body;
+        const { direccion='' } = req.body;
 
         // Parsear la dirección según la Norma Técnica sobre Domicilios Geográficos
         const direccionParsed = parseDireccion(direccion);

@@ -10,32 +10,32 @@ async function sinNumeroExterior(direccionParsed) {
         ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS y_centro,
         ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS x_centro
         FROM carto_geolocalizador
-        WHERE tipo_vialidad = $1
-        AND nombre_vialidad like '%' || $2 || '%'
+        WHERE tipo_asentamiento = $1
+        AND nombre_asentamiento like '%' || $2 || '%'
         AND (codigo_postal = '' OR codigo_postal = $3 )
         AND municipio = $4
         AND estado = $5
         AND (colonia = '' OR colonia LIKE '%' || $6 || '%')
         ;
     `;
-    values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
+    values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
     const result = await pgClient.query(query, values);
     for (let i = 0; i < result.rows.length; i++) {
         result.rows[i].scoring = {
             fiability: 34,
-            tipo_vialidad: 100,
-            nombre_vialidad: 0,
+            tipo_asentamiento: 100,
+            nombre_asentamiento: 0,
             codigo_postal: 0,
             municipio: 100,
             estado: 100,
             colonia: 0
         };
-        const matchNombreVialidad = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
-        if (matchNombreVialidad) {
-            const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
-            let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
+        const matchNombreAsentamiento = result.rows[i].nombre_asentamiento.match(new RegExp(direccionParsed.NOMASEN, 'i'));
+        if (matchNombreAsentamiento) {
+            const matchedText = matchNombreAsentamiento[0]; // Obtiene el texto coincidente
+            let igualdad = matchedText.length * 100 / result.rows[i].nombre_asentamiento.length;
             if (igualdad > 100) igualdad = 100;
-            result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
+            result.rows[i].scoring.nombre_asentamiento += Math.round(igualdad);
             result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
         }
         const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -60,31 +60,31 @@ async function sinNumeroExterior(direccionParsed) {
             ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS y_centro,
             ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS x_centro
             FROM carto_geolocalizador
-            WHERE tipo_vialidad = $1
-            AND nombre_vialidad like '%' || $2 || '%'
+            WHERE tipo_asentamiento = $1
+            AND nombre_asentamiento like '%' || $2 || '%'
             AND municipio = $3
             AND estado = $4
             AND (colonia = '' OR colonia LIKE '%' || $5 || '%')
             ;
         `;
-        values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
+        values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
         const result = await pgClient.query(query, values);
         for (let i = 0; i < result.rows.length; i++) {
             result.rows[i].scoring = {
                 fiability: 34,
-                tipo_vialidad: 100,
-                nombre_vialidad: 0,
+                tipo_asentamiento: 100,
+                nombre_asentamiento: 0,
                 codigo_postal: 0,
                 municipio: 100,
                 estado: 100,
                 colonia: 0
             };
-            const matchNombreVialidad = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
-            if (matchNombreVialidad) {
-                const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
-                let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
+            const matchNombreAsentamiento = result.rows[i].nombre_asentamiento.match(new RegExp(direccionParsed.NOMASEN, 'i'));
+            if (matchNombreAsentamiento) {
+                const matchedText = matchNombreAsentamiento[0]; // Obtiene el texto coincidente
+                let igualdad = matchedText.length * 100 / result.rows[i].nombre_asentamiento.length;
                 if (igualdad > 100) igualdad = 100;
-                result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
+                result.rows[i].scoring.nombre_asentamiento += Math.round(igualdad);
                 result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
             }
             const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -104,31 +104,31 @@ async function sinNumeroExterior(direccionParsed) {
                 ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS y_centro,
                 ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS x_centro
                 FROM carto_geolocalizador
-                WHERE tipo_vialidad = $1
-                AND nombre_vialidad like '%' || $2 || '%'
+                WHERE tipo_asentamiento = $1
+                AND nombre_asentamiento like '%' || $2 || '%'
                 AND (codigo_postal = '' OR codigo_postal = $3 )
                 AND estado = $4
                 AND (colonia = '' OR colonia LIKE '%' || $5 || '%')
                 ;
             `;
-            values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.COLONIA];
+            values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.COLONIA];
             const result = await pgClient.query(query, values);
             for (let i = 0; i < result.rows.length; i++) {
                 result.rows[i].scoring = {
                     fiability: 26,
-                    tipo_vialidad: 100,
-                    nombre_vialidad: 0,
+                    tipo_asentamiento: 100,
+                    nombre_asentamiento: 0,
                     codigo_postal: 0,
                     municipio: 0,
                     estado: 100,
                     colonia: 0
                 };
-                const matchNombreVialidad = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
-                if (matchNombreVialidad) {
-                    const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
-                    let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
+                const matchNombreAsentamiento = result.rows[i].nombre_asentamiento.match(new RegExp(direccionParsed.NOMASEN, 'i'));
+                if (matchNombreAsentamiento) {
+                    const matchedText = matchNombreAsentamiento[0]; // Obtiene el texto coincidente
+                    let igualdad = matchedText.length * 100 / result.rows[i].nombre_asentamiento.length;
                     if (igualdad > 100) igualdad = 100;
-                    result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
+                    result.rows[i].scoring.nombre_asentamiento += Math.round(igualdad);
                     result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                 }
                 const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -153,31 +153,31 @@ async function sinNumeroExterior(direccionParsed) {
                     ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS y_centro,
                     ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS x_centro
                     FROM carto_geolocalizador
-                    WHERE tipo_vialidad = $1
-                    AND nombre_vialidad like '%' || $2 || '%'
+                    WHERE tipo_asentamiento = $1
+                    AND nombre_asentamiento like '%' || $2 || '%'
                     AND (codigo_postal = '' OR codigo_postal = $3 )
                     AND municipio = $4
                     AND (colonia = '' OR colonia LIKE '%' || $5 || '%')
                     ;
                 `;
-                values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
+                values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
                 const result = await pgClient.query(query, values);
                 for (let i = 0; i < result.rows.length; i++) {
                     result.rows[i].scoring = {
                         fiability: 26,
-                        tipo_vialidad: 100,
-                        nombre_vialidad: 0,
+                        tipo_asentamiento: 100,
+                        nombre_asentamiento: 0,
                         codigo_postal: 0,
                         municipio: 100,
                         estado: 0,
                         colonia: 0
                     };
-                    const matchNombreVialidad = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
-                    if (matchNombreVialidad) {
-                        const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
-                        let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
+                    const matchNombreAsentamiento = result.rows[i].nombre_asentamiento.match(new RegExp(direccionParsed.NOMASEN, 'i'));
+                    if (matchNombreAsentamiento) {
+                        const matchedText = matchNombreAsentamiento[0]; // Obtiene el texto coincidente
+                        let igualdad = matchedText.length * 100 / result.rows[i].nombre_asentamiento.length;
                         if (igualdad > 100) igualdad = 100;
-                        result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
+                        result.rows[i].scoring.nombre_asentamiento += Math.round(igualdad);
                         result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                     }
                     const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -202,31 +202,31 @@ async function sinNumeroExterior(direccionParsed) {
                         ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS y_centro,
                         ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS x_centro
                         FROM carto_geolocalizador
-                        WHERE tipo_vialidad = $1
-                        AND nombre_vialidad like '%' || $2 || '%'
+                        WHERE tipo_asentamiento = $1
+                        AND nombre_asentamiento like '%' || $2 || '%'
                         AND (codigo_postal = '' OR codigo_postal = $3 )
                         AND municipio = $4
                         AND estado = $6
                         ;
                     `;
-                    values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
+                    values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
                     const result = await pgClient.query(query, values);
                     for (let i = 0; i < result.rows.length; i++) {
                         result.rows[i].scoring = {
                             fiability: 34,
-                            tipo_vialidad: 100,
-                            nombre_vialidad: 0,
+                            tipo_asentamiento: 100,
+                            nombre_asentamiento: 0,
                             codigo_postal: 0,
                             municipio: 100,
                             estado: 100,
                             colonia: 0
                         };
-                        const matchNombreVialidad = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
-                        if (matchNombreVialidad) {
-                            const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
-                            let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
+                        const matchNombreAsentamiento = result.rows[i].nombre_asentamiento.match(new RegExp(direccionParsed.NOMASEN, 'i'));
+                        if (matchNombreAsentamiento) {
+                            const matchedText = matchNombreAsentamiento[0]; // Obtiene el texto coincidente
+                            let igualdad = matchedText.length * 100 / result.rows[i].nombre_asentamiento.length;
                             if (igualdad > 100) igualdad = 100;
-                            result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
+                            result.rows[i].scoring.nombre_asentamiento += Math.round(igualdad);
                             result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                         }
                         const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
@@ -243,30 +243,30 @@ async function sinNumeroExterior(direccionParsed) {
                             ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS y_centro,
                             ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS x_centro
                             FROM carto_geolocalizador
-                            WHERE tipo_vialidad = $1
-                            AND nombre_vialidad like '%' || $2 || '%'
+                            WHERE tipo_asentamiento = $1
+                            AND nombre_asentamiento like '%' || $2 || '%'
                             AND municipio = $3
                             AND estado = $4
                             ;
                         `;
-                        values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
+                        values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
                         const result = await pgClient.query(query, values);
                         for (let i = 0; i < result.rows.length; i++) {
                             result.rows[i].scoring = {
                                 fiability: 34,
-                                tipo_vialidad: 100,
-                                nombre_vialidad: 0,
+                                tipo_asentamiento: 100,
+                                nombre_asentamiento: 0,
                                 codigo_postal: 0,
                                 municipio: 100,
                                 estado: 100,
                                 colonia: 0
                             };
-                            const matchNombreVialidad = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
-                            if (matchNombreVialidad) {
-                                const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
-                                let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
+                            const matchNombreAsentamiento = result.rows[i].nombre_asentamiento.match(new RegExp(direccionParsed.NOMASEN, 'i'));
+                            if (matchNombreAsentamiento) {
+                                const matchedText = matchNombreAsentamiento[0]; // Obtiene el texto coincidente
+                                let igualdad = matchedText.length * 100 / result.rows[i].nombre_asentamiento.length;
                                 if (igualdad > 100) igualdad = 100;
-                                result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
+                                result.rows[i].scoring.nombre_asentamiento += Math.round(igualdad);
                                 result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                             }
                         }
@@ -278,30 +278,30 @@ async function sinNumeroExterior(direccionParsed) {
                                 ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS y_centro,
                                 ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS x_centro
                                 FROM carto_geolocalizador
-                                WHERE tipo_vialidad = $1
-                                AND nombre_vialidad like '%' || $2 || '%'
+                                WHERE tipo_asentamiento = $1
+                                AND nombre_asentamiento like '%' || $2 || '%'
                                 AND (codigo_postal = '' OR codigo_postal = $3 )
                                 AND estado = $4
                                 ;
                             `;
-                            values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.ESTADO];
+                            values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.CP, direccionParsed.ESTADO];
                             const result = await pgClient.query(query, values);
                             for (let i = 0; i < result.rows.length; i++) {
                                 result.rows[i].scoring = {
                                     fiability: 26,
-                                    tipo_vialidad: 100,
-                                    nombre_vialidad: 0,
+                                    tipo_asentamiento: 100,
+                                    nombre_asentamiento: 0,
                                     codigo_postal: 0,
                                     municipio: 0,
                                     estado: 100,
                                     colonia: 0
                                 };
-                                const matchNombreVialidad = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
-                                if (matchNombreVialidad) {
-                                    const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
-                                    let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
+                                const matchNombreAsentamiento = result.rows[i].nombre_asentamiento.match(new RegExp(direccionParsed.NOMASEN, 'i'));
+                                if (matchNombreAsentamiento) {
+                                    const matchedText = matchNombreAsentamiento[0]; // Obtiene el texto coincidente
+                                    let igualdad = matchedText.length * 100 / result.rows[i].nombre_asentamiento.length;
                                     if (igualdad > 100) igualdad = 100;
-                                    result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
+                                    result.rows[i].scoring.nombre_asentamiento += Math.round(igualdad);
                                     result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                                 }
                                 const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
@@ -318,30 +318,30 @@ async function sinNumeroExterior(direccionParsed) {
                                     ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS y_centro,
                                     ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS x_centro
                                     FROM carto_geolocalizador
-                                    WHERE tipo_vialidad = $1
-                                    AND nombre_vialidad like '%' || $2 || '%'
+                                    WHERE tipo_asentamiento = $1
+                                    AND nombre_asentamiento like '%' || $2 || '%'
                                     AND municipio = $3
                                     AND (colonia = '' OR colonia LIKE '%' || $4 || '%')
                                     ;
                                 `;
-                                values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
+                                values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
                                 const result = await pgClient.query(query, values);
                                 for (let i = 0; i < result.rows.length; i++) {
                                     result.rows[i].scoring = {
                                         fiability: 26,
-                                        tipo_vialidad: 100,
-                                        nombre_vialidad: 0,
+                                        tipo_asentamiento: 100,
+                                        nombre_asentamiento: 0,
                                         codigo_postal: 0,
                                         municipio: 100,
                                         estado: 0,
                                         colonia: 0
                                     };
-                                    const matchNombreVialidad = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
-                                    if (matchNombreVialidad) {
-                                        const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
-                                        let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
+                                    const matchNombreAsentamiento = result.rows[i].nombre_asentamiento.match(new RegExp(direccionParsed.NOMASEN, 'i'));
+                                    if (matchNombreAsentamiento) {
+                                        const matchedText = matchNombreAsentamiento[0]; // Obtiene el texto coincidente
+                                        let igualdad = matchedText.length * 100 / result.rows[i].nombre_asentamiento.length;
                                         if (igualdad > 100) igualdad = 100;
-                                        result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
+                                        result.rows[i].scoring.nombre_asentamiento += Math.round(igualdad);
                                         result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                                     }
                                     const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -361,30 +361,30 @@ async function sinNumeroExterior(direccionParsed) {
                                         ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS y_centro,
                                         ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS x_centro
                                         FROM carto_geolocalizador
-                                        WHERE tipo_vialidad = $1
-                                        AND nombre_vialidad like '%' || $2 || '%'
+                                        WHERE tipo_asentamiento = $1
+                                        AND nombre_asentamiento like '%' || $2 || '%'
                                         AND (codigo_postal = '' OR codigo_postal = $3 )
                                         AND (colonia = '' OR colonia LIKE '%' || $4 || '%')
                                         ;
                                     `;
-                                    values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.COLONIA];
+                                    values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.CP, direccionParsed.COLONIA];
                                     const result = await pgClient.query(query, values);
                                     for (let i = 0; i < result.rows.length; i++) {
                                         result.rows[i].scoring = {
                                             fiability: 26,
-                                            tipo_vialidad: 100,
-                                            nombre_vialidad: 0,
+                                            tipo_asentamiento: 100,
+                                            nombre_asentamiento: 0,
                                             codigo_postal: 0,
                                             municipio: 0,
                                             estado: 0,
                                             colonia: 100
                                         };
-                                        const matchNombreVialidad = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
-                                        if (matchNombreVialidad) {
-                                            const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
-                                            let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
+                                        const matchNombreAsentamiento = result.rows[i].nombre_asentamiento.match(new RegExp(direccionParsed.NOMASEN, 'i'));
+                                        if (matchNombreAsentamiento) {
+                                            const matchedText = matchNombreAsentamiento[0]; // Obtiene el texto coincidente
+                                            let igualdad = matchedText.length * 100 / result.rows[i].nombre_asentamiento.length;
                                             if (igualdad > 100) igualdad = 100;
-                                            result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
+                                            result.rows[i].scoring.nombre_asentamiento += Math.round(igualdad);
                                             result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                                         }
                                         const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -409,30 +409,30 @@ async function sinNumeroExterior(direccionParsed) {
                                             ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS y_centro,
                                             ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS x_centro
                                             FROM carto_geolocalizador
-                                            WHERE tipo_vialidad = $1
-                                            AND nombre_vialidad like '%' || $2 || '%'
+                                            WHERE tipo_asentamiento = $1
+                                            AND nombre_asentamiento like '%' || $2 || '%'
                                             AND (codigo_postal = '' OR codigo_postal = $3 )
                                             AND municipio = $4
                                             ;
                                         `;
-                                        values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO];
+                                        values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.CP, direccionParsed.MUNICIPIO];
                                         const result = await pgClient.query(query, values);
                                         for (let i = 0; i < result.rows.length; i++) {
                                             result.rows[i].scoring = {
                                                 fiability: 26,
-                                                tipo_vialidad: 100,
-                                                nombre_vialidad: 0,
+                                                tipo_asentamiento: 100,
+                                                nombre_asentamiento: 0,
                                                 codigo_postal: 0,
                                                 municipio: 100,
                                                 estado: 0,
                                                 colonia: 0
                                             };
-                                            const matchNombreVialidad = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
-                                            if (matchNombreVialidad) {
-                                                const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
-                                                let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
+                                            const matchNombreAsentamiento = result.rows[i].nombre_asentamiento.match(new RegExp(direccionParsed.NOMASEN, 'i'));
+                                            if (matchNombreAsentamiento) {
+                                                const matchedText = matchNombreAsentamiento[0]; // Obtiene el texto coincidente
+                                                let igualdad = matchedText.length * 100 / result.rows[i].nombre_asentamiento.length;
                                                 if (igualdad > 100) igualdad = 100;
-                                                result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
+                                                result.rows[i].scoring.nombre_asentamiento += Math.round(igualdad);
                                                 result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                                             }
                                             const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
@@ -449,20 +449,20 @@ async function sinNumeroExterior(direccionParsed) {
                                                 ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS y_centro,
                                                 ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS x_centro
                                                 FROM carto_geolocalizador
-                                                WHERE tipo_vialidad = $1
+                                                WHERE tipo_asentamiento = $1
                                                 AND (codigo_postal = '' OR codigo_postal = $2 )
                                                 AND municipio = $3
                                                 AND estado = $4
                                                 AND (colonia = '' OR colonia LIKE '%' || $5 || '%')
                                                 ;
                                             `;
-                                            values = [direccionParsed.TIPOVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
+                                            values = [direccionParsed.TIPOASEN, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
                                             const result = await pgClient.query(query, values);
                                             for (let i = 0; i < result.rows.length; i++) {
                                                 result.rows[i].scoring = {
                                                     fiability: 42,
-                                                    tipo_vialidad: 100,
-                                                    nombre_vialidad: 0,
+                                                    tipo_asentamiento: 100,
+                                                    nombre_asentamiento: 0,
                                                     codigo_postal: 0,
                                                     municipio: 100,
                                                     estado: 100,
@@ -490,19 +490,19 @@ async function sinNumeroExterior(direccionParsed) {
                                                     ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS y_centro,
                                                     ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS x_centro
                                                     FROM carto_geolocalizador
-                                                    WHERE tipo_vialidad = $1
+                                                    WHERE tipo_asentamiento = $1
                                                     AND municipio = $2
                                                     AND estado = $3
                                                     AND (colonia = '' OR colonia LIKE '%' || $4 || '%')
                                                     ;
                                                 `;
-                                                values = [direccionParsed.TIPOVIAL, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
+                                                values = [direccionParsed.TIPOASEN, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
                                                 const result = await pgClient.query(query, values);
                                                 for (let i = 0; i < result.rows.length; i++) {
                                                     result.rows[i].scoring = {
                                                         fiability: 42,
-                                                        tipo_vialidad: 100,
-                                                        nombre_vialidad: 0,
+                                                        tipo_asentamiento: 100,
+                                                        nombre_asentamiento: 0,
                                                         codigo_postal: 0,
                                                         municipio: 100,
                                                         estado: 100,
@@ -525,19 +525,19 @@ async function sinNumeroExterior(direccionParsed) {
                                                         ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS y_centro,
                                                         ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS x_centro
                                                         FROM carto_geolocalizador
-                                                        WHERE tipo_vialidad = $1
+                                                        WHERE tipo_asentamiento = $1
                                                         AND (codigo_postal = '' OR codigo_postal = $2 )
                                                         AND municipio = $3
                                                         AND (colonia = '' OR colonia LIKE '%' || $4 || '%')
                                                         ;
                                                     `;
-                                                    values = [direccionParsed.TIPOVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
+                                                    values = [direccionParsed.TIPOASEN, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
                                                     const result = await pgClient.query(query, values);
                                                     for (let i = 0; i < result.rows.length; i++) {
                                                         result.rows[i].scoring = {
                                                             fiability: 34,
-                                                            tipo_vialidad: 100,
-                                                            nombre_vialidad: 0,
+                                                            tipo_asentamiento: 100,
+                                                            nombre_asentamiento: 0,
                                                             codigo_postal: 0,
                                                             municipio: 100,
                                                             estado: 0,
@@ -565,19 +565,19 @@ async function sinNumeroExterior(direccionParsed) {
                                                             ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS y_centro,
                                                             ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS x_centro
                                                             FROM carto_geolocalizador
-                                                            WHERE tipo_vialidad = $1
+                                                            WHERE tipo_asentamiento = $1
                                                             AND (codigo_postal = '' OR codigo_postal = $2 )
                                                             AND estado = $3
                                                             AND (colonia = '' OR colonia LIKE '%' || $4 || '%')
                                                             ;
                                                         `;
-                                                        values = [direccionParsed.TIPOVIAL, direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.COLONIA];
+                                                        values = [direccionParsed.TIPOASEN, direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.COLONIA];
                                                         const result = await pgClient.query(query, values);
                                                         for (let i = 0; i < result.rows.length; i++) {
                                                             result.rows[i].scoring = {
                                                                 fiability: 34,
-                                                                tipo_vialidad: 100,
-                                                                nombre_vialidad: 0,
+                                                                tipo_asentamiento: 100,
+                                                                nombre_asentamiento: 0,
                                                                 codigo_postal: 0,
                                                                 municipio: 0,
                                                                 estado: 100,
@@ -611,19 +611,19 @@ async function sinNumeroExterior(direccionParsed) {
                                                                     ELSE NULL
                                                                 END AS x_centro
                                                                 FROM carto_geolocalizador
-                                                                WHERE tipo_vialidad = $1
+                                                                WHERE tipo_asentamiento = $1
                                                                 AND (codigo_postal = '' OR codigo_postal = $2 )
                                                                 AND estado = $3
                                                                 AND municipio = $4
                                                                 ;
                                                             `;
-                                                            values = [direccionParsed.TIPOVIAL, direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.MUNICIPIO];
+                                                            values = [direccionParsed.TIPOASEN, direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.MUNICIPIO];
                                                             const result = await pgClient.query(query, values);
                                                             for (let i = 0; i < result.rows.length; i++) {
                                                                 result.rows[i].scoring = {
                                                                     fiability: 34,
-                                                                    tipo_vialidad: 100,
-                                                                    nombre_vialidad: 0,
+                                                                    tipo_asentamiento: 100,
+                                                                    nombre_asentamiento: 0,
                                                                     codigo_postal: 0,
                                                                     municipio: 100,
                                                                     estado: 100,

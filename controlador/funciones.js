@@ -129,7 +129,7 @@ function obtenerMunicipio(componente, estado) {
     const municipios = municipiosEstado[estado];
     for (const municipio of municipios) {
         if (componente.toUpperCase().includes(municipio)) {
-            return municipio;
+            if(componente.toUpperCase()===municipio)return municipio;
         }
     }
     return null;
