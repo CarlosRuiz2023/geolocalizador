@@ -64,6 +64,10 @@ function parseDireccion(direccion) {
                 direccionParsed.MUNICIPIO = municipio;
             }
         }
+        if(direccionParsed.COLONIA){
+            activo=false;
+            direccionParsed.CALLE = componente;
+        }
         if(activo){
             direccionParsed.COLONIA = componente;
         }
@@ -181,4 +185,34 @@ function formatearDireccionParsed(direccionParsed) {
 
     return componentes.join(', ');
 }
-module.exports = parseDireccion;
+function levenshteinDistance(str1, str2) {
+    const len1 = str1.length;
+    const len2 = str2.length;
+
+    // Crear matriz de distancias
+    const distances = Array(len1 + 1).fill(null).map(() => Array(len2 + 1).fill(null));
+
+    // Inicializar primera fila y columna
+    for (let i = 0; i <= len1; i++) {
+        distances[i][0] = i;
+    }
+    for (let j = 0; j <= len2; j++) {
+        distances[0][j] = j;
+    }
+
+    // Calcular distancias
+    for (let i = 1; i <= len1; i++) {
+        for (let j = 1; j <= len2; j++) {
+            const cost = str1[i - 1] === str2[j - 1] ? 0 : 1;
+            distances[i][j] = Math.min(
+                distances[i - 1][j] + 1, // Eliminación
+                distances[i][j - 1] + 1, // Inserción
+                distances[i - 1][j - 1] + cost // Sustitución
+            );
+        }
+    }
+
+    // La distancia de edición entre las cadenas es el valor en la esquina inferior derecha de la matriz
+    return distances[len1][len2];
+}
+module.exports = {parseDireccion,levenshteinDistance};

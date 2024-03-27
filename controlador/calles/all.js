@@ -34,35 +34,33 @@ async function all(direccionParsed) {
                                                             END
                                                      END)) AS x_centro
         FROM carto_geolocalizador
-        WHERE tipo_asentamiento = $1
-        AND nombre_asentamiento like '%' || $2 || '%'
-        AND (codigo_postal = '' OR codigo_postal = $3 )
-        AND municipio = $4
-        AND estado = $5
+        WHERE nombre_vialidad like '%' || $1 || '%'
+        AND (codigo_postal = '' OR codigo_postal = $2 )
+        AND municipio = $3
+        AND estado = $4
         AND ((CAST(l_refaddr AS INTEGER) <= $6 AND CAST(l_nrefaddr AS INTEGER) >= $6)
         OR (CAST(r_refaddr AS INTEGER) <= $6 AND CAST(r_nrefaddr AS INTEGER) >= $6))
-        AND (colonia = '' OR colonia LIKE '%' || $7 || '%')
+        AND (colonia = '' OR colonia LIKE '%' || $5 || '%')
         ;
     `;
-    values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1, direccionParsed.COLONIA];
+    values = [direccionParsed.CALLE, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
     const result = await pgClient.query(query, values);
     for (let i = 0; i < result.rows.length; i++) {
         result.rows[i].scoring = {
-            fiability: 40,
-            tipo_asentamiento: 100,
-            nombre_asentamiento: 0,
+            fiability: 30,
+            calle: 0,
             codigo_postal: 0,
             municipio: 100,
             estado: 100,
             numero_exterior: 100,
             colonia: 0
         };
-        const matchNombreAsentamiento = result.rows[i].nombre_asentamiento.match(new RegExp(direccionParsed.NOMASEN, 'i'));
-        if (matchNombreAsentamiento) {
-            const matchedText = matchNombreAsentamiento[0]; // Obtiene el texto coincidente
-            let igualdad = matchedText.length * 100 / result.rows[i].nombre_asentamiento.length;
+        const matchNombreCalle = result.rows[i].calle.match(new RegExp(direccionParsed.CALLE, 'i'));
+        if (matchNombreCalle) {
+            const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
+            let igualdad = matchedText.length * 100 / result.rows[i].calle.length;
             if (igualdad > 100) igualdad = 100;
-            result.rows[i].scoring.nombre_asentamiento += Math.round(igualdad);
+            result.rows[i].scoring.calle += Math.round(igualdad);
             result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
         }
         const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -71,12 +69,12 @@ async function all(direccionParsed) {
             let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
             if (igualdad > 100) igualdad = 100;
             result.rows[i].scoring.colonia += Math.round(igualdad);
-            result.rows[i].scoring.fiability += Math.round(igualdad) / 20;
+            result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
         }
         const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
         if (matchCP) {
             result.rows[i].scoring.codigo_postal += 100;
-            result.rows[i].scoring.fiability += 5;
+            result.rows[i].scoring.fiability += 10;
         }
     }
     rows = rows.concat(result.rows);
@@ -109,34 +107,32 @@ async function all(direccionParsed) {
                                                                 END
                                                          END)) AS x_centro
             FROM carto_geolocalizador
-            WHERE tipo_asentamiento = $1
-            AND nombre_asentamiento like '%' || $2 || '%'
-            AND municipio = $3
-            AND estado = $4
+            WHERE nombre_vialidad like '%' || $1 || '%'
+            AND municipio = $2
+            AND estado = $3
             AND ((CAST(l_refaddr AS INTEGER) <= $5 AND CAST(l_nrefaddr AS INTEGER) >= $5)
             OR (CAST(r_refaddr AS INTEGER) <= $5 AND CAST(r_nrefaddr AS INTEGER) >= $5))
-            AND (colonia = '' OR colonia LIKE '%' || $6 || '%')
+            AND (colonia = '' OR colonia LIKE '%' || $4 || '%')
             ;
         `;
-        values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1, direccionParsed.COLONIA];
+        values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
         const result = await pgClient.query(query, values);
         for (let i = 0; i < result.rows.length; i++) {
             result.rows[i].scoring = {
-                fiability: 40,
-                tipo_asentamiento: 100,
-                nombre_asentamiento: 0,
+                fiability: 30,
+                calle: 0,
                 codigo_postal: 0,
                 municipio: 100,
                 estado: 100,
                 numero_exterior: 100,
                 colonia: 0
             };
-            const matchNombreAsentamiento = result.rows[i].nombre_asentamiento.match(new RegExp(direccionParsed.NOMASEN, 'i'));
-            if (matchNombreAsentamiento) {
-                const matchedText = matchNombreAsentamiento[0]; // Obtiene el texto coincidente
-                let igualdad = matchedText.length * 100 / result.rows[i].nombre_asentamiento.length;
+            const matchNombreCalle = result.rows[i].calle.match(new RegExp(direccionParsed.CALLE, 'i'));
+            if (matchNombreCalle) {
+                const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
+                let igualdad = matchedText.length * 100 / result.rows[i].calle.length;
                 if (igualdad > 100) igualdad = 100;
-                result.rows[i].scoring.nombre_asentamiento += Math.round(igualdad);
+                result.rows[i].scoring.calle += Math.round(igualdad);
                 result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
             }
             const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -145,7 +141,7 @@ async function all(direccionParsed) {
                 let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                 if (igualdad > 100) igualdad = 100;
                 result.rows[i].scoring.colonia += Math.round(igualdad);
-                result.rows[i].scoring.fiability += Math.round(igualdad) / 20;
+                result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
             }
         }
         rows = rows.concat(result.rows);
@@ -178,34 +174,32 @@ async function all(direccionParsed) {
                                                                     END
                                                              END)) AS x_centro
                 FROM carto_geolocalizador
-                WHERE tipo_asentamiento = $1
-                AND nombre_asentamiento like '%' || $2 || '%'
-                AND (codigo_postal = '' OR codigo_postal = $3 )
-                AND estado = $4
+                WHERE nombre_vialidad like '%' || $1 || '%'
+                AND (codigo_postal = '' OR codigo_postal = $2 )
+                AND estado = $3
                 AND ((CAST(l_refaddr AS INTEGER) <= $5 AND CAST(l_nrefaddr AS INTEGER) >= $5)
                 OR (CAST(r_refaddr AS INTEGER) <= $5 AND CAST(r_nrefaddr AS INTEGER) >= $5))
-                AND (colonia = '' OR colonia LIKE '%' || $6 || '%')
+                AND (colonia = '' OR colonia LIKE '%' || $4 || '%')
                 ;
             `;
-            values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1, direccionParsed.COLONIA];
+            values = [direccionParsed.CALLE, direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
             const result = await pgClient.query(query, values);
             for (let i = 0; i < result.rows.length; i++) {
                 result.rows[i].scoring = {
-                    fiability: 35,
-                    tipo_asentamiento: 100,
-                    nombre_asentamiento: 0,
+                    fiability: 20,
+                    calle: 0,
                     codigo_postal: 0,
                     municipio: 0,
                     estado: 100,
                     numero_exterior: 100,
                     colonia: 0
                 };
-                const matchNombreAsentamiento = result.rows[i].nombre_asentamiento.match(new RegExp(direccionParsed.NOMASEN, 'i'));
-                if (matchNombreAsentamiento) {
-                    const matchedText = matchNombreAsentamiento[0]; // Obtiene el texto coincidente
-                    let igualdad = matchedText.length * 100 / result.rows[i].nombre_asentamiento.length;
+                const matchNombreCalle = result.rows[i].calle.match(new RegExp(direccionParsed.CALLE, 'i'));
+                if (matchNombreCalle) {
+                    const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
+                    let igualdad = matchedText.length * 100 / result.rows[i].calle.length;
                     if (igualdad > 100) igualdad = 100;
-                    result.rows[i].scoring.nombre_asentamiento += Math.round(igualdad);
+                    result.rows[i].scoring.calle += Math.round(igualdad);
                     result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                 }
                 const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -214,12 +208,12 @@ async function all(direccionParsed) {
                     let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                     if (igualdad > 100) igualdad = 100;
                     result.rows[i].scoring.colonia += Math.round(igualdad);
-                    result.rows[i].scoring.fiability += Math.round(igualdad) / 20;
+                    result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
                 }
                 const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
                 if (matchCP) {
                     result.rows[i].scoring.codigo_postal += 100;
-                    result.rows[i].scoring.fiability += 5;
+                    result.rows[i].scoring.fiability += 10;
                 }
             }
             rows = rows.concat(result.rows);
@@ -252,34 +246,32 @@ async function all(direccionParsed) {
                                                                         END
                                                                  END)) AS x_centro
                     FROM carto_geolocalizador
-                    WHERE tipo_asentamiento = $1
-                    AND nombre_asentamiento like '%' || $2 || '%'
-                    AND (codigo_postal = '' OR codigo_postal = $3 )
-                    AND municipio = $4
+                    WHERE nombre_vialidad like '%' || $1 || '%'
+                    AND (codigo_postal = '' OR codigo_postal = $2 )
+                    AND municipio = $3
                     AND ((CAST(l_refaddr AS INTEGER) <= $5 AND CAST(l_nrefaddr AS INTEGER) >= $5)
                     OR (CAST(r_refaddr AS INTEGER) <= $5 AND CAST(r_nrefaddr AS INTEGER) >= $5))
-                    AND (colonia = '' OR colonia LIKE '%' || $6 || '%')
+                    AND (colonia = '' OR colonia LIKE '%' || $4 || '%')
                     ;
                 `;
-                values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1, direccionParsed.COLONIA];
+                values = [direccionParsed.CALLE, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
                 const result = await pgClient.query(query, values);
                 for (let i = 0; i < result.rows.length; i++) {
                     result.rows[i].scoring = {
-                        fiability: 35,
-                        tipo_asentamiento: 100,
-                        nombre_asentamiento: 0,
+                        fiability: 20,
+                        calle: 0,
                         codigo_postal: 0,
                         municipio: 100,
                         estado: 0,
                         numero_exterior: 100,
                         colonia: 0
                     };
-                    const matchNombreAsentamiento = result.rows[i].nombre_asentamiento.match(new RegExp(direccionParsed.NOMASEN, 'i'));
-                    if (matchNombreAsentamiento) {
-                        const matchedText = matchNombreAsentamiento[0]; // Obtiene el texto coincidente
-                        let igualdad = matchedText.length * 100 / result.rows[i].nombre_asentamiento.length;
+                    const matchNombreCalle = result.rows[i].calle.match(new RegExp(direccionParsed.CALLE, 'i'));
+                    if (matchNombreCalle) {
+                        const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
+                        let igualdad = matchedText.length * 100 / result.rows[i].calle.length;
                         if (igualdad > 100) igualdad = 100;
-                        result.rows[i].scoring.nombre_asentamiento += Math.round(igualdad);
+                        result.rows[i].scoring.calle += Math.round(igualdad);
                         result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                     }
                     const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -288,12 +280,12 @@ async function all(direccionParsed) {
                         let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                         if (igualdad > 100) igualdad = 100;
                         result.rows[i].scoring.colonia += Math.round(igualdad);
-                        result.rows[i].scoring.fiability += Math.round(igualdad) / 20;
+                        result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
                     }
                     const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
                     if (matchCP) {
                         result.rows[i].scoring.codigo_postal += 100;
-                        result.rows[i].scoring.fiability += 5;
+                        result.rows[i].scoring.fiability += 10;
                     }
                 }
                 rows = rows.concat(result.rows);
@@ -326,34 +318,32 @@ async function all(direccionParsed) {
                                                                             END
                                                                      END)) AS x_centro
                         FROM carto_geolocalizador
-                        WHERE tipo_asentamiento = $1
-                        AND nombre_asentamiento like '%' || $2 || '%'
-                        AND (codigo_postal = '' OR codigo_postal = $3 )
-                        AND municipio = $4
+                        WHERE nombre_vialidad like '%' || $1 || '%'
+                        AND (codigo_postal = '' OR codigo_postal = $2 )
+                        AND municipio = $3
                         AND ((CAST(l_refaddr AS INTEGER) <= $5 AND CAST(l_nrefaddr AS INTEGER) >= $5)
                         OR (CAST(r_refaddr AS INTEGER) <= $5 AND CAST(r_nrefaddr AS INTEGER) >= $5))
-                        AND estado = $6
+                        AND estado = $4
                         ;
                     `;
-                    values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1, direccionParsed.ESTADO];
+                    values = [direccionParsed.COLONIA, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1];
                     const result = await pgClient.query(query, values);
                     for (let i = 0; i < result.rows.length; i++) {
                         result.rows[i].scoring = {
-                            fiability: 40,
-                            tipo_asentamiento: 100,
-                            nombre_asentamiento: 0,
+                            fiability: 30,
+                            calle: 0,
                             codigo_postal: 0,
                             municipio: 100,
                             estado: 100,
                             numero_exterior: 100,
                             colonia: 0
                         };
-                        const matchNombreAsentamiento = result.rows[i].nombre_asentamiento.match(new RegExp(direccionParsed.NOMASEN, 'i'));
-                        if (matchNombreAsentamiento) {
-                            const matchedText = matchNombreAsentamiento[0]; // Obtiene el texto coincidente
-                            let igualdad = matchedText.length * 100 / result.rows[i].nombre_asentamiento.length;
+                        const matchNombreCalle = result.rows[i].calle.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                        if (matchNombreCalle) {
+                            const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
+                            let igualdad = matchedText.length * 100 / result.rows[i].calle.length;
                             if (igualdad > 100) igualdad = 100;
-                            result.rows[i].scoring.nombre_asentamiento += Math.round(igualdad);
+                            result.rows[i].scoring.calle += Math.round(igualdad);
                             result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                         }
                         // Calcular la distancia de Levenshtein
@@ -363,12 +353,12 @@ async function all(direccionParsed) {
                         const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                         if (similarityColonia) {
                             result.rows[i].scoring.colonia += similarityColonia;
-                            result.rows[i].scoring.fiability += (similarityColonia * 0.05);
+                            result.rows[i].scoring.fiability += (similarityColonia * 0.1);
                         }
                         const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
                         if (matchCP) {
                             result.rows[i].scoring.codigo_postal += 100;
-                            result.rows[i].scoring.fiability += 5;
+                            result.rows[i].scoring.fiability += 10;
                         }
                     }
                     rows = rows.concat(result.rows);
@@ -401,34 +391,32 @@ async function all(direccionParsed) {
                                                                                 END
                                                                          END)) AS x_centro
                             FROM carto_geolocalizador
-                            WHERE tipo_asentamiento = $1
-                            AND nombre_asentamiento like '%' || $2 || '%'
-                            AND municipio = $3
+                            WHERE nombre_vialidad like '%' || $1 || '%'
+                            AND municipio = $2
                             AND ((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
                             OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4))
-                            AND estado = $5
+                            AND estado = $3
                             ;
                         `;
-                        values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1, direccionParsed.ESTADO];
+                        values = [direccionParsed.COLONIA, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1];
                         const result = await pgClient.query(query, values);
 
                         for (let i = 0; i < result.rows.length; i++) {
                             result.rows[i].scoring = {
-                                fiability: 40,
-                                tipo_asentamiento: 100,
-                                nombre_asentamiento: 0,
+                                fiability: 30,
+                                calle: 0,
                                 codigo_postal: 0,
                                 municipio: 100,
                                 estado: 100,
                                 numero_exterior: 100,
                                 colonia: 0
                             };
-                            const matchNombreAsentamiento = result.rows[i].nombre_asentamiento.match(new RegExp(direccionParsed.NOMASEN, 'i'));
-                            if (matchNombreAsentamiento) {
-                                const matchedText = matchNombreAsentamiento[0]; // Obtiene el texto coincidente
-                                let igualdad = matchedText.length * 100 / result.rows[i].nombre_asentamiento.length;
+                            const matchNombreCalle = result.rows[i].calle.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                            if (matchNombreCalle) {
+                                const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
+                                let igualdad = matchedText.length * 100 / result.rows[i].calle.length;
                                 if (igualdad > 100) igualdad = 100;
-                                result.rows[i].scoring.nombre_asentamiento += Math.round(igualdad);
+                                result.rows[i].scoring.calle += Math.round(igualdad);
                                 result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                             }
                             // Calcular la distancia de Levenshtein
@@ -438,7 +426,7 @@ async function all(direccionParsed) {
                             const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                             if (similarityColonia) {
                                 result.rows[i].scoring.colonia += similarityColonia;
-                                result.rows[i].scoring.fiability += (similarityColonia * 0.05);
+                                result.rows[i].scoring.fiability += (similarityColonia * 0.1);
                             }
                         }
                         rows = rows.concat(result.rows);
@@ -471,34 +459,32 @@ async function all(direccionParsed) {
                                                                                     END
                                                                              END)) AS x_centro
                                 FROM carto_geolocalizador
-                                WHERE tipo_asentamiento = $1
-                                AND nombre_asentamiento like '%' || $2 || '%'
-                                AND (codigo_postal = '' OR codigo_postal = $3 )
+                                WHERE nombre_vialidad like '%' || $1 || '%'
+                                AND (codigo_postal = '' OR codigo_postal = $2 )
                                 AND ((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
                                 OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4))
-                                AND estado = $5
+                                AND estado = $3
                                 ;
                             `;
-                            values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.CP, direccionParsed.NUMEXTNUM1, direccionParsed.ESTADO];
+                            values = [direccionParsed.COLONIA, direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1];
                             const result = await pgClient.query(query, values);
 
                             for (let i = 0; i < result.rows.length; i++) {
                                 result.rows[i].scoring = {
-                                    fiability: 35,
-                                    tipo_asentamiento: 100,
-                                    nombre_asentamiento: 0,
+                                    fiability: 20,
+                                    calle: 0,
                                     codigo_postal: 0,
                                     municipio: 0,
                                     estado: 100,
                                     numero_exterior: 100,
                                     colonia: 0
                                 };
-                                const matchNombreAsentamiento = result.rows[i].nombre_asentamiento.match(new RegExp(direccionParsed.NOMASEN, 'i'));
-                                if (matchNombreAsentamiento) {
-                                    const matchedText = matchNombreAsentamiento[0]; // Obtiene el texto coincidente
-                                    let igualdad = matchedText.length * 100 / result.rows[i].nombre_asentamiento.length;
+                                const matchNombreCalle = result.rows[i].calle.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                if (matchNombreCalle) {
+                                    const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
+                                    let igualdad = matchedText.length * 100 / result.rows[i].calle.length;
                                     if (igualdad > 100) igualdad = 100;
-                                    result.rows[i].scoring.nombre_asentamiento += Math.round(igualdad);
+                                    result.rows[i].scoring.calle += Math.round(igualdad);
                                     result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                                 }
                                 // Calcular la distancia de Levenshtein
@@ -508,12 +494,12 @@ async function all(direccionParsed) {
                                 const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                                 if (similarityColonia) {
                                     result.rows[i].scoring.colonia += similarityColonia;
-                                    result.rows[i].scoring.fiability += (similarityColonia * 0.05);
+                                    result.rows[i].scoring.fiability += (similarityColonia * 0.1);
                                 }
                                 const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
                                 if (matchCP) {
                                     result.rows[i].scoring.codigo_postal += 100;
-                                    result.rows[i].scoring.fiability += 5;
+                                    result.rows[i].scoring.fiability += 10;
                                 }
                             }
                             rows = rows.concat(result.rows);
@@ -546,34 +532,32 @@ async function all(direccionParsed) {
                                                                                         END
                                                                                  END)) AS x_centro
                                     FROM carto_geolocalizador
-                                    WHERE tipo_asentamiento = $1
-                                    AND nombre_asentamiento like '%' || $2 || '%'
-                                    AND municipio = $3
+                                    WHERE nombre_vialidad like '%' || $1 || '%'
+                                    AND municipio = $2
                                     AND ((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
                                     OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4))
-                                    AND (colonia = '' OR colonia LIKE '%' || $5 || '%')
+                                    AND (colonia = '' OR colonia LIKE '%' || $3 || '%')
                                     ;
                                 `;
-                                values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1, direccionParsed.COLONIA];
+                                values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
                                 const result = await pgClient.query(query, values);
 
                                 for (let i = 0; i < result.rows.length; i++) {
                                     result.rows[i].scoring = {
-                                        fiability: 45,
-                                        tipo_asentamiento: 100,
-                                        nombre_asentamiento: 0,
+                                        fiability: 20,
+                                        calle: 0,
                                         codigo_postal: 0,
                                         municipio: 100,
                                         estado: 0,
                                         numero_exterior: 100,
                                         colonia: 0
                                     };
-                                    const matchNombreAsentamiento = result.rows[i].nombre_asentamiento.match(new RegExp(direccionParsed.NOMASEN, 'i'));
-                                    if (matchNombreAsentamiento) {
-                                        const matchedText = matchNombreAsentamiento[0]; // Obtiene el texto coincidente
-                                        let igualdad = matchedText.length * 100 / result.rows[i].nombre_asentamiento.length;
+                                    const matchNombreCalle = result.rows[i].calle.match(new RegExp(direccionParsed.CALLE, 'i'));
+                                    if (matchNombreCalle) {
+                                        const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
+                                        let igualdad = matchedText.length * 100 / result.rows[i].calle.length;
                                         if (igualdad > 100) igualdad = 100;
-                                        result.rows[i].scoring.nombre_asentamiento += Math.round(igualdad);
+                                        result.rows[i].scoring.calle += Math.round(igualdad);
                                         result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                                     }
                                     const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -582,7 +566,7 @@ async function all(direccionParsed) {
                                         let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                         if (igualdad > 100) igualdad = 100;
                                         result.rows[i].scoring.colonia += Math.round(igualdad);
-                                        result.rows[i].scoring.fiability += Math.round(igualdad) / 20;
+                                        result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
                                     }
                                 }
                                 rows = rows.concat(result.rows);
@@ -615,34 +599,32 @@ async function all(direccionParsed) {
                                                                                             END
                                                                                      END)) AS x_centro
                                         FROM carto_geolocalizador
-                                        WHERE tipo_asentamiento = $1
-                                        AND nombre_asentamiento like '%' || $2 || '%'
-                                        AND (codigo_postal = '' OR codigo_postal = $3 )
+                                        WHERE nombre_vialidad like '%' || $1 || '%'
+                                        AND (codigo_postal = '' OR codigo_postal = $2 )
                                         AND ((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
                                         OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4))
-                                        AND (colonia = '' OR colonia LIKE '%' || $5 || '%')
+                                        AND (colonia = '' OR colonia LIKE '%' || $3 || '%')
                                         ;
                                     `;
-                                    values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.CP, direccionParsed.NUMEXTNUM1, direccionParsed.COLONIA];
+                                    values = [direccionParsed.CALLE, direccionParsed.CP, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
                                     const result = await pgClient.query(query, values);
 
                                     for (let i = 0; i < result.rows.length; i++) {
                                         result.rows[i].scoring = {
-                                            fiability: 40,
-                                            tipo_asentamiento: 100,
-                                            nombre_asentamiento: 0,
+                                            fiability: 10,
+                                            calle: 0,
                                             codigo_postal: 0,
                                             municipio: 0,
                                             estado: 0,
                                             numero_exterior: 100,
                                             colonia: 0
                                         };
-                                        const matchNombreAsentamiento = result.rows[i].nombre_asentamiento.match(new RegExp(direccionParsed.NOMASEN, 'i'));
-                                        if (matchNombreAsentamiento) {
-                                            const matchedText = matchNombreAsentamiento[0]; // Obtiene el texto coincidente
-                                            let igualdad = matchedText.length * 100 / result.rows[i].nombre_asentamiento.length;
+                                        const matchNombreCalle = result.rows[i].calle.match(new RegExp(direccionParsed.CALLE, 'i'));
+                                        if (matchNombreCalle) {
+                                            const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
+                                            let igualdad = matchedText.length * 100 / result.rows[i].calle.length;
                                             if (igualdad > 100) igualdad = 100;
-                                            result.rows[i].scoring.nombre_asentamiento += Math.round(igualdad);
+                                            result.rows[i].scoring.calle += Math.round(igualdad);
                                             result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                                         }
                                         const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -651,12 +633,12 @@ async function all(direccionParsed) {
                                             let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                             if (igualdad > 100) igualdad = 100;
                                             result.rows[i].scoring.colonia += Math.round(igualdad);
-                                            result.rows[i].scoring.fiability += Math.round(igualdad) / 20;
+                                            result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
                                         }
                                         const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
                                         if (matchCP) {
                                             result.rows[i].scoring.codigo_postal += 100;
-                                            result.rows[i].scoring.fiability += 5;
+                                            result.rows[i].scoring.fiability += 10;
                                         }
                                     }
                                     rows = rows.concat(result.rows);
@@ -667,33 +649,31 @@ async function all(direccionParsed) {
                                             ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS y_centro,
                                             ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS x_centro
                                             FROM carto_geolocalizador
-                                            WHERE tipo_asentamiento = $1
-                                            AND nombre_asentamiento like '%' || $2 || '%'
-                                            AND (codigo_postal = '' OR codigo_postal = $3 )
-                                            AND municipio = $4
-                                            AND estado = $5
-                                            AND (colonia = '' OR colonia LIKE '%' || $6 || '%')
+                                            WHERE nombre_vialidad like '%' || $1 || '%'
+                                            AND (codigo_postal = '' OR codigo_postal = $2 )
+                                            AND municipio = $3
+                                            AND estado = $4
+                                            AND (colonia = '' OR colonia LIKE '%' || $5 || '%')
                                             ;
                                         `;
-                                        values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
+                                        values = [direccionParsed.CALLE, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
                                         const result = await pgClient.query(query, values);
                                         for (let i = 0; i < result.rows.length; i++) {
                                             result.rows[i].scoring = {
-                                                fiability: 40,
-                                                tipo_asentamiento: 100,
-                                                nombre_asentamiento: 0,
+                                                fiability: 20,
+                                                calle: 0,
                                                 codigo_postal: 0,
                                                 municipio: 100,
                                                 estado: 100,
                                                 numero_exterior: 0,
                                                 colonia: 0
                                             };
-                                            const matchNombreAsentamiento = result.rows[i].nombre_asentamiento.match(new RegExp(direccionParsed.NOMASEN, 'i'));
-                                            if (matchNombreAsentamiento) {
-                                                const matchedText = matchNombreAsentamiento[0]; // Obtiene el texto coincidente
-                                                let igualdad = matchedText.length * 100 / result.rows[i].nombre_asentamiento.length;
+                                            const matchNombreCalle = result.rows[i].calle.match(new RegExp(direccionParsed.CALLE, 'i'));
+                                            if (matchNombreCalle) {
+                                                const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
+                                                let igualdad = matchedText.length * 100 / result.rows[i].calle.length;
                                                 if (igualdad > 100) igualdad = 100;
-                                                result.rows[i].scoring.nombre_asentamiento += Math.round(igualdad);
+                                                result.rows[i].scoring.calle += Math.round(igualdad);
                                                 result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                                             }
                                             const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -702,12 +682,12 @@ async function all(direccionParsed) {
                                                 let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                                 if (igualdad > 100) igualdad = 100;
                                                 result.rows[i].scoring.colonia += Math.round(igualdad);
-                                                result.rows[i].scoring.fiability += Math.round(igualdad) / 20;
+                                                result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
                                             }
                                             const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
                                             if (matchCP) {
                                                 result.rows[i].scoring.codigo_postal += 100;
-                                                result.rows[i].scoring.fiability += 5;
+                                                result.rows[i].scoring.fiability += 10;
                                             }
                                         }
                                         rows = rows.concat(result.rows);
@@ -740,33 +720,31 @@ async function all(direccionParsed) {
                                                                                                     END
                                                                                              END)) AS x_centro
                                                 FROM carto_geolocalizador
-                                                WHERE tipo_asentamiento = $1
-                                                AND nombre_asentamiento like '%' || $2 || '%'
-                                                AND (codigo_postal = '' OR codigo_postal = $3 )
+                                                WHERE nombre_vialidad like '%' || $1 || '%'
+                                                AND (codigo_postal = '' OR codigo_postal = $2 )
                                                 AND ((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
                                                 OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4))
-                                                AND municipio = $5
+                                                AND municipio = $3
                                                 ;
                                             `;
-                                            values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.CP, direccionParsed.NUMEXTNUM1, direccionParsed.MUNICIPIO];
+                                            values = [direccionParsed.COLONIA, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1];
                                             const result = await pgClient.query(query, values);
                                             for (let i = 0; i < result.rows.length; i++) {
                                                 result.rows[i].scoring = {
-                                                    fiability: 40,
-                                                    tipo_asentamiento: 100,
-                                                    nombre_asentamiento: 0,
+                                                    fiability: 20,
+                                                    calle: 0,
                                                     codigo_postal: 0,
                                                     municipio: 100,
                                                     estado: 0,
                                                     numero_exterior: 100,
                                                     colonia: 0
                                                 };
-                                                const matchNombreAsentamiento = result.rows[i].nombre_asentamiento.match(new RegExp(direccionParsed.NOMASEN, 'i'));
-                                                if (matchNombreAsentamiento) {
-                                                    const matchedText = matchNombreAsentamiento[0]; // Obtiene el texto coincidente
-                                                    let igualdad = matchedText.length * 100 / result.rows[i].nombre_asentamiento.length;
+                                                const matchNombreCalle = result.rows[i].calle.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                                if (matchNombreCalle) {
+                                                    const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
+                                                    let igualdad = matchedText.length * 100 / result.rows[i].calle.length;
                                                     if (igualdad > 100) igualdad = 100;
-                                                    result.rows[i].scoring.nombre_asentamiento += Math.round(igualdad);
+                                                    result.rows[i].scoring.calle += Math.round(igualdad);
                                                     result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                                                 }
                                                 // Calcular la distancia de Levenshtein
@@ -776,12 +754,12 @@ async function all(direccionParsed) {
                                                 const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                                                 if (similarityColonia) {
                                                     result.rows[i].scoring.colonia += similarityColonia;
-                                                    result.rows[i].scoring.fiability += (similarityColonia * 0.05);
+                                                    result.rows[i].scoring.fiability += (similarityColonia * 0.1);
                                                 }
                                                 const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
                                                 if (matchCP) {
                                                     result.rows[i].scoring.codigo_postal += 100;
-                                                    result.rows[i].scoring.fiability += 5;
+                                                    result.rows[i].scoring.fiability += 10;
                                                 }
                                             }
                                             rows = rows.concat(result.rows);
@@ -792,32 +770,30 @@ async function all(direccionParsed) {
                                                     ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS y_centro,
                                                     ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS x_centro
                                                     FROM carto_geolocalizador
-                                                    WHERE tipo_asentamiento = $1
-                                                    AND nombre_asentamiento like '%' || $2 || '%'
-                                                    AND (codigo_postal = '' OR codigo_postal = $3 )
-                                                    AND municipio = $4
-                                                    AND (colonia = '' OR colonia LIKE '%' || $5 || '%')
+                                                    WHERE nombre_vialidad like '%' || $1 || '%'
+                                                    AND (codigo_postal = '' OR codigo_postal = $2 )
+                                                    AND municipio = $3
+                                                    AND (colonia = '' OR colonia LIKE '%' || $4 || '%')
                                                     ;
                                                 `;
-                                                values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
+                                                values = [direccionParsed.CALLE, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
                                                 const result = await pgClient.query(query, values);
                                                 for (let i = 0; i < result.rows.length; i++) {
                                                     result.rows[i].scoring = {
-                                                        fiability: 35,
-                                                        tipo_asentamiento: 100,
-                                                        nombre_asentamiento: 0,
+                                                        fiability: 10,
+                                                        nombre_vialidad: 0,
                                                         codigo_postal: 0,
                                                         municipio: 100,
                                                         estado: 0,
                                                         numero_exterior: 0,
                                                         colonia: 0
                                                     };
-                                                    const matchNombreAsentamiento = result.rows[i].nombre_asentamiento.match(new RegExp(direccionParsed.NOMASEN, 'i'));
-                                                    if (matchNombreAsentamiento) {
-                                                        const matchedText = matchNombreAsentamiento[0]; // Obtiene el texto coincidente
-                                                        let igualdad = matchedText.length * 100 / result.rows[i].nombre_asentamiento.length;
+                                                    const matchNombreCalle = result.rows[i].calle.match(new RegExp(direccionParsed.CALLE, 'i'));
+                                                    if (matchNombreCalle) {
+                                                        const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
+                                                        let igualdad = matchedText.length * 100 / result.rows[i].calle.length;
                                                         if (igualdad > 100) igualdad = 100;
-                                                        result.rows[i].scoring.nombre_asentamiento += Math.round(igualdad);
+                                                        result.rows[i].scoring.calle += Math.round(igualdad);
                                                         result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                                                     }
                                                     const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -826,12 +802,12 @@ async function all(direccionParsed) {
                                                         let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                                         if (igualdad > 100) igualdad = 100;
                                                         result.rows[i].scoring.colonia += Math.round(igualdad);
-                                                        result.rows[i].scoring.fiability += Math.round(igualdad) / 20;
+                                                        result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
                                                     }
                                                     const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
                                                     if (matchCP) {
                                                         result.rows[i].scoring.codigo_postal += 100;
-                                                        result.rows[i].scoring.fiability += 5;
+                                                        result.rows[i].scoring.fiability += 10;
                                                     }
                                                 }
                                                 rows = rows.concat(result.rows);
@@ -839,35 +815,39 @@ async function all(direccionParsed) {
                                                     // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                                                     query = `
                                                         SELECT *,
-                                                        ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS y_centro,
-                                                        ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS x_centro
+                                                        CASE
+                                                            WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                                                            ELSE NULL
+                                                        END AS y_centro,
+                                                        CASE
+                                                            WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                                                            ELSE NULL
+                                                        END AS x_centro
                                                         FROM carto_geolocalizador
-                                                        WHERE tipo_asentamiento = $1
-                                                        AND nombre_asentamiento like '%' || $2 || '%'
-                                                        AND municipio = $3
-                                                        AND estado = $4
-                                                        AND (colonia = '' OR colonia LIKE '%' || $5 || '%')
+                                                        WHERE nombre_vialidad like '%' || $1 || '%'
+                                                        AND municipio = $2
+                                                        AND estado = $3
+                                                        AND (colonia = '' OR colonia LIKE '%' || $4 || '%')
                                                         ;
                                                     `;
-                                                    values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
+                                                    values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
                                                     const result = await pgClient.query(query, values);
                                                     for (let i = 0; i < result.rows.length; i++) {
                                                         result.rows[i].scoring = {
-                                                            fiability: 40,
-                                                            tipo_asentamiento: 100,
-                                                            nombre_asentamiento: 0,
+                                                            fiability: 20,
+                                                            calle: 0,
                                                             codigo_postal: 0,
                                                             municipio: 100,
                                                             estado: 100,
                                                             numero_exterior: 0,
                                                             colonia: 0
                                                         };
-                                                        const matchNombreAsentamiento = result.rows[i].nombre_asentamiento.match(new RegExp(direccionParsed.NOMASEN, 'i'));
-                                                        if (matchNombreAsentamiento) {
-                                                            const matchedText = matchNombreAsentamiento[0]; // Obtiene el texto coincidente
-                                                            let igualdad = matchedText.length * 100 / result.rows[i].nombre_asentamiento.length;
+                                                        const matchNombreCalle = result.rows[i].calle.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
+                                                        if (matchNombreCalle) {
+                                                            const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
+                                                            let igualdad = matchedText.length * 100 / result.rows[i].calle.length;
                                                             if (igualdad > 100) igualdad = 100;
-                                                            result.rows[i].scoring.nombre_asentamiento += Math.round(igualdad);
+                                                            result.rows[i].scoring.calle += Math.round(igualdad);
                                                             result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                                                         }
                                                         const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -876,7 +856,7 @@ async function all(direccionParsed) {
                                                             let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                                             if (igualdad > 100) igualdad = 100;
                                                             result.rows[i].scoring.colonia += Math.round(igualdad);
-                                                            result.rows[i].scoring.fiability += Math.round(igualdad) / 20;
+                                                            result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
                                                         }
                                                     }
                                                     rows = rows.concat(result.rows);
@@ -884,35 +864,39 @@ async function all(direccionParsed) {
                                                         // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                                                         query = `
                                                             SELECT *,
-                                                            ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS y_centro,
-                                                            ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS x_centro
+                                                            CASE
+                                                                WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                                                                ELSE NULL
+                                                            END AS y_centro,
+                                                            CASE
+                                                                WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                                                                ELSE NULL
+                                                            END AS x_centro
                                                             FROM carto_geolocalizador
-                                                            WHERE tipo_asentamiento = $1
-                                                            AND nombre_asentamiento like '%' || $2 || '%'
-                                                            AND (codigo_postal = '' OR codigo_postal = $3 )
-                                                            AND estado = $4
-                                                            AND (colonia = '' OR colonia LIKE '%' || $5 || '%')
+                                                            WHERE nombre_vialidad like '%' || $1 || '%'
+                                                            AND (codigo_postal = '' OR codigo_postal = $2 )
+                                                            AND estado = $3
+                                                            AND (colonia = '' OR colonia LIKE '%' || $4|| '%')
                                                             ;
                                                         `;
-                                                        values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.COLONIA];
+                                                        values = [direccionParsed.CALLE, direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.COLONIA];
                                                         const result = await pgClient.query(query, values);
                                                         for (let i = 0; i < result.rows.length; i++) {
                                                             result.rows[i].scoring = {
-                                                                fiability: 35,
-                                                                tipo_asentamiento: 100,
-                                                                nombre_asentamiento: 0,
+                                                                fiability: 10,
+                                                                calle: 0,
                                                                 codigo_postal: 0,
                                                                 municipio: 0,
                                                                 estado: 100,
                                                                 numero_exterior: 0,
                                                                 colonia: 0
                                                             };
-                                                            const matchNombreAsentamiento = result.rows[i].nombre_asentamiento.match(new RegExp(direccionParsed.NOMASEN, 'i'));
-                                                            if (matchNombreAsentamiento) {
-                                                                const matchedText = matchNombreAsentamiento[0]; // Obtiene el texto coincidente
-                                                                let igualdad = matchedText.length * 100 / result.rows[i].nombre_asentamiento.length;
+                                                            const matchNombreCalle = result.rows[i].calle.match(new RegExp(direccionParsed.CALLE, 'i'));
+                                                            if (matchNombreCalle) {
+                                                                const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
+                                                                let igualdad = matchedText.length * 100 / result.rows[i].calle.length;
                                                                 if (igualdad > 100) igualdad = 100;
-                                                                result.rows[i].scoring.nombre_asentamiento += Math.round(igualdad);
+                                                                result.rows[i].scoring.calle += Math.round(igualdad);
                                                                 result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                                                             }
                                                             const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -921,12 +905,12 @@ async function all(direccionParsed) {
                                                                 let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                                                 if (igualdad > 100) igualdad = 100;
                                                                 result.rows[i].scoring.colonia += Math.round(igualdad);
-                                                                result.rows[i].scoring.fiability += Math.round(igualdad) / 20;
+                                                                result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
                                                             }
                                                             const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
                                                             if (matchCP) {
                                                                 result.rows[i].scoring.codigo_postal += 100;
-                                                                result.rows[i].scoring.fiability += 5;
+                                                                result.rows[i].scoring.fiability += 10;
                                                             }
                                                         }
                                                         rows = rows.concat(result.rows);
@@ -937,32 +921,30 @@ async function all(direccionParsed) {
                                                                 ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS y_centro,
                                                                 ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS x_centro
                                                                 FROM carto_geolocalizador
-                                                                WHERE tipo_asentamiento = $1
-                                                                AND nombre_asentamiento like '%' || $2 || '%'
-                                                                AND (codigo_postal = '' OR codigo_postal = $3 )
-                                                                AND estado = $4
-                                                                AND municipio = $5
+                                                                WHERE nombre_vialidad like '%' || $1 || '%'
+                                                                AND (codigo_postal = '' OR codigo_postal = $2 )
+                                                                AND estado = $3
+                                                                AND municipio = $4
                                                                 ;
                                                             `;
-                                                            values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.MUNICIPIO];
+                                                            values = [direccionParsed.COLONIA, direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.MUNICIPIO];
                                                             const result = await pgClient.query(query, values);
                                                             for (let i = 0; i < result.rows.length; i++) {
                                                                 result.rows[i].scoring = {
-                                                                    fiability: 30,
-                                                                    tipo_asentamiento: 100,
-                                                                    nombre_asentamiento: 0,
+                                                                    fiability: 20,
+                                                                    calle: 0,
                                                                     codigo_postal: 0,
                                                                     municipio: 100,
                                                                     estado: 100,
                                                                     numero_exterior: 0,
                                                                     colonia: 0
                                                                 };
-                                                                const matchNombreAsentamiento = result.rows[i].nombre_asentamiento.match(new RegExp(direccionParsed.NOMASEN, 'i'));
-                                                                if (matchNombreAsentamiento) {
-                                                                    const matchedText = matchNombreAsentamiento[0]; // Obtiene el texto coincidente
-                                                                    let igualdad = matchedText.length * 100 / result.rows[i].nombre_asentamiento.length;
+                                                                const matchNombreCalle = result.rows[i].calle.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                                                if (matchNombreCalle) {
+                                                                    const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
+                                                                    let igualdad = matchedText.length * 100 / result.rows[i].calle.length;
                                                                     if (igualdad > 100) igualdad = 100;
-                                                                    result.rows[i].scoring.nombre_asentamiento += Math.round(igualdad);
+                                                                    result.rows[i].scoring.calle += Math.round(igualdad);
                                                                     result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                                                                 }
                                                                 // Calcular la distancia de Levenshtein
@@ -972,12 +954,12 @@ async function all(direccionParsed) {
                                                                 const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                                                                 if (similarityColonia) {
                                                                     result.rows[i].scoring.colonia += similarityColonia;
-                                                                    result.rows[i].scoring.fiability += (similarityColonia * 0.05);
+                                                                    result.rows[i].scoring.fiability += (similarityColonia * 0.1);
                                                                 }
                                                                 const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
                                                                 if (matchCP) {
                                                                     result.rows[i].scoring.codigo_postal += 100;
-                                                                    result.rows[i].scoring.fiability += 5;
+                                                                    result.rows[i].scoring.fiability += 10;
                                                                 }
                                                             }
                                                             rows = rows.concat(result.rows);
@@ -1010,35 +992,42 @@ async function all(direccionParsed) {
                                                                                                                         END
                                                                                                                  END)) AS x_centro
                                                                     FROM carto_geolocalizador
-                                                                    WHERE tipo_asentamiento = $1
-                                                                    AND (codigo_postal = '' OR codigo_postal = $2 )
-                                                                    AND municipio = $3
-                                                                    AND estado = $4
+                                                                    WHERE (codigo_postal = '' OR codigo_postal = $1 )
+                                                                    AND municipio = $2
+                                                                    AND estado = $3
                                                                     AND ((CAST(l_refaddr AS INTEGER) <= $5 AND CAST(l_nrefaddr AS INTEGER) >= $5)
                                                                     OR (CAST(r_refaddr AS INTEGER) <= $5 AND CAST(r_nrefaddr AS INTEGER) >= $5))
-                                                                    AND (colonia = '' OR colonia LIKE '%' || $6 || '%')
+                                                                    AND (colonia = '' OR colonia LIKE '%' || $4 || '%')
                                                                     ;
                                                                 `;
-                                                                values = [direccionParsed.TIPOASEN, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1, direccionParsed.COLONIA];
+                                                                values = [direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
                                                                 const result = await pgClient.query(query, values);
                                                                 for (let i = 0; i < result.rows.length; i++) {
                                                                     result.rows[i].scoring = {
-                                                                        fiability: 40,
-                                                                        tipo_asentamiento: 100,
-                                                                        nombre_asentamiento: 0,
+                                                                        fiability: 30,
+                                                                        calle: 0,
                                                                         codigo_postal: 0,
                                                                         municipio: 100,
                                                                         estado: 100,
                                                                         numero_exterior: 100,
                                                                         colonia: 0
                                                                     };
-                                                                    // Calcular la distancia de Levenshtein
-                                                                    const distance = levenshteinDistance(result.rows[i].nombre_asentamiento, direccionParsed.NOMASEN);
-                                                                    // Calcular la similitud como el inverso de la distancia de Levenshtein
-                                                                    const maxLength = Math.max(result.rows[i].nombre_asentamiento.length, direccionParsed.NOMASEN.length);
+                                                                    let distance = 0;
+                                                                    let maxLength = 0;
+                                                                    try {
+                                                                        // Calcular la distancia de Levenshtein
+                                                                        distance = levenshteinDistance(result.rows[i].calle, direccionParsed.CALLE);
+                                                                        // Calcular la similitud como el inverso de la distancia de Levenshtein
+                                                                        maxLength = Math.max(result.rows[i].calle.length, direccionParsed.CALLE.length);
+                                                                    } catch (error) {
+                                                                        // Calcular la distancia de Levenshtein
+                                                                        distance = levenshteinDistance(result.rows[i].calle, direccionParsed.COLONIA);
+                                                                        // Calcular la similitud como el inverso de la distancia de Levenshtein
+                                                                        maxLength = Math.max(result.rows[i].calle.length, direccionParsed.COLONIA.length);
+                                                                    }
                                                                     const similarity = ((maxLength - distance) / maxLength) * 100;
                                                                     if (similarity) {
-                                                                        result.rows[i].scoring.nombre_asentamiento += similarity;
+                                                                        result.rows[i].scoring.calle += similarity;
                                                                         result.rows[i].scoring.fiability += (similarity * 0.5);
                                                                     }
                                                                     const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -1047,12 +1036,12 @@ async function all(direccionParsed) {
                                                                         let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                                                         if (igualdad > 100) igualdad = 100;
                                                                         result.rows[i].scoring.colonia += Math.round(igualdad);
-                                                                        result.rows[i].scoring.fiability += Math.round(igualdad) / 20;
+                                                                        result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
                                                                     }
                                                                     const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
                                                                     if (matchCP) {
                                                                         result.rows[i].scoring.codigo_postal += 100;
-                                                                        result.rows[i].scoring.fiability += 5;
+                                                                        result.rows[i].scoring.fiability += 10;
                                                                     }
                                                                 }
                                                                 rows = rows.concat(result.rows);
@@ -1085,21 +1074,19 @@ async function all(direccionParsed) {
                                                                                                                             END
                                                                                                                      END)) AS x_centro
                                                                         FROM carto_geolocalizador
-                                                                        WHERE tipo_asentamiento = $1
-                                                                        AND municipio = $2
-                                                                        AND estado = $3
+                                                                        WHERE municipio = $1
+                                                                        AND estado = $2
                                                                         AND ((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
                                                                         OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4))
-                                                                        AND (colonia = '' OR colonia LIKE '%' || $5 || '%')
+                                                                        AND (colonia = '' OR colonia LIKE '%' || $3 || '%')
                                                                         ;
                                                                     `;
-                                                                    values = [direccionParsed.TIPOASEN, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1, direccionParsed.COLONIA];
+                                                                    values = [direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
                                                                     const result = await pgClient.query(query, values);
                                                                     for (let i = 0; i < result.rows.length; i++) {
                                                                         result.rows[i].scoring = {
-                                                                            fiability: 40,
-                                                                            tipo_asentamiento: 100,
-                                                                            nombre_asentamiento: 0,
+                                                                            fiability: 30,
+                                                                            calle: 0,
                                                                             codigo_postal: 0,
                                                                             municipio: 100,
                                                                             estado: 100,
@@ -1107,12 +1094,12 @@ async function all(direccionParsed) {
                                                                             colonia: 0
                                                                         };
                                                                         // Calcular la distancia de Levenshtein
-                                                                        const distance = levenshteinDistance(result.rows[i].nombre_asentamiento, direccionParsed.NOMASEN);
+                                                                        const distance = levenshteinDistance(result.rows[i].calle, direccionParsed.CALLE);
                                                                         // Calcular la similitud como el inverso de la distancia de Levenshtein
-                                                                        const maxLength = Math.max(result.rows[i].nombre_asentamiento.length, direccionParsed.NOMASEN.length);
+                                                                        const maxLength = Math.max(result.rows[i].calle.length, direccionParsed.CALLE.length);
                                                                         const similarity = ((maxLength - distance) / maxLength) * 100;
                                                                         if (similarity) {
-                                                                            result.rows[i].scoring.nombre_asentamiento += similarity;
+                                                                            result.rows[i].scoring.calle += similarity;
                                                                             result.rows[i].scoring.fiability += (similarity * 0.5);
                                                                         }
                                                                         const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -1121,7 +1108,7 @@ async function all(direccionParsed) {
                                                                             let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                                                             if (igualdad > 100) igualdad = 100;
                                                                             result.rows[i].scoring.colonia += Math.round(igualdad);
-                                                                            result.rows[i].scoring.fiability += Math.round(igualdad) / 20;
+                                                                            result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
                                                                         }
                                                                     }
                                                                     rows = rows.concat(result.rows);
@@ -1154,21 +1141,19 @@ async function all(direccionParsed) {
                                                                                                                                 END
                                                                                                                          END)) AS x_centro
                                                                             FROM carto_geolocalizador
-                                                                            WHERE tipo_asentamiento = $1
-                                                                            AND (codigo_postal = '' OR codigo_postal = $2 )
-                                                                            AND municipio = $3
+                                                                            WHERE (codigo_postal = '' OR codigo_postal = $1 )
+                                                                            AND municipio = $2
                                                                             AND ((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
                                                                             OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4))
-                                                                            AND (colonia = '' OR colonia LIKE '%' || $5 || '%')
+                                                                            AND (colonia = '' OR colonia LIKE '%' || $3 || '%')
                                                                             ;
                                                                         `;
-                                                                        values = [direccionParsed.TIPOASEN, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1, direccionParsed.COLONIA];
+                                                                        values = [direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
                                                                         const result = await pgClient.query(query, values);
                                                                         for (let i = 0; i < result.rows.length; i++) {
                                                                             result.rows[i].scoring = {
-                                                                                fiability: 35,
-                                                                                tipo_asentamiento: 100,
-                                                                                nombre_asentamiento: 0,
+                                                                                fiability: 20,
+                                                                                calle: 0,
                                                                                 codigo_postal: 0,
                                                                                 municipio: 100,
                                                                                 estado: 0,
@@ -1176,12 +1161,12 @@ async function all(direccionParsed) {
                                                                                 colonia: 0
                                                                             };
                                                                             // Calcular la distancia de Levenshtein
-                                                                            const distance = levenshteinDistance(result.rows[i].nombre_asentamiento, direccionParsed.NOMASEN);
+                                                                            const distance = levenshteinDistance(result.rows[i].calle, direccionParsed.CALLE);
                                                                             // Calcular la similitud como el inverso de la distancia de Levenshtein
-                                                                            const maxLength = Math.max(result.rows[i].nombre_asentamiento.length, direccionParsed.NOMASEN.length);
+                                                                            const maxLength = Math.max(result.rows[i].calle.length, direccionParsed.CALLE.length);
                                                                             const similarity = ((maxLength - distance) / maxLength) * 100;
                                                                             if (similarity) {
-                                                                                result.rows[i].scoring.nombre_asentamiento += similarity;
+                                                                                result.rows[i].scoring.calle += similarity;
                                                                                 result.rows[i].scoring.fiability += (similarity * 0.5);
                                                                             }
                                                                             const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -1190,12 +1175,12 @@ async function all(direccionParsed) {
                                                                                 let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                                                                 if (igualdad > 100) igualdad = 100;
                                                                                 result.rows[i].scoring.colonia += Math.round(igualdad);
-                                                                                result.rows[i].scoring.fiability += Math.round(igualdad) / 20;
+                                                                                result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
                                                                             }
                                                                             const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
                                                                             if (matchCP) {
                                                                                 result.rows[i].scoring.codigo_postal += 100;
-                                                                                result.rows[i].scoring.fiability += 5;
+                                                                                result.rows[i].scoring.fiability += 10;
                                                                             }
                                                                         }
                                                                         rows = rows.concat(result.rows);
@@ -1228,21 +1213,19 @@ async function all(direccionParsed) {
                                                                                                                                     END
                                                                                                                              END)) AS x_centro
                                                                                 FROM carto_geolocalizador
-                                                                                WHERE tipo_asentamiento = $1
-                                                                                AND (codigo_postal = '' OR codigo_postal = $2 )
-                                                                                AND estado = $3
+                                                                                WHERE (codigo_postal = '' OR codigo_postal = $1 )
+                                                                                AND estado = $2
                                                                                 AND ((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
                                                                                 OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4))
-                                                                                AND (colonia = '' OR colonia LIKE '%' || $5 || '%')
+                                                                                AND (colonia = '' OR colonia LIKE '%' || $3 || '%')
                                                                                 ;
                                                                             `;
-                                                                            values = [direccionParsed.TIPOASEN, direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1, direccionParsed.COLONIA];
+                                                                            values = [direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
                                                                             const result = await pgClient.query(query, values);
                                                                             for (let i = 0; i < result.rows.length; i++) {
                                                                                 result.rows[i].scoring = {
-                                                                                    fiability: 35,
-                                                                                    tipo_asentamiento: 100,
-                                                                                    nombre_asentamiento: 0,
+                                                                                    fiability: 20,
+                                                                                    calle: 0,
                                                                                     codigo_postal: 0,
                                                                                     municipio: 0,
                                                                                     estado: 100,
@@ -1250,12 +1233,12 @@ async function all(direccionParsed) {
                                                                                     colonia: 0
                                                                                 };
                                                                                 // Calcular la distancia de Levenshtein
-                                                                                const distance = levenshteinDistance(result.rows[i].nombre_asentamiento, direccionParsed.NOMASEN);
+                                                                                const distance = levenshteinDistance(result.rows[i].calle, direccionParsed.CALLE);
                                                                                 // Calcular la similitud como el inverso de la distancia de Levenshtein
-                                                                                const maxLength = Math.max(result.rows[i].nombre_asentamiento.length, direccionParsed.NOMASEN.length);
+                                                                                const maxLength = Math.max(result.rows[i].calle.length, direccionParsed.CALLE.length);
                                                                                 const similarity = ((maxLength - distance) / maxLength) * 100;
                                                                                 if (similarity) {
-                                                                                    result.rows[i].scoring.nombre_asentamiento += similarity;
+                                                                                    result.rows[i].scoring.calle += similarity;
                                                                                     result.rows[i].scoring.fiability += (similarity * 0.5);
                                                                                 }
                                                                                 const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -1264,12 +1247,12 @@ async function all(direccionParsed) {
                                                                                     let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                                                                     if (igualdad > 100) igualdad = 100;
                                                                                     result.rows[i].scoring.colonia += Math.round(igualdad);
-                                                                                    result.rows[i].scoring.fiability += Math.round(igualdad) / 20;
+                                                                                    result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
                                                                                 }
                                                                                 const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
                                                                                 if (matchCP) {
                                                                                     result.rows[i].scoring.codigo_postal += 100;
-                                                                                    result.rows[i].scoring.fiability += 5;
+                                                                                    result.rows[i].scoring.fiability += 10;
                                                                                 }
                                                                             }
                                                                             rows = rows.concat(result.rows);
@@ -1302,21 +1285,19 @@ async function all(direccionParsed) {
                                                                                                                                         END
                                                                                                                                  END)) AS x_centro
                                                                                     FROM carto_geolocalizador
-                                                                                    WHERE tipo_asentamiento = $1
-                                                                                    AND (codigo_postal = '' OR codigo_postal = $2 )
-                                                                                    AND estado = $3
+                                                                                    WHERE (codigo_postal = '' OR codigo_postal = $1 )
+                                                                                    AND estado = $2
                                                                                     AND ((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
                                                                                     OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4))
-                                                                                    AND municipio = $5
+                                                                                    AND municipio = $3
                                                                                     ;
                                                                                 `;
-                                                                                values = [direccionParsed.TIPOASEN, direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1, direccionParsed.MUNICIPIO];
+                                                                                values = [direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1];
                                                                                 const result = await pgClient.query(query, values);
                                                                                 for (let i = 0; i < result.rows.length; i++) {
                                                                                     result.rows[i].scoring = {
-                                                                                        fiability: 40,
-                                                                                        tipo_asentamiento: 100,
-                                                                                        nombre_asentamiento: 0,
+                                                                                        fiability: 30,
+                                                                                        calle: 0,
                                                                                         codigo_postal: 0,
                                                                                         municipio: 100,
                                                                                         estado: 100,
@@ -1324,12 +1305,12 @@ async function all(direccionParsed) {
                                                                                         colonia: 0
                                                                                     };
                                                                                     // Calcular la distancia de Levenshtein
-                                                                                    const distance = levenshteinDistance(result.rows[i].nombre_asentamiento, direccionParsed.NOMASEN);
+                                                                                    const distance = levenshteinDistance(result.rows[i].calle, direccionParsed.COLONIA);
                                                                                     // Calcular la similitud como el inverso de la distancia de Levenshtein
-                                                                                    const maxLength = Math.max(result.rows[i].nombre_asentamiento.length, direccionParsed.NOMASEN.length);
+                                                                                    const maxLength = Math.max(result.rows[i].calle.length, direccionParsed.COLONIA.length);
                                                                                     const similarity = ((maxLength - distance) / maxLength) * 100;
                                                                                     if (similarity) {
-                                                                                        result.rows[i].scoring.nombre_asentamiento += similarity;
+                                                                                        result.rows[i].scoring.calle += similarity;
                                                                                         result.rows[i].scoring.fiability += (similarity * 0.5);
                                                                                     }
                                                                                     // Calcular la distancia de Levenshtein
@@ -1339,12 +1320,12 @@ async function all(direccionParsed) {
                                                                                     const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                                                                                     if (similarityColonia) {
                                                                                         result.rows[i].scoring.colonia += similarityColonia;
-                                                                                        result.rows[i].scoring.fiability += (similarityColonia * 0.05);
+                                                                                        result.rows[i].scoring.fiability += (similarityColonia * 0.1);
                                                                                     }
                                                                                     const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
                                                                                     if (matchCP) {
                                                                                         result.rows[i].scoring.codigo_postal += 100;
-                                                                                        result.rows[i].scoring.fiability += 5;
+                                                                                        result.rows[i].scoring.fiability += 10;
                                                                                     }
                                                                                 }
                                                                                 rows = rows.concat(result.rows);
@@ -1361,20 +1342,18 @@ async function all(direccionParsed) {
                                                                                             ELSE NULL
                                                                                         END AS x_centro
                                                                                         FROM carto_geolocalizador
-                                                                                        WHERE tipo_asentamiento = $1
-                                                                                        AND (codigo_postal = '' OR codigo_postal = $2 )
-                                                                                        AND municipio = $3
-                                                                                        AND estado = $4
-                                                                                        AND (colonia = '' OR colonia LIKE '%' || $5 || '%')
+                                                                                        WHERE (codigo_postal = '' OR codigo_postal = $1 )
+                                                                                        AND municipio = $2
+                                                                                        AND estado = $3
+                                                                                        AND (colonia = '' OR colonia LIKE '%' || $4 || '%')
                                                                                         ;
                                                                                     `;
-                                                                                    values = [direccionParsed.TIPOASEN, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
+                                                                                    values = [direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
                                                                                     const result = await pgClient.query(query, values);
                                                                                     for (let i = 0; i < result.rows.length; i++) {
                                                                                         result.rows[i].scoring = {
                                                                                             fiability: 30,
-                                                                                            tipo_asentamiento: 100,
-                                                                                            nombre_asentamiento: 0,
+                                                                                            calle: 0,
                                                                                             codigo_postal: 0,
                                                                                             municipio: 100,
                                                                                             estado: 100,
@@ -1382,12 +1361,12 @@ async function all(direccionParsed) {
                                                                                             colonia: 100
                                                                                         };
                                                                                         // Calcular la distancia de Levenshtein
-                                                                                        const distance = levenshteinDistance(result.rows[i].nombre_asentamiento, direccionParsed.NOMASEN);
+                                                                                        const distance = levenshteinDistance(result.rows[i].calle, direccionParsed.CALLE);
                                                                                         // Calcular la similitud como el inverso de la distancia de Levenshtein
-                                                                                        const maxLength = Math.max(result.rows[i].nombre_asentamiento.length, direccionParsed.NOMASEN.length);
+                                                                                        const maxLength = Math.max(result.rows[i].calle.length, direccionParsed.CALLE.length);
                                                                                         const similarity = ((maxLength - distance) / maxLength) * 100;
                                                                                         if (similarity) {
-                                                                                            result.rows[i].scoring.nombre_asentamiento += similarity;
+                                                                                            result.rows[i].scoring.calle += similarity;
                                                                                             result.rows[i].scoring.fiability += (similarity * 0.5);
                                                                                         }
                                                                                         const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -1396,12 +1375,12 @@ async function all(direccionParsed) {
                                                                                             let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                                                                             if (igualdad > 100) igualdad = 100;
                                                                                             result.rows[i].scoring.colonia += Math.round(igualdad);
-                                                                                            result.rows[i].scoring.fiability += Math.round(igualdad) / 20;
+                                                                                            result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
                                                                                         }
                                                                                         const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
                                                                                         if (matchCP) {
                                                                                             result.rows[i].scoring.codigo_postal += 100;
-                                                                                            result.rows[i].scoring.fiability += 5;
+                                                                                            result.rows[i].scoring.fiability += 10;
                                                                                         }
                                                                                     }
                                                                                     rows = rows.concat(result.rows);

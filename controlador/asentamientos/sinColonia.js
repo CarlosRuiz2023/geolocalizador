@@ -1,4 +1,5 @@
 const pgClient = require("../../data/conexion");
+const { levenshteinDistance } = require("../funciones");
 
 // Aplicable solo en caso de llevar todos los campos
 async function sinColonia(direccionParsed) {
@@ -582,6 +583,15 @@ async function sinColonia(direccionParsed) {
                                                     estado: 100,
                                                     numero_exterior: 100
                                                 };
+                                                // Calcular la distancia de Levenshtein
+                                                const distance = levenshteinDistance(result.rows[i].nombre_asentamiento, direccionParsed.NOMASEN);
+                                                // Calcular la similitud como el inverso de la distancia de Levenshtein
+                                                const maxLength = Math.max(result.rows[i].nombre_asentamiento.length, direccionParsed.NOMASEN.length);
+                                                const similarity = ((maxLength - distance) / maxLength) * 100;
+                                                if (similarity) {
+                                                    result.rows[i].scoring.nombre_asentamiento += similarity;
+                                                    result.rows[i].scoring.fiability += (similarity * 0.5);
+                                                }
                                                 const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
                                                 if (matchCP) {
                                                     result.rows[i].scoring.codigo_postal += 100;
@@ -637,6 +647,15 @@ async function sinColonia(direccionParsed) {
                                                         estado: 100,
                                                         numero_exterior: 100
                                                     };
+                                                    // Calcular la distancia de Levenshtein
+                                                    const distance = levenshteinDistance(result.rows[i].nombre_asentamiento, direccionParsed.NOMASEN);
+                                                    // Calcular la similitud como el inverso de la distancia de Levenshtein
+                                                    const maxLength = Math.max(result.rows[i].nombre_asentamiento.length, direccionParsed.NOMASEN.length);
+                                                    const similarity = ((maxLength - distance) / maxLength) * 100;
+                                                    if (similarity) {
+                                                        result.rows[i].scoring.nombre_asentamiento += similarity;
+                                                        result.rows[i].scoring.fiability += (similarity * 0.5);
+                                                    }
                                                 }
                                                 rows = rows.concat(result.rows);
                                                 if (result.rows.length === 0) {
@@ -675,7 +694,7 @@ async function sinColonia(direccionParsed) {
                                                         OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4))
                                                         ;
                                                     `;
-                                                    values = [direccionParsed.TIPOASEN, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1, direccionParsed.COLONIA];
+                                                    values = [direccionParsed.TIPOASEN, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1];
                                                     const result = await pgClient.query(query, values);
                                                     for (let i = 0; i < result.rows.length; i++) {
                                                         result.rows[i].scoring = {
@@ -687,6 +706,15 @@ async function sinColonia(direccionParsed) {
                                                             estado: 0,
                                                             numero_exterior: 100
                                                         };
+                                                        // Calcular la distancia de Levenshtein
+                                                        const distance = levenshteinDistance(result.rows[i].nombre_asentamiento, direccionParsed.NOMASEN);
+                                                        // Calcular la similitud como el inverso de la distancia de Levenshtein
+                                                        const maxLength = Math.max(result.rows[i].nombre_asentamiento.length, direccionParsed.NOMASEN.length);
+                                                        const similarity = ((maxLength - distance) / maxLength) * 100;
+                                                        if (similarity) {
+                                                            result.rows[i].scoring.nombre_asentamiento += similarity;
+                                                            result.rows[i].scoring.fiability += (similarity * 0.5);
+                                                        }
                                                         const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
                                                         if (matchCP) {
                                                             result.rows[i].scoring.codigo_postal += 100;
@@ -730,7 +758,7 @@ async function sinColonia(direccionParsed) {
                                                             OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4))
                                                             ;
                                                         `;
-                                                        values = [direccionParsed.TIPOASEN, direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1, direccionParsed.COLONIA];
+                                                        values = [direccionParsed.TIPOASEN, direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1];
                                                         const result = await pgClient.query(query, values);
                                                         for (let i = 0; i < result.rows.length; i++) {
                                                             result.rows[i].scoring = {
@@ -742,6 +770,15 @@ async function sinColonia(direccionParsed) {
                                                                 estado: 100,
                                                                 numero_exterior: 100
                                                             };
+                                                            // Calcular la distancia de Levenshtein
+                                                            const distance = levenshteinDistance(result.rows[i].nombre_asentamiento, direccionParsed.NOMASEN);
+                                                            // Calcular la similitud como el inverso de la distancia de Levenshtein
+                                                            const maxLength = Math.max(result.rows[i].nombre_asentamiento.length, direccionParsed.NOMASEN.length);
+                                                            const similarity = ((maxLength - distance) / maxLength) * 100;
+                                                            if (similarity) {
+                                                                result.rows[i].scoring.nombre_asentamiento += similarity;
+                                                                result.rows[i].scoring.fiability += (similarity * 0.5);
+                                                            }
                                                             const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
                                                             if (matchCP) {
                                                                 result.rows[i].scoring.codigo_postal += 100;
@@ -768,7 +805,7 @@ async function sinColonia(direccionParsed) {
                                                                 AND estado = $4
                                                                 ;
                                                             `;
-                                                            values = [direccionParsed.TIPOASEN, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
+                                                            values = [direccionParsed.TIPOASEN, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
                                                             const result = await pgClient.query(query, values);
                                                             for (let i = 0; i < result.rows.length; i++) {
                                                                 result.rows[i].scoring = {
@@ -780,6 +817,15 @@ async function sinColonia(direccionParsed) {
                                                                     estado: 100,
                                                                     numero_exterior: 0
                                                                 };
+                                                                // Calcular la distancia de Levenshtein
+                                                                const distance = levenshteinDistance(result.rows[i].nombre_asentamiento, direccionParsed.NOMASEN);
+                                                                // Calcular la similitud como el inverso de la distancia de Levenshtein
+                                                                const maxLength = Math.max(result.rows[i].nombre_asentamiento.length, direccionParsed.NOMASEN.length);
+                                                                const similarity = ((maxLength - distance) / maxLength) * 100;
+                                                                if (similarity) {
+                                                                    result.rows[i].scoring.nombre_asentamiento += similarity;
+                                                                    result.rows[i].scoring.fiability += (similarity * 0.5);
+                                                                }
                                                                 const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
                                                                 if (matchCP) {
                                                                     result.rows[i].scoring.codigo_postal += 100;

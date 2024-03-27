@@ -1,7 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const parseDireccion = require('./controlador/funciones');
+const {parseDireccion} = require('./controlador/funciones');
 const scoringMaestro = require('./controlador/scoring');
+// CARGA LAS VARIABLES DE ENTORNO DESDE EL ARCHIVO .env
+require("dotenv").config();
 
 
 // Creación de la aplicación Express
@@ -26,10 +28,11 @@ app.post('/geolocalizar', async (req, res) => {
 
         // Ordenar scoring mas alto primero
         const sortedResults = results.sort((a, b) => b.scoring.fiability - a.scoring.fiability);
-
+        // Recortar a solo 10 resultados
+        const topResults = sortedResults.slice(0, 5);
         // Devolver las coordenadas encontradas
         if (results.length > 0) {
-            res.status(200).json({ok:true,results:sortedResults});
+            res.status(200).json({ok:true,results:topResults});
         } else {
             res.status(404).json({ ok:false,error: 'Sin resultados.' });
         }
@@ -42,5 +45,5 @@ app.post('/geolocalizar', async (req, res) => {
 
 // Iniciar el servidor
 app.listen(port, () => {
-    console.log(`Servidor Express escuchando en el puerto ${port}`);
+    console.log(`Servidor Express escuchando en el puerto ${process.env.PORT}`);
 });

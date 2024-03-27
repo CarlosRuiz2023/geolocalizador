@@ -1,4 +1,5 @@
 const pgClient = require("../../data/conexion");
+const { levenshteinDistance } = require("../funciones");
 
 // Aplicable solo en caso de llevar todos los campos
 async function sinMunicipio(direccionParsed) {
@@ -273,6 +274,15 @@ async function sinMunicipio(direccionParsed) {
                         result.rows[i].scoring.nombre_asentamiento += Math.round(igualdad);
                         result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                     }
+                    // Calcular la distancia de Levenshtein
+                    const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
+                    // Calcular la similitud como el inverso de la distancia de Levenshtein
+                    const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
+                    const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
+                    if (similarityColonia) {
+                        result.rows[i].scoring.colonia += similarityColonia;
+                        result.rows[i].scoring.fiability += (similarityColonia * 0.05);
+                    }
                     const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
                     if (matchCP) {
                         result.rows[i].scoring.codigo_postal += 100;
@@ -335,6 +345,15 @@ async function sinMunicipio(direccionParsed) {
                             if (igualdad > 100) igualdad = 100;
                             result.rows[i].scoring.nombre_asentamiento += Math.round(igualdad);
                             result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
+                        }
+                        // Calcular la distancia de Levenshtein
+                        const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
+                        // Calcular la similitud como el inverso de la distancia de Levenshtein
+                        const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
+                        const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
+                        if (similarityColonia) {
+                            result.rows[i].scoring.colonia += similarityColonia;
+                            result.rows[i].scoring.fiability += (similarityColonia * 0.05);
                         }
                     }
                     rows = rows.concat(result.rows);
@@ -509,6 +528,15 @@ async function sinMunicipio(direccionParsed) {
                                         result.rows[i].scoring.nombre_asentamiento += Math.round(igualdad);
                                         result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                                     }
+                                    // Calcular la distancia de Levenshtein
+                                    const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
+                                    // Calcular la similitud como el inverso de la distancia de Levenshtein
+                                    const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
+                                    const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
+                                    if (similarityColonia) {
+                                        result.rows[i].scoring.colonia += similarityColonia;
+                                        result.rows[i].scoring.fiability += (similarityColonia * 0.05);
+                                    }
                                     const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
                                     if (matchCP) {
                                         result.rows[i].scoring.codigo_postal += 100;
@@ -640,6 +668,15 @@ async function sinMunicipio(direccionParsed) {
                                                     result.rows[i].scoring.nombre_asentamiento += Math.round(igualdad);
                                                     result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                                                 }
+                                                // Calcular la distancia de Levenshtein
+                                                const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
+                                                // Calcular la similitud como el inverso de la distancia de Levenshtein
+                                                const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
+                                                const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
+                                                if (similarityColonia) {
+                                                    result.rows[i].scoring.colonia += similarityColonia;
+                                                    result.rows[i].scoring.fiability += (similarityColonia * 0.05);
+                                                }
                                                 const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
                                                 if (matchCP) {
                                                     result.rows[i].scoring.codigo_postal += 100;
@@ -696,6 +733,15 @@ async function sinMunicipio(direccionParsed) {
                                                         numero_exterior: 100,
                                                         colonia: 0
                                                     };
+                                                    // Calcular la distancia de Levenshtein
+                                                    const distance = levenshteinDistance(result.rows[i].nombre_asentamiento, direccionParsed.NOMASEN);
+                                                    // Calcular la similitud como el inverso de la distancia de Levenshtein
+                                                    const maxLength = Math.max(result.rows[i].nombre_asentamiento.length, direccionParsed.NOMASEN.length);
+                                                    const similarity = ((maxLength - distance) / maxLength) * 100;
+                                                    if (similarity) {
+                                                        result.rows[i].scoring.nombre_asentamiento += similarity;
+                                                        result.rows[i].scoring.fiability += (similarity * 0.5);
+                                                    }
                                                     const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
                                                     if (matchColonia) {
                                                         const matchedText = matchColonia[0]; // Obtiene el texto coincidente
@@ -759,6 +805,15 @@ async function sinMunicipio(direccionParsed) {
                                                             numero_exterior: 100,
                                                             colonia: 0
                                                         };
+                                                        // Calcular la distancia de Levenshtein
+                                                        const distance = levenshteinDistance(result.rows[i].nombre_asentamiento, direccionParsed.NOMASEN);
+                                                        // Calcular la similitud como el inverso de la distancia de Levenshtein
+                                                        const maxLength = Math.max(result.rows[i].nombre_asentamiento.length, direccionParsed.NOMASEN.length);
+                                                        const similarity = ((maxLength - distance) / maxLength) * 100;
+                                                        if (similarity) {
+                                                            result.rows[i].scoring.nombre_asentamiento += similarity;
+                                                            result.rows[i].scoring.fiability += (similarity * 0.5);
+                                                        }
                                                         const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
                                                         if (matchColonia) {
                                                             const matchedText = matchColonia[0]; // Obtiene el texto coincidente
@@ -817,6 +872,15 @@ async function sinMunicipio(direccionParsed) {
                                                                 numero_exterior: 100,
                                                                 colonia: 0
                                                             };
+                                                            // Calcular la distancia de Levenshtein
+                                                            const distance = levenshteinDistance(result.rows[i].nombre_asentamiento, direccionParsed.NOMASEN);
+                                                            // Calcular la similitud como el inverso de la distancia de Levenshtein
+                                                            const maxLength = Math.max(result.rows[i].nombre_asentamiento.length, direccionParsed.NOMASEN.length);
+                                                            const similarity = ((maxLength - distance) / maxLength) * 100;
+                                                            if (similarity) {
+                                                                result.rows[i].scoring.nombre_asentamiento += similarity;
+                                                                result.rows[i].scoring.fiability += (similarity * 0.5);
+                                                            }
                                                             const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
                                                             if (matchColonia) {
                                                                 const matchedText = matchColonia[0]; // Obtiene el texto coincidente
@@ -880,6 +944,24 @@ async function sinMunicipio(direccionParsed) {
                                                                     numero_exterior: 100,
                                                                     colonia: 0
                                                                 };
+                                                                // Calcular la distancia de Levenshtein
+                                                                const distance = levenshteinDistance(result.rows[i].nombre_asentamiento, direccionParsed.NOMASEN);
+                                                                // Calcular la similitud como el inverso de la distancia de Levenshtein
+                                                                const maxLength = Math.max(result.rows[i].nombre_asentamiento.length, direccionParsed.NOMASEN.length);
+                                                                const similarity = ((maxLength - distance) / maxLength) * 100;
+                                                                if (similarity) {
+                                                                    result.rows[i].scoring.nombre_asentamiento += similarity;
+                                                                    result.rows[i].scoring.fiability += (similarity * 0.5);
+                                                                }
+                                                                // Calcular la distancia de Levenshtein
+                                                                const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
+                                                                // Calcular la similitud como el inverso de la distancia de Levenshtein
+                                                                const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
+                                                                const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
+                                                                if (similarityColonia) {
+                                                                    result.rows[i].scoring.colonia += similarityColonia;
+                                                                    result.rows[i].scoring.fiability += (similarityColonia * 0.05);
+                                                                }
                                                                 const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
                                                                 if (matchCP) {
                                                                     result.rows[i].scoring.codigo_postal += 100;
@@ -918,6 +1000,15 @@ async function sinMunicipio(direccionParsed) {
                                                                         numero_exterior: 0,
                                                                         colonia: 0
                                                                     };
+                                                                    // Calcular la distancia de Levenshtein
+                                                                    const distance = levenshteinDistance(result.rows[i].nombre_asentamiento, direccionParsed.NOMASEN);
+                                                                    // Calcular la similitud como el inverso de la distancia de Levenshtein
+                                                                    const maxLength = Math.max(result.rows[i].nombre_asentamiento.length, direccionParsed.NOMASEN.length);
+                                                                    const similarity = ((maxLength - distance) / maxLength) * 100;
+                                                                    if (similarity) {
+                                                                        result.rows[i].scoring.nombre_asentamiento += similarity;
+                                                                        result.rows[i].scoring.fiability += (similarity * 0.5);
+                                                                    }
                                                                     const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
                                                                     if (matchColonia) {
                                                                         const matchedText = matchColonia[0]; // Obtiene el texto coincidente

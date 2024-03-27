@@ -1,4 +1,5 @@
 const pgClient = require("../../data/conexion");
+const { levenshteinDistance } = require("../funciones");
 
 async function sinNumeroExterior(direccionParsed) {
     let query = '';
@@ -206,7 +207,7 @@ async function sinNumeroExterior(direccionParsed) {
                         AND nombre_vialidad like '%' || $2 || '%'
                         AND (codigo_postal = '' OR codigo_postal = $3 )
                         AND municipio = $4
-                        AND estado = $6
+                        AND estado = $5
                         ;
                     `;
                     values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
@@ -228,6 +229,15 @@ async function sinNumeroExterior(direccionParsed) {
                             if (igualdad > 100) igualdad = 100;
                             result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
                             result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
+                        }
+                        // Calcular la distancia de Levenshtein
+                        const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
+                        // Calcular la similitud como el inverso de la distancia de Levenshtein
+                        const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
+                        const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
+                        if (similarityColonia) {
+                            result.rows[i].scoring.colonia += similarityColonia;
+                            result.rows[i].scoring.fiability += (similarityColonia * 0.08);
                         }
                         const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
                         if (matchCP) {
@@ -269,6 +279,15 @@ async function sinNumeroExterior(direccionParsed) {
                                 result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
                                 result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                             }
+                            // Calcular la distancia de Levenshtein
+                            const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
+                            // Calcular la similitud como el inverso de la distancia de Levenshtein
+                            const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
+                            const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
+                            if (similarityColonia) {
+                                result.rows[i].scoring.colonia += similarityColonia;
+                                result.rows[i].scoring.fiability += (similarityColonia * 0.08);
+                            }
                         }
                         rows = rows.concat(result.rows);
                         if (result.rows.length === 0) {
@@ -303,6 +322,15 @@ async function sinNumeroExterior(direccionParsed) {
                                     if (igualdad > 100) igualdad = 100;
                                     result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
                                     result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
+                                }
+                                // Calcular la distancia de Levenshtein
+                                const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
+                                // Calcular la similitud como el inverso de la distancia de Levenshtein
+                                const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
+                                const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
+                                if (similarityColonia) {
+                                    result.rows[i].scoring.colonia += similarityColonia;
+                                    result.rows[i].scoring.fiability += (similarityColonia * 0.08);
                                 }
                                 const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
                                 if (matchCP) {
@@ -377,7 +405,7 @@ async function sinNumeroExterior(direccionParsed) {
                                             codigo_postal: 0,
                                             municipio: 0,
                                             estado: 0,
-                                            colonia: 100
+                                            colonia: 0
                                         };
                                         const matchNombreVialidad = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
                                         if (matchNombreVialidad) {
@@ -435,6 +463,15 @@ async function sinNumeroExterior(direccionParsed) {
                                                 result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
                                                 result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                                             }
+                                            // Calcular la distancia de Levenshtein
+                                            const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
+                                            // Calcular la similitud como el inverso de la distancia de Levenshtein
+                                            const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
+                                            const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
+                                            if (similarityColonia) {
+                                                result.rows[i].scoring.colonia += similarityColonia;
+                                                result.rows[i].scoring.fiability += (similarityColonia * 0.08);
+                                            }
                                             const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
                                             if (matchCP) {
                                                 result.rows[i].scoring.codigo_postal += 100;
@@ -468,6 +505,15 @@ async function sinNumeroExterior(direccionParsed) {
                                                     estado: 100,
                                                     colonia: 0
                                                 };
+                                                // Calcular la distancia de Levenshtein
+                                                const distance = levenshteinDistance(result.rows[i].nombre_vialidad, direccionParsed.NOMVIAL);
+                                                // Calcular la similitud como el inverso de la distancia de Levenshtein
+                                                const maxLength = Math.max(result.rows[i].nombre_vialidad.length, direccionParsed.NOMVIAL.length);
+                                                const similarity = ((maxLength - distance) / maxLength) * 100;
+                                                if (similarity) {
+                                                    result.rows[i].scoring.nombre_vialidad += similarity;
+                                                    result.rows[i].scoring.fiability += (similarity * 0.5);
+                                                }
                                                 const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
                                                 if (matchColonia) {
                                                     const matchedText = matchColonia[0]; // Obtiene el texto coincidente
@@ -508,6 +554,15 @@ async function sinNumeroExterior(direccionParsed) {
                                                         estado: 100,
                                                         colonia: 0
                                                     };
+                                                    // Calcular la distancia de Levenshtein
+                                                    const distance = levenshteinDistance(result.rows[i].nombre_vialidad, direccionParsed.NOMVIAL);
+                                                    // Calcular la similitud como el inverso de la distancia de Levenshtein
+                                                    const maxLength = Math.max(result.rows[i].nombre_vialidad.length, direccionParsed.NOMVIAL.length);
+                                                    const similarity = ((maxLength - distance) / maxLength) * 100;
+                                                    if (similarity) {
+                                                        result.rows[i].scoring.nombre_vialidad += similarity;
+                                                        result.rows[i].scoring.fiability += (similarity * 0.5);
+                                                    }
                                                     const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
                                                     if (matchColonia) {
                                                         const matchedText = matchColonia[0]; // Obtiene el texto coincidente
@@ -543,6 +598,15 @@ async function sinNumeroExterior(direccionParsed) {
                                                             estado: 0,
                                                             colonia: 0
                                                         };
+                                                        // Calcular la distancia de Levenshtein
+                                                        const distance = levenshteinDistance(result.rows[i].nombre_vialidad, direccionParsed.NOMVIAL);
+                                                        // Calcular la similitud como el inverso de la distancia de Levenshtein
+                                                        const maxLength = Math.max(result.rows[i].nombre_vialidad.length, direccionParsed.NOMVIAL.length);
+                                                        const similarity = ((maxLength - distance) / maxLength) * 100;
+                                                        if (similarity) {
+                                                            result.rows[i].scoring.nombre_vialidad += similarity;
+                                                            result.rows[i].scoring.fiability += (similarity * 0.5);
+                                                        }
                                                         const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
                                                         if (matchCP) {
                                                             result.rows[i].scoring.codigo_postal += 100;
@@ -583,6 +647,15 @@ async function sinNumeroExterior(direccionParsed) {
                                                                 estado: 100,
                                                                 colonia: 0
                                                             };
+                                                            // Calcular la distancia de Levenshtein
+                                                            const distance = levenshteinDistance(result.rows[i].nombre_vialidad, direccionParsed.NOMVIAL);
+                                                            // Calcular la similitud como el inverso de la distancia de Levenshtein
+                                                            const maxLength = Math.max(result.rows[i].nombre_vialidad.length, direccionParsed.NOMVIAL.length);
+                                                            const similarity = ((maxLength - distance) / maxLength) * 100;
+                                                            if (similarity) {
+                                                                result.rows[i].scoring.nombre_vialidad += similarity;
+                                                                result.rows[i].scoring.fiability += (similarity * 0.5);
+                                                            }
                                                             const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
                                                             if (matchCP) {
                                                                 result.rows[i].scoring.codigo_postal += 100;
@@ -629,6 +702,24 @@ async function sinNumeroExterior(direccionParsed) {
                                                                     estado: 100,
                                                                     colonia: 0
                                                                 };
+                                                                // Calcular la distancia de Levenshtein
+                                                                const distance = levenshteinDistance(result.rows[i].nombre_vialidad, direccionParsed.NOMVIAL);
+                                                                // Calcular la similitud como el inverso de la distancia de Levenshtein
+                                                                const maxLength = Math.max(result.rows[i].nombre_vialidad.length, direccionParsed.NOMVIAL.length);
+                                                                const similarity = ((maxLength - distance) / maxLength) * 100;
+                                                                if (similarity) {
+                                                                    result.rows[i].scoring.nombre_vialidad += similarity;
+                                                                    result.rows[i].scoring.fiability += (similarity * 0.5);
+                                                                }
+                                                                // Calcular la distancia de Levenshtein
+                                                                const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
+                                                                // Calcular la similitud como el inverso de la distancia de Levenshtein
+                                                                const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
+                                                                const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
+                                                                if (similarityColonia) {
+                                                                    result.rows[i].scoring.colonia += similarityColonia;
+                                                                    result.rows[i].scoring.fiability += (similarityColonia * 0.08);
+                                                                }
                                                                 const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
                                                                 if (matchCP) {
                                                                     result.rows[i].scoring.codigo_postal += 100;
