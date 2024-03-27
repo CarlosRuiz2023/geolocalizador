@@ -9,5 +9,10 @@
     "MZ":"MANZANA",
     "FRACC":"FRACCIONAMIENTO",
     "GTO":"GUANAJUATO",
-    "PRIV":"PRIVADA"
+    "PRIV":"PRIVADA",
+    "NTRA":"NUESTRA",
+    "SRA":"SEÑORA",
+    "CTO":"CIRCUITO",
+    "HDA":"HACIENDA",
+    "CJON":"CALLEJON"
 }

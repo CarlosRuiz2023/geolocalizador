@@ -402,11 +402,11 @@ async function sinCP(direccionParsed) {
                                 SELECT *,
                                 CASE
                                     WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
-                                    ELSE NULL
+                                    ELSE lat_y
                                 END AS y_centro,
                                 CASE
                                     WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
-                                    ELSE NULL
+                                    ELSE lon_x
                                 END AS x_centro
                                 FROM carto_geolocalizador
                                 WHERE nombre_vialidad like '%' || $1 || '%'
@@ -484,7 +484,7 @@ async function sinCP(direccionParsed) {
                                 for (let i = 0; i < result.rows.length; i++) {
                                     result.rows[i].scoring = {
                                         fiability: 30,
-                                        nombre_vialidad: 0,
+                                        calle: 0,
                                         municipio: 100,
                                         estado: 0,
                                         numero_exterior: 100,
@@ -910,11 +910,11 @@ async function sinCP(direccionParsed) {
                                                                     SELECT *,
                                                                     CASE
                                                                         WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
-                                                                        ELSE NULL
+                                                                        ELSE lat_y
                                                                     END AS y_centro,
                                                                     CASE
                                                                         WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
-                                                                        ELSE NULL
+                                                                        ELSE lon_x
                                                                     END AS x_centro
                                                                     FROM carto_geolocalizador
                                                                     WHERE municipio = $1

@@ -10,11 +10,11 @@ async function alone(direccionParsed) {
                 SELECT *,
                 CASE
                     WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
-                    ELSE NULL
+                    lat_y
                 END AS y_centro,
                 CASE
                     WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
-                    ELSE NULL
+                    lon_x
                 END AS x_centro
                 FROM carto_geolocalizador
                 WHERE tipo_vialidad = $1

@@ -3,12 +3,12 @@ const { Client } = require('pg');
 require("dotenv").config();
 // Configuración del cliente PostgreSQL
 const pgClient = new Client({
-    host: process.env.NEON_HOST || 'localhost',
-    user: process.env.NEON_USER || 'postgres',
-    password: process.env.NEON_PASSWORD || 'root',
-    database: process.env.NEON_BD || 'BGW',
-    port: process.env.NEON_PORT || '5432',
-    ssl:require // false
+    host: process.env.NEON_HOST,
+    user: process.env.NEON_USER,
+    password: process.env.NEON_PASSWORD,
+    database: process.env.NEON_BD,
+    port: process.env.NEON_PORT,
+    ssl:false // require
 });
 pgClient.connect();
 

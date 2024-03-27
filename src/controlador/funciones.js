@@ -8,7 +8,7 @@ const diccionarioAbreviaciones = require("../data/diccionarioAbreviaciones.json"
 // Función para parsear la dirección según la Norma Técnica sobre Domicilios Geográficos
 function parseDireccion(direccion) {
     // Limpieza de datos
-    const direccionExpandida = expandirAbreviaciones(limpiarBusqueda(eliminarCaracteres(direccion.toUpperCase())));
+    const direccionExpandida = expandirAbreviaciones(limpiarBusqueda(direccion.toUpperCase()));
     // Dividir la dirección en sus componentes
     const componentesDireccion = direccionExpandida.split(',');
 
