@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const {parseDireccion} = require('./controlador/funciones');
-const scoringMaestro = require('./controlador/scoring');
+const {parseDireccion} = require('./src/controlador/funciones');
+const scoringMaestro = require('./src/controlador/scoring');
 // CARGA LAS VARIABLES DE ENTORNO DESDE EL ARCHIVO .env
 require("dotenv").config();
 
