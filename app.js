@@ -8,11 +8,13 @@ require("dotenv").config();
 
 // Creación de la aplicación Express
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // Middleware para analizar el cuerpo de las solicitudes en formato JSON
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true })); // x-www-form-urlencoded
+// MIDDLEWARE PARA SERVIR ARCHIVOS ESTÁTICOS DESDE LA CARPETA 'public'
+app.use(express.static("public"));
 
 // Endpoint para geolocalizar una dirección proporcionada por el usuario
 app.post('/geolocalizar', async (req, res) => {
@@ -45,5 +47,5 @@ app.post('/geolocalizar', async (req, res) => {
 
 // Iniciar el servidor
 app.listen(port, () => {
-    console.log(`Servidor Express escuchando en el puerto ${process.env.PORT}`);
+    console.log(`Servidor Express escuchando en el puerto ${port}`);
 });
