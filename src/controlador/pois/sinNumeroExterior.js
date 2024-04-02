@@ -12,19 +12,19 @@ async function sinNumeroExterior(direccionParsed) {
         lon_x AS x_centro
         FROM carto_geolocalizador
         WHERE poi like '%' || $1 || '%'
-        AND (codigo_postal = '' OR codigo_postal = $2 )
+        AND codigo_postal = $2 
         AND municipio = $3
         AND estado = $4
-        AND (colonia = '' OR colonia LIKE '%' || $5 || '%')
+        AND colonia LIKE '%' || $5 || '%'
         ;
     `;
     values = [direccionParsed.CALLE, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
     const result = await pgClient.query(query, values);
     for (let i = 0; i < result.rows.length; i++) {
         result.rows[i].scoring = {
-            fiability: 20,
+            fiability: 30,
             poi: 0,
-            codigo_postal: 0,
+            codigo_postal: 100,
             municipio: 100,
             estado: 100,
             colonia: 0
@@ -45,11 +45,6 @@ async function sinNumeroExterior(direccionParsed) {
             result.rows[i].scoring.colonia += Math.round(igualdad);
             result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
         }
-        const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
-        if (matchCP) {
-            result.rows[i].scoring.codigo_postal += 100;
-            result.rows[i].scoring.fiability += 10;
-        }
     }
     rows = rows.concat(result.rows);
     if (result.rows.length === 0) {
@@ -62,7 +57,7 @@ async function sinNumeroExterior(direccionParsed) {
             WHERE poi like '%' || $1 || '%'
             AND municipio = $2
             AND estado = $3
-            AND (colonia = '' OR colonia LIKE '%' || $4 || '%')
+            AND colonia LIKE '%' || $4 || '%'
             ;
         `;
         values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
@@ -102,18 +97,18 @@ async function sinNumeroExterior(direccionParsed) {
                 lon_x AS x_centro
                 FROM carto_geolocalizador
                 WHERE poi like '%' || $1 || '%'
-                AND (codigo_postal = '' OR codigo_postal = $2 )
+                AND codigo_postal = $2 
                 AND estado = $3
-                AND (colonia = '' OR colonia LIKE '%' || $4 || '%')
+                AND colonia LIKE '%' || $4 || '%'
                 ;
             `;
             values = [direccionParsed.CALLE, direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.COLONIA];
             const result = await pgClient.query(query, values);
             for (let i = 0; i < result.rows.length; i++) {
                 result.rows[i].scoring = {
-                    fiability: 10,
+                    fiability: 20,
                     poi: 0,
-                    codigo_postal: 0,
+                    codigo_postal: 100,
                     municipio: 0,
                     estado: 100,
                     colonia: 0
@@ -134,11 +129,6 @@ async function sinNumeroExterior(direccionParsed) {
                     result.rows[i].scoring.colonia += Math.round(igualdad);
                     result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
                 }
-                const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
-                if (matchCP) {
-                    result.rows[i].scoring.codigo_postal += 100;
-                    result.rows[i].scoring.fiability += 10;
-                }
             }
             rows = rows.concat(result.rows);
             if (result.rows.length === 0) {
@@ -149,18 +139,18 @@ async function sinNumeroExterior(direccionParsed) {
                     lon_x AS x_centro
                     FROM carto_geolocalizador
                     WHERE poi like '%' || $1 || '%'
-                    AND (codigo_postal = '' OR codigo_postal = $2 )
+                    AND codigo_postal = $2 
                     AND municipio = $3
-                    AND (colonia = '' OR colonia LIKE '%' || $4 || '%')
+                    AND colonia LIKE '%' || $4 || '%'
                     ;
                 `;
                 values = [direccionParsed.CALLE, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
                 const result = await pgClient.query(query, values);
                 for (let i = 0; i < result.rows.length; i++) {
                     result.rows[i].scoring = {
-                        fiability: 10,
+                        fiability: 20,
                         poi: 0,
-                        codigo_postal: 0,
+                        codigo_postal: 100,
                         municipio: 100,
                         estado: 0,
                         colonia: 0
@@ -181,11 +171,6 @@ async function sinNumeroExterior(direccionParsed) {
                         result.rows[i].scoring.colonia += Math.round(igualdad);
                         result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
                     }
-                    const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
-                    if (matchCP) {
-                        result.rows[i].scoring.codigo_postal += 100;
-                        result.rows[i].scoring.fiability += 10;
-                    }
                 }
                 rows = rows.concat(result.rows);
                 if (result.rows.length === 0) {
@@ -196,7 +181,7 @@ async function sinNumeroExterior(direccionParsed) {
                         lon_x AS x_centro
                         FROM carto_geolocalizador
                         WHERE poi like '%' || $1 || '%'
-                        AND (codigo_postal = '' OR codigo_postal = $2 )
+                        AND codigo_postal = $2 
                         AND municipio = $3
                         AND estado = $4
                         ;
@@ -205,9 +190,9 @@ async function sinNumeroExterior(direccionParsed) {
                     const result = await pgClient.query(query, values);
                     for (let i = 0; i < result.rows.length; i++) {
                         result.rows[i].scoring = {
-                            fiability: 20,
+                            fiability: 30,
                             poi: 0,
-                            codigo_postal: 0,
+                            codigo_postal: 100,
                             municipio: 100,
                             estado: 100,
                             colonia: 0
@@ -228,11 +213,6 @@ async function sinNumeroExterior(direccionParsed) {
                         if (similarityColonia) {
                             result.rows[i].scoring.colonia += similarityColonia;
                             result.rows[i].scoring.fiability += (similarityColonia * 0.10);
-                        }
-                        const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
-                        if (matchCP) {
-                            result.rows[i].scoring.codigo_postal += 100;
-                            result.rows[i].scoring.fiability += 10;
                         }
                     }
                     rows = rows.concat(result.rows);
@@ -286,7 +266,7 @@ async function sinNumeroExterior(direccionParsed) {
                                 lon_x AS x_centro
                                 FROM carto_geolocalizador
                                 WHERE poi like '%' || $1 || '%'
-                                AND (codigo_postal = '' OR codigo_postal = $2 )
+                                AND codigo_postal = $2 
                                 AND estado = $3
                                 ;
                             `;
@@ -294,9 +274,9 @@ async function sinNumeroExterior(direccionParsed) {
                             const result = await pgClient.query(query, values);
                             for (let i = 0; i < result.rows.length; i++) {
                                 result.rows[i].scoring = {
-                                    fiability: 10,
+                                    fiability: 20,
                                     poi: 0,
-                                    codigo_postal: 0,
+                                    codigo_postal: 100,
                                     municipio: 0,
                                     estado: 100,
                                     colonia: 0
@@ -318,11 +298,6 @@ async function sinNumeroExterior(direccionParsed) {
                                     result.rows[i].scoring.colonia += similarityColonia;
                                     result.rows[i].scoring.fiability += (similarityColonia * 0.10);
                                 }
-                                const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
-                                if (matchCP) {
-                                    result.rows[i].scoring.codigo_postal += 100;
-                                    result.rows[i].scoring.fiability += 10;
-                                }
                             }
                             rows = rows.concat(result.rows);
                             if (result.rows.length === 0) {
@@ -334,7 +309,7 @@ async function sinNumeroExterior(direccionParsed) {
                                     FROM carto_geolocalizador
                                     WHERE poi like '%' || $1 || '%'
                                     AND municipio = $2
-                                    AND (colonia = '' OR colonia LIKE '%' || $3 || '%')
+                                    AND colonia LIKE '%' || $3 || '%'
                                     ;
                                 `;
                                 values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
@@ -374,17 +349,17 @@ async function sinNumeroExterior(direccionParsed) {
                                         lon_x AS x_centro
                                         FROM carto_geolocalizador
                                         WHERE poi like '%' || $1 || '%'
-                                        AND (codigo_postal = '' OR codigo_postal = $2 )
-                                        AND (colonia = '' OR colonia LIKE '%' || $3 || '%')
+                                        AND codigo_postal = $2 
+                                        AND colonia LIKE '%' || $3 || '%'
                                         ;
                                     `;
                                     values = [direccionParsed.CALLE, direccionParsed.CP, direccionParsed.COLONIA];
                                     const result = await pgClient.query(query, values);
                                     for (let i = 0; i < result.rows.length; i++) {
                                         result.rows[i].scoring = {
-                                            fiability: 0,
+                                            fiability: 10,
                                             poi: 0,
-                                            codigo_postal: 0,
+                                            codigo_postal: 100,
                                             municipio: 0,
                                             estado: 0,
                                             colonia: 0
@@ -405,11 +380,6 @@ async function sinNumeroExterior(direccionParsed) {
                                             result.rows[i].scoring.colonia += Math.round(igualdad);
                                             result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
                                         }
-                                        const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
-                                        if (matchCP) {
-                                            result.rows[i].scoring.codigo_postal += 100;
-                                            result.rows[i].scoring.fiability += 10;
-                                        }
                                     }
                                     rows = rows.concat(result.rows);
                                     if (result.rows.length === 0) {
@@ -420,7 +390,7 @@ async function sinNumeroExterior(direccionParsed) {
                                             lon_x AS x_centro
                                             FROM carto_geolocalizador
                                             WHERE poi like '%' || $1 || '%'
-                                            AND (codigo_postal = '' OR codigo_postal = $2 )
+                                            AND codigo_postal = $2 
                                             AND municipio = $3
                                             ;
                                         `;
@@ -428,9 +398,9 @@ async function sinNumeroExterior(direccionParsed) {
                                         const result = await pgClient.query(query, values);
                                         for (let i = 0; i < result.rows.length; i++) {
                                             result.rows[i].scoring = {
-                                                fiability: 10,
+                                                fiability: 20,
                                                 poi: 0,
-                                                codigo_postal: 0,
+                                                codigo_postal: 100,
                                                 municipio: 100,
                                                 estado: 0,
                                                 colonia: 0
@@ -452,11 +422,6 @@ async function sinNumeroExterior(direccionParsed) {
                                                 result.rows[i].scoring.colonia += similarityColonia;
                                                 result.rows[i].scoring.fiability += (similarityColonia * 0.10);
                                             }
-                                            const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
-                                            if (matchCP) {
-                                                result.rows[i].scoring.codigo_postal += 100;
-                                                result.rows[i].scoring.fiability += 10;
-                                            }
                                         }
                                         rows = rows.concat(result.rows);
                                         if (result.rows.length === 0) {
@@ -466,19 +431,19 @@ async function sinNumeroExterior(direccionParsed) {
                                                 lat_y AS y_centro,
                                                 lon_x AS x_centro
                                                 FROM carto_geolocalizador
-                                                WHERE (codigo_postal = '' OR codigo_postal = $1 )
+                                                WHERE codigo_postal = $1 
                                                 AND municipio = $2
                                                 AND estado = $3
-                                                AND (colonia = '' OR colonia LIKE '%' || $4 || '%')
+                                                AND colonia LIKE '%' || $4 || '%'
                                                 ;
                                             `;
                                             values = [direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
                                             const result = await pgClient.query(query, values);
                                             for (let i = 0; i < result.rows.length; i++) {
                                                 result.rows[i].scoring = {
-                                                    fiability: 20,
+                                                    fiability: 30,
                                                     poi: 0,
-                                                    codigo_postal: 0,
+                                                    codigo_postal: 100,
                                                     municipio: 100,
                                                     estado: 100,
                                                     colonia: 0
@@ -500,11 +465,6 @@ async function sinNumeroExterior(direccionParsed) {
                                                     result.rows[i].scoring.colonia += Math.round(igualdad);
                                                     result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
                                                 }
-                                                const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
-                                                if (matchCP) {
-                                                    result.rows[i].scoring.codigo_postal += 100;
-                                                    result.rows[i].scoring.fiability += 10;
-                                                }
                                             }
                                             rows = rows.concat(result.rows);
                                             if (result.rows.length === 0) {
@@ -516,7 +476,7 @@ async function sinNumeroExterior(direccionParsed) {
                                                     FROM carto_geolocalizador
                                                     WHERE municipio = $1
                                                     AND estado = $2
-                                                    AND (colonia = '' OR colonia LIKE '%' || $3 || '%')
+                                                    AND colonia LIKE '%' || $3 || '%'
                                                     ;
                                                 `;
                                                 values = [direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
@@ -556,18 +516,18 @@ async function sinNumeroExterior(direccionParsed) {
                                                         lat_y AS y_centro,
                                                         lon_x AS x_centro
                                                         FROM carto_geolocalizador
-                                                        WHERE (codigo_postal = '' OR codigo_postal = $1 )
+                                                        WHERE codigo_postal = $1 
                                                         AND municipio = $2
-                                                        AND (colonia = '' OR colonia LIKE '%' || $3 || '%')
+                                                        AND colonia LIKE '%' || $3 || '%'
                                                         ;
                                                     `;
                                                     values = [direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
                                                     const result = await pgClient.query(query, values);
                                                     for (let i = 0; i < result.rows.length; i++) {
                                                         result.rows[i].scoring = {
-                                                            fiability: 10,
+                                                            fiability: 20,
                                                             poi: 0,
-                                                            codigo_postal: 0,
+                                                            codigo_postal: 100,
                                                             municipio: 100,
                                                             estado: 0,
                                                             colonia: 0
@@ -580,11 +540,6 @@ async function sinNumeroExterior(direccionParsed) {
                                                         if (similarity) {
                                                             result.rows[i].scoring.poi += similarity;
                                                             result.rows[i].scoring.fiability += (similarity * 0.5);
-                                                        }
-                                                        const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
-                                                        if (matchCP) {
-                                                            result.rows[i].scoring.codigo_postal += 100;
-                                                            result.rows[i].scoring.fiability += 10;
                                                         }
                                                         const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
                                                         if (matchColonia) {
@@ -603,18 +558,18 @@ async function sinNumeroExterior(direccionParsed) {
                                                             lat_y AS y_centro,
                                                             lon_x AS x_centro
                                                             FROM carto_geolocalizador
-                                                            WHERE (codigo_postal = '' OR codigo_postal = $1 )
+                                                            WHERE codigo_postal = $1 
                                                             AND estado = $2
-                                                            AND (colonia = '' OR colonia LIKE '%' || $3 || '%')
+                                                            AND colonia LIKE '%' || $3 || '%'
                                                             ;
                                                         `;
                                                         values = [direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.COLONIA];
                                                         const result = await pgClient.query(query, values);
                                                         for (let i = 0; i < result.rows.length; i++) {
                                                             result.rows[i].scoring = {
-                                                                fiability: 10,
+                                                                fiability: 20,
                                                                 poi: 0,
-                                                                codigo_postal: 0,
+                                                                codigo_postal: 100,
                                                                 municipio: 0,
                                                                 estado: 100,
                                                                 colonia: 0
@@ -627,11 +582,6 @@ async function sinNumeroExterior(direccionParsed) {
                                                             if (similarity) {
                                                                 result.rows[i].scoring.poi += similarity;
                                                                 result.rows[i].scoring.fiability += (similarity * 0.5);
-                                                            }
-                                                            const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
-                                                            if (matchCP) {
-                                                                result.rows[i].scoring.codigo_postal += 100;
-                                                                result.rows[i].scoring.fiability += 10;
                                                             }
                                                             const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
                                                             if (matchColonia) {
@@ -650,7 +600,7 @@ async function sinNumeroExterior(direccionParsed) {
                                                                 lat_y AS y_centro,
                                                                 lon_x AS x_centro
                                                                 FROM carto_geolocalizador
-                                                                WHERE (codigo_postal = '' OR codigo_postal = $1 )
+                                                                WHERE codigo_postal = $1 
                                                                 AND estado = $2
                                                                 AND municipio = $3
                                                                 ;
@@ -659,9 +609,9 @@ async function sinNumeroExterior(direccionParsed) {
                                                             const result = await pgClient.query(query, values);
                                                             for (let i = 0; i < result.rows.length; i++) {
                                                                 result.rows[i].scoring = {
-                                                                    fiability: 20,
+                                                                    fiability: 30,
                                                                     poi: 0,
-                                                                    codigo_postal: 0,
+                                                                    codigo_postal: 100,
                                                                     municipio: 100,
                                                                     estado: 100,
                                                                     colonia: 0
@@ -683,11 +633,6 @@ async function sinNumeroExterior(direccionParsed) {
                                                                 if (similarityColonia) {
                                                                     result.rows[i].scoring.colonia += similarityColonia;
                                                                     result.rows[i].scoring.fiability += (similarityColonia * 0.10);
-                                                                }
-                                                                const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
-                                                                if (matchCP) {
-                                                                    result.rows[i].scoring.codigo_postal += 100;
-                                                                    result.rows[i].scoring.fiability += 10;
                                                                 }
                                                             }
                                                             rows = rows.concat(result.rows);

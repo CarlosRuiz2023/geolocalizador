@@ -64,7 +64,7 @@ async function scoringMaestro(direccionParsed) {
             results=await alone1(direccionParsed);
         }
     }
-    if (results.length===0 && direccionParsed.COLONIA) {
+    if (results.length===0 && direccionParsed.CALLE) {
         if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
             results=await all2(direccionParsed);
         }
@@ -84,7 +84,7 @@ async function scoringMaestro(direccionParsed) {
             results=await alone2(direccionParsed);
         }
     }
-    if (results.length===0 && direccionParsed.COLONIA) {
+    if (results.length===0 && direccionParsed.CALLE) {
         if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
             results=await all3(direccionParsed);
         }

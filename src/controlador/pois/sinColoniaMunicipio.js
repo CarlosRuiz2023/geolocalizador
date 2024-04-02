@@ -12,25 +12,20 @@ async function sinColoniaMunicipio(direccionParsed) {
         lat_y AS y_centro,
         lon_x AS x_centro
         FROM carto_geolocalizador
-        WHERE (codigo_postal = '' OR codigo_postal = $1 )
+        WHERE codigo_postal = $1 
         AND estado = $2
-        AND (numero = '' OR numero = $3)
+        AND numero = $3
         ;
     `;
     values = [direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1];
     const result = await pgClient.query(query, values);
     for (let i = 0; i < result.rows.length; i++) {
         result.rows[i].scoring = {
-            fiability: 66.6,
-            codigo_postal: 0,
+            fiability: 100,
+            codigo_postal: 100,
             estado: 100,
             numero_exterior: 100
         };
-        const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
-        if (matchCP) {
-            result.rows[i].scoring.codigo_postal += 100;
-            result.rows[i].scoring.fiability += 33.3;
-        }
     }
     rows = rows.concat(result.rows);
     if (result.rows.length === 0) {
@@ -41,7 +36,7 @@ async function sinColoniaMunicipio(direccionParsed) {
             lon_x AS x_centro
             FROM carto_geolocalizador
             WHERE estado = $1
-            AND (numero = '' OR numero = $2)
+            AND numero = $2
             ;
         `;
         values = [direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1];
@@ -62,24 +57,19 @@ async function sinColoniaMunicipio(direccionParsed) {
                 lat_y AS y_centro,
                 lon_x AS x_centro
                 FROM carto_geolocalizador
-                WHERE (codigo_postal = '' OR codigo_postal = $1 )
-                AND (numero = '' OR numero = $2)
+                WHERE codigo_postal = $1 
+                AND numero = $2
                 ;
             `;
             values = [direccionParsed.CP, direccionParsed.NUMEXTNUM1];
             const result = await pgClient.query(query, values);
             for (let i = 0; i < result.rows.length; i++) {
                 result.rows[i].scoring = {
-                    fiability: 33.3,
-                    codigo_postal: 0,
+                    fiability: 66.6,
+                    codigo_postal: 100,
                     estado: 0,
                     numero_exterior: 100
                 };
-                const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
-                if (matchCP) {
-                    result.rows[i].scoring.codigo_postal += 100;
-                    result.rows[i].scoring.fiability += 33.3;
-                }
             }
             rows = rows.concat(result.rows);
             if (result.rows.length === 0) {
@@ -89,7 +79,7 @@ async function sinColoniaMunicipio(direccionParsed) {
                     lat_y AS y_centro,
                     lon_x AS x_centro
                     FROM carto_geolocalizador
-                    WHERE (codigo_postal = '' OR codigo_postal = $1 )
+                    WHERE codigo_postal = $1 
                     AND estado = $2
                     ;
                 `;
@@ -97,16 +87,11 @@ async function sinColoniaMunicipio(direccionParsed) {
                 const result = await pgClient.query(query, values);
                 for (let i = 0; i < result.rows.length; i++) {
                     result.rows[i].scoring = {
-                        fiability: 33.3,
-                        codigo_postal: 0,
+                        fiability: 66.6,
+                        codigo_postal: 100,
                         estado: 100,
                         numero_exterior: 0
                     };
-                    const matchCP = result.rows[i].codigo_postal === direccionParsed.CP;
-                    if (matchCP) {
-                        result.rows[i].scoring.codigo_postal += 100;
-                        result.rows[i].scoring.fiability += 33.3;
-                    }
                 }
                 rows = rows.concat(result.rows);
             }

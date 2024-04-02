@@ -15,8 +15,8 @@ async function sinCP(direccionParsed) {
         WHERE poi like '%' || $1 || '%'
         AND municipio = $2
         AND estado = $3
-        AND (numero = '' OR numero = $5)
-        AND (colonia = '' OR colonia LIKE '%' || $4 || '%')
+        AND numero = $5
+        AND colonia LIKE '%' || $4 || '%'
         ;
     `;
     values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
@@ -57,8 +57,8 @@ async function sinCP(direccionParsed) {
             FROM carto_geolocalizador
             WHERE poi like '%' || $1 || '%'
             AND estado = $2
-            AND (numero = '' OR numero = $4)
-            AND (colonia = '' OR colonia LIKE '%' || $3 || '%')
+            AND numero = $4
+            AND colonia LIKE '%' || $3 || '%'
             ;
         `;
         values = [direccionParsed.CALLE, direccionParsed.ESTADO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
@@ -99,8 +99,8 @@ async function sinCP(direccionParsed) {
                 FROM carto_geolocalizador
                 WHERE nombre_vialidad like '%' || $1 || '%'
                 AND municipio = $2
-                AND (numero = '' OR numero = $4)
-                AND (colonia = '' OR colonia LIKE '%' || $3 || '%')
+                AND numero = $4
+                AND colonia LIKE '%' || $3 || '%'
                 ;
             `;
             values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
@@ -141,7 +141,7 @@ async function sinCP(direccionParsed) {
                     FROM carto_geolocalizador
                     WHERE poi like '%' || $1 || '%'
                     AND municipio = $2
-                    AND (numero = '' OR numero = $4)
+                    AND numero = $4
                     AND estado = $3
                     ;
                 `;
@@ -183,7 +183,7 @@ async function sinCP(direccionParsed) {
                         lon_x AS x_centro
                         FROM carto_geolocalizador
                         WHERE poi like '%' || $1 || '%'
-                        AND (numero = '' OR numero = $3)
+                        AND numero = $3
                         AND estado = $2
                         ;
                     `;
@@ -225,8 +225,8 @@ async function sinCP(direccionParsed) {
                             lon_x AS x_centro
                             FROM carto_geolocalizador
                             WHERE poi like '%' || $1 || '%'
-                            AND (numero = '' OR numero = $3)
-                            AND (colonia = '' OR colonia LIKE '%' || $2 || '%')
+                            AND numero = $3
+                            AND colonia LIKE '%' || $2 || '%'
                             ;
                         `;
                         values = [direccionParsed.CALLE, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
@@ -268,7 +268,7 @@ async function sinCP(direccionParsed) {
                                 WHERE poi like '%' || $1 || '%'
                                 AND municipio = $2
                                 AND estado = $3
-                                AND (colonia = '' OR colonia LIKE '%' || $4 || '%')
+                                AND colonia LIKE '%' || $4 || '%'
                                 ;
                             `;
                             values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
@@ -308,7 +308,7 @@ async function sinCP(direccionParsed) {
                                     lon_x AS x_centro
                                     FROM carto_geolocalizador
                                     WHERE poi like '%' || $1 || '%'
-                                    AND (numero = '' OR numero = $3)
+                                    AND numero = $3
                                     AND municipio = $2
                                     ;
                                 `;
@@ -351,7 +351,7 @@ async function sinCP(direccionParsed) {
                                         FROM carto_geolocalizador
                                         WHERE poi like '%' || $1 || '%'
                                         AND municipio = $2
-                                        AND (colonia = '' OR colonia LIKE '%' || $3 || '%')
+                                        AND colonia LIKE '%' || $3 || '%'
                                         ;
                                     `;
                                     values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
@@ -392,7 +392,7 @@ async function sinCP(direccionParsed) {
                                             FROM carto_geolocalizador
                                             WHERE poi like '%' || $1 || '%'
                                             AND estado = $2
-                                            AND (colonia = '' OR colonia LIKE '%' || $3 || '%')
+                                            AND colonia LIKE '%' || $3 || '%'
                                             ;
                                         `;
                                         values = [direccionParsed.CALLE, direccionParsed.ESTADO, direccionParsed.COLONIA];
@@ -475,8 +475,8 @@ async function sinCP(direccionParsed) {
                                                     FROM carto_geolocalizador
                                                     WHERE municipio = $1
                                                     AND estado = $2
-                                                    AND (numero = '' OR numero = $4)
-                                                    AND (colonia = '' OR colonia LIKE '%' || $3 || '%')
+                                                    AND numero = $4
+                                                    AND colonia LIKE '%' || $3 || '%'
                                                     ;
                                                 `;
                                                 values = [direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
@@ -526,8 +526,8 @@ async function sinCP(direccionParsed) {
                                                         lon_x AS x_centro
                                                         FROM carto_geolocalizador
                                                         WHERE municipio = $1
-                                                        AND (numero = '' OR numero = $3)
-                                                        AND (colonia = '' OR colonia LIKE '%' || $2 || '%')
+                                                        AND numero = $3
+                                                        AND colonia LIKE '%' || $2 || '%'
                                                         ;
                                                     `;
                                                     values = [direccionParsed.MUNICIPIO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
@@ -568,8 +568,8 @@ async function sinCP(direccionParsed) {
                                                             lon_x AS x_centro
                                                             FROM carto_geolocalizador
                                                             WHERE estado = $1
-                                                            AND (numero = '' OR numero = $3)
-                                                            AND (colonia = '' OR colonia LIKE '%' || $2 || '%')
+                                                            AND numero = $3
+                                                            AND colonia LIKE '%' || $2 || '%'
                                                             ;
                                                         `;
                                                         values = [direccionParsed.ESTADO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
@@ -610,7 +610,7 @@ async function sinCP(direccionParsed) {
                                                                 lon_x AS x_centro
                                                                 FROM carto_geolocalizador
                                                                 WHERE estado = $1
-                                                                AND (numero = '' OR numero = $3)
+                                                                AND numero = $3
                                                                 AND municipio = $2
                                                                 ;
                                                             `;
@@ -654,7 +654,7 @@ async function sinCP(direccionParsed) {
                                                                     FROM carto_geolocalizador
                                                                     WHERE municipio = $1
                                                                     AND estado = $2
-                                                                    AND (colonia = '' OR colonia LIKE '%' || $3 || '%')
+                                                                    AND colonia LIKE '%' || $3 || '%'
                                                                     ;
                                                                 `;
                                                                 values = [direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];

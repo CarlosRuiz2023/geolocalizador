@@ -7,84 +7,114 @@ const diccionarioAbreviaciones = require("../data/diccionarioAbreviaciones.json"
 
 // Función para parsear la dirección según la Norma Técnica sobre Domicilios Geográficos
 function parseDireccion(direccion) {
-    // Limpieza de datos
     const direccionExpandida = expandirAbreviaciones(limpiarBusqueda(direccion.toUpperCase()));
-    // Dividir la dirección en sus componentes
-    const componentesDireccion = direccionExpandida.split(',');
-
-    // Crear un objeto para almacenar los componentes parseados
+    const componentesDireccion = direccionExpandida.split(' ');
     const direccionParsed = {};
     let estado = '';
-    let activo=true;
+    let municipio = '';
+    let colonia = '';
+    let calle = '';
+    let numExterior = '';
+    let activo = true;
+    let cont = 0;
+    let cont2 = 0;
 
-    // Iterar sobre los componentes de la dirección
-    for (let i = componentesDireccion.length - 1; i >= 0; i--) {
+    for (let i = 0; i < componentesDireccion.length; i++) {
         const componente = componentesDireccion[i].trim();
+
         // Buscar el tipo de vialidad
         const tipoVialidad = obtenerTipoVialidad(componente);
         if (tipoVialidad) {
-            activo=false;
             direccionParsed.TIPOVIAL = tipoVialidad;
-            direccionParsed.NOMVIAL = componente.replace(tipoVialidad, '').trim();
+            calle = componente.replace(tipoVialidad, '').trim();
+            i++;
+            while (i < componentesDireccion.length && !obtenerTipoAsentamiento(componentesDireccion[i]) && !obtenerNumeroExterior(componentesDireccion[i])) {
+                calle += ' ' + componentesDireccion[i];
+                i++;
+            }
+            i--;
+            direccionParsed.NOMVIAL = calle.trim();
+            activo = false;
         }
+
         // Buscar el número exterior
         const numeroExterior = obtenerNumeroExterior(componente);
         if (numeroExterior) {
-            const [numExtNum, numExtAlf] = numeroExterior.split(' ');
-            if(activo) direccionParsed.NUMEXTNUM1 = numExtNum;
-            if(activo) direccionParsed.NUMEXTALF1 = numExtAlf;
-            activo=false;
+            numExterior = numeroExterior;
+            direccionParsed.NUMEXTNUM1 = numeroExterior.split(' ')[0];
+            direccionParsed.NUMEXTALF1 = numeroExterior.split(' ')[1] || '';
+            activo = false;
         }
-        // Buscar el tipo de asentamiento humano
-        const tipoAsentamiento = obtenerTipoAsentamiento(componente);
-        if (tipoAsentamiento) {
-            activo=false;
-            direccionParsed.TIPOASEN = tipoAsentamiento;
-            direccionParsed.NOMASEN = componente.replace(tipoAsentamiento, '').trim();
-        }
+
         // Buscar el código postal
         const codigoPostal = obtenerCodigoPostal(componente);
         if (codigoPostal) {
-            activo=false;
             direccionParsed.CP = codigoPostal;
+            activo = false;
         }
+
+        // Buscar el tipo de asentamiento humano
+        const tipoAsentamiento = obtenerTipoAsentamiento(componente);
+        if (tipoAsentamiento) {
+            direccionParsed.TIPOASEN = tipoAsentamiento;
+            calle = componente.replace(tipoAsentamiento, '').trim();
+            i++;
+            while (i < componentesDireccion.length && !obtenerEstado(componentesDireccion[i]) && !obtenerMunicipio(componentesDireccion[i], componentesDireccion[i+1])) {
+                calle += ' ' + componentesDireccion[i];
+                i++;
+            }
+            i--;
+            direccionParsed.NOMASEN = calle.trim();
+            activo = false;
+        }
+
         // Buscar el estado
         if (!estado) {
             estado = obtenerEstado(componente);
             if (estado) {
-                activo=false;
                 direccionParsed.ESTADO = estado;
+                activo = false;
             }
         }
+
         // Buscar el municipio
-        if (estado) {
-            const municipio = obtenerMunicipio(componente, estado);
+        if (!municipio) {
+            municipio = obtenerMunicipio(componente, componentesDireccion[i + 1]);
             if (municipio) {
-                activo=false;
                 direccionParsed.MUNICIPIO = municipio;
+                activo = false;
             }
         }
-        if(direccionParsed.COLONIA){
-            activo=false;
-            direccionParsed.CALLE = componente;
+        if (activo) {
+            if (!direccionParsed.CALLE && !direccionParsed.TIPOVIAL) {
+                cont = i;
+                direccionParsed.CALLE = componente;
+                activo=false;
+            } else if (direccionParsed.CALLE && cont === i - 1) {
+                cont = i;
+                direccionParsed.CALLE += ' ' + componente;
+                activo=false;
+            }
         }
-        if(activo){
-            direccionParsed.COLONIA = componente;
+        if (activo) {
+            if (!direccionParsed.COLONIA && !direccionParsed.TIPOASEN) {
+                cont2 = i;
+                direccionParsed.COLONIA = componente;
+            } else if (direccionParsed.COLONIA && cont2 === i - 1) {
+                cont2 = i;
+                direccionParsed.COLONIA += ' ' + componente;
+            }
         }
-        activo=true;
-        // Buscar el nombre de la localidad, municipio/delegación, estado/distrito federal
-        // Implementa la lógica para detectar estos componentes según tus necesidades
-        // ...
+        activo = true;
     }
 
-    // Retornar la dirección parseada en el formato requerido
     return direccionParsed;
 }
 
 // Función auxiliar para obtener el tipo de vialidad
 function obtenerTipoVialidad(componente) {
     for (const tipoVialidad of tiposVialidad) {
-        if (componente.toUpperCase().includes(tipoVialidad)) {
+        if (componente.toUpperCase().startsWith(tipoVialidad)) {
             return tipoVialidad;
         }
     }
@@ -93,18 +123,20 @@ function obtenerTipoVialidad(componente) {
 
 // Función auxiliar para obtener el número exterior
 function obtenerNumeroExterior(componente) {
-    const numeroExteriorRegex = /\b(?!(\d{5})$)(\d+)\s*([A-Z])?\b/;
+    const numeroExteriorRegex = /\b(?!(\d{5})$)([A-Z]?\d+[A-Z]?)\b/;
     const match = componente.match(numeroExteriorRegex);
     if (match) {
-        const [numCompleto, , numExtNum, numExtAlf] = match;
-        return `${numExtNum} ${numExtAlf || ''}`.trim();
+        // Removemos la letra opcional al principio y al final del número capturado
+        const numExterior = match[0].replace(/[A-Z]$/, '').replace(/^[A-Z]/, '');
+        return numExterior.trim();
     }
+
     return null;
 }
 // Función auxiliar para obtener el tipo de asentamiento humano
 function obtenerTipoAsentamiento(componente) {
     for (const tipoAsentamiento of tiposAsentamiento) {
-        if (componente.toUpperCase().includes(`${tipoAsentamiento} `)) {
+        if (componente.toUpperCase() === tipoAsentamiento) {
             return tipoAsentamiento;
         }
     }
@@ -130,17 +162,21 @@ function obtenerEstado(componente) {
 }
 // Función auxiliar para obtener el tipo de asentamiento humano
 function obtenerMunicipio(componente, estado) {
-    const municipios = municipiosEstado[estado];
-    for (const municipio of municipios) {
-        if (componente.toUpperCase().includes(municipio)) {
-            if(componente.toUpperCase()===municipio)return municipio;
+    try {
+        const municipios = municipiosEstado[estado];
+        for (const municipio of municipios) {
+            if (componente.toUpperCase().includes(municipio)) {
+                if (componente.toUpperCase() === municipio) return municipio;
+            }
         }
+    } catch (error) {
+        return null;
     }
-    return null;
 }
 // Función para limpiar la búsqueda eliminando caracteres específicos
 function limpiarBusqueda(texto) {
-    return texto.replace(/[-|+"#$%&*./;?\[{\~¡¦=¤¥]/g, ''); // Elimina los caracteres específicos
+    texto.replace(/[-|+"#$%&*./;?\[{\~¡¦=¤¥]/g, ''); // Elimina los caracteres específicos
+    return texto.replace(/Ñ/g, 'N').trim();
 }
 // Función para expandir abreviaciones de tipos de vialidad en una dirección
 function expandirAbreviaciones(direccion) {
@@ -181,8 +217,6 @@ function formatearDireccionParsed(direccionParsed) {
     if (direccionParsed.ESTADO) {
         componentes.push(direccionParsed.ESTADO);
     }
-    // Agrega aquí la lógica para incluir otros componentes según la Norma Técnica
-
     return componentes.join(', ');
 }
 function levenshteinDistance(str1, str2) {
@@ -215,4 +249,4 @@ function levenshteinDistance(str1, str2) {
     // La distancia de edición entre las cadenas es el valor en la esquina inferior derecha de la matriz
     return distances[len1][len2];
 }
-module.exports = {parseDireccion,levenshteinDistance};
+module.exports = { parseDireccion, levenshteinDistance };
