@@ -233,7 +233,7 @@ async function sinEstado(direccionParsed) {
                 OR (CAST(r_refaddr AS INTEGER) >= $3 AND CAST(r_nrefaddr AS INTEGER) <= $3)))
                 ;
             `;
-            values = [direccionParsed.COLONIA, direccionParsed.CP, direccionParsed.NUMEXTNUM1];
+            values = [direccionParsed.CALLE, direccionParsed.CP, direccionParsed.NUMEXTNUM1];
             const result = await pgClient.query(query, values);
             for (let i = 0; i < result.rows.length; i++) {
                 result.rows[i].scoring = {
@@ -243,7 +243,7 @@ async function sinEstado(direccionParsed) {
                     numero_exterior: 100,
                     colonia: 0
                 };
-                const matchNombreCalle = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                const matchNombreCalle = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.CALLE, 'i'));
                 if (matchNombreCalle) {
                     const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
                     let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
@@ -318,7 +318,7 @@ async function sinEstado(direccionParsed) {
                     OR (CAST(r_refaddr AS INTEGER) >= $2 AND CAST(r_nrefaddr AS INTEGER) <= $2)))
                     ;
                 `;
-                values = [direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
+                values = [direccionParsed.CALLE, direccionParsed.NUMEXTNUM1];
                 const result = await pgClient.query(query, values);
                 for (let i = 0; i < result.rows.length; i++) {
                     result.rows[i].scoring = {
@@ -328,7 +328,7 @@ async function sinEstado(direccionParsed) {
                         numero_exterior: 100,
                         colonia: 0
                     };
-                    const matchNombreCalle = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                    const matchNombreCalle = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.CALLE, 'i'));
                     if (matchNombreCalle) {
                         const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
                         let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
@@ -438,7 +438,7 @@ async function sinEstado(direccionParsed) {
                                 AND codigo_postal = $2 
                                 ;
                             `;
-                            values = [direccionParsed.COLONIA, direccionParsed.CP];
+                            values = [direccionParsed.CALLE, direccionParsed.CP];
                             const result = await pgClient.query(query, values);
                             for (let i = 0; i < result.rows.length; i++) {
                                 result.rows[i].scoring = {
@@ -448,7 +448,7 @@ async function sinEstado(direccionParsed) {
                                     numero_exterior: 0,
                                     colonia: 0
                                 };
-                                const matchNombreCalle = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                const matchNombreCalle = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.CALLE, 'i'));
                                 if (matchNombreCalle) {
                                     const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
                                     let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;

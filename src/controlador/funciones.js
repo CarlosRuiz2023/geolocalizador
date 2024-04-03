@@ -204,6 +204,7 @@ function obtenerMunicipio(componente, estado) {
 function limpiarBusqueda(texto) {
     // Elimina caracteres específicos, excepto cuando están precedidos por un espacio y seguidos por una letra y un punto.
     texto = texto.replace(/(?<!\S)[\-|+"#$%&*./;?\[{\~¡¦=¤¥](?=(\s[A-Z]\.))/g, '');
+    texto=texto.replace(/,/g, '');
     return texto.replace(/Ñ/g, 'N').trim();
 }
 // Función para expandir abreviaciones de tipos de vialidad en una dirección
