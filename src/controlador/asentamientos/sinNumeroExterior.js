@@ -8,8 +8,14 @@ async function sinNumeroExterior(direccionParsed) {
     // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
     query = `
         SELECT *,
-        ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS y_centro,
-        ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS x_centro
+        CASE
+            WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+            ELSE lat_y
+        END AS y_centro,
+        CASE
+            WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+            ELSE lon_x
+        END AS x_centro
         FROM carto_geolocalizador
         WHERE tipo_asentamiento = $1
         AND nombre_asentamiento like '%' || $2 || '%'
@@ -53,8 +59,14 @@ async function sinNumeroExterior(direccionParsed) {
         // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
         query = `
             SELECT *,
-            ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS y_centro,
-            ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS x_centro
+            CASE
+                WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                ELSE lat_y
+            END AS y_centro,
+            CASE
+                WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                ELSE lon_x
+            END AS x_centro
             FROM carto_geolocalizador
             WHERE tipo_asentamiento = $1
             AND nombre_asentamiento like '%' || $2 || '%'
@@ -97,8 +109,14 @@ async function sinNumeroExterior(direccionParsed) {
             // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
             query = `
                 SELECT *,
-                ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS y_centro,
-                ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS x_centro
+                CASE
+                    WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                    ELSE lat_y
+                END AS y_centro,
+                CASE
+                    WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                    ELSE lon_x
+                END AS x_centro
                 FROM carto_geolocalizador
                 WHERE tipo_asentamiento = $1
                 AND nombre_asentamiento like '%' || $2 || '%'
@@ -141,8 +159,14 @@ async function sinNumeroExterior(direccionParsed) {
                 // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                 query = `
                     SELECT *,
-                    ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS y_centro,
-                    ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS x_centro
+                    CASE
+                        WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                        ELSE lat_y
+                    END AS y_centro,
+                    CASE
+                        WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                        ELSE lon_x
+                    END AS x_centro
                     FROM carto_geolocalizador
                     WHERE tipo_asentamiento = $1
                     AND nombre_asentamiento like '%' || $2 || '%'
@@ -185,8 +209,14 @@ async function sinNumeroExterior(direccionParsed) {
                     // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                     query = `
                         SELECT *,
-                        ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS y_centro,
-                        ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS x_centro
+                        CASE
+                            WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                            ELSE lat_y
+                        END AS y_centro,
+                        CASE
+                            WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                            ELSE lon_x
+                        END AS x_centro
                         FROM carto_geolocalizador
                         WHERE tipo_asentamiento = $1
                         AND nombre_asentamiento like '%' || $2 || '%'
@@ -230,8 +260,14 @@ async function sinNumeroExterior(direccionParsed) {
                         // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                         query = `
                             SELECT *,
-                            ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS y_centro,
-                            ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS x_centro
+                            CASE
+                                WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                                ELSE lat_y
+                            END AS y_centro,
+                            CASE
+                                WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                                ELSE lon_x
+                            END AS x_centro
                             FROM carto_geolocalizador
                             WHERE tipo_asentamiento = $1
                             AND nombre_asentamiento like '%' || $2 || '%'
@@ -274,8 +310,14 @@ async function sinNumeroExterior(direccionParsed) {
                             // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                             query = `
                                 SELECT *,
-                                ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS y_centro,
-                                ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS x_centro
+                                CASE
+                                    WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                                    ELSE lat_y
+                                END AS y_centro,
+                                CASE
+                                    WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                                    ELSE lon_x
+                                END AS x_centro
                                 FROM carto_geolocalizador
                                 WHERE tipo_asentamiento = $1
                                 AND nombre_asentamiento like '%' || $2 || '%'
@@ -318,8 +360,14 @@ async function sinNumeroExterior(direccionParsed) {
                                 // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                                 query = `
                                     SELECT *,
-                                    ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS y_centro,
-                                    ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS x_centro
+                                    CASE
+                                        WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                                        ELSE lat_y
+                                    END AS y_centro,
+                                    CASE
+                                        WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                                        ELSE lon_x
+                                    END AS x_centro
                                     FROM carto_geolocalizador
                                     WHERE tipo_asentamiento = $1
                                     AND nombre_asentamiento like '%' || $2 || '%'
@@ -361,8 +409,14 @@ async function sinNumeroExterior(direccionParsed) {
                                     // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                                     query = `
                                         SELECT *,
-                                        ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS y_centro,
-                                        ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS x_centro
+                                        CASE
+                                            WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                                            ELSE lat_y
+                                        END AS y_centro,
+                                        CASE
+                                            WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                                            ELSE lon_x
+                                        END AS x_centro
                                         FROM carto_geolocalizador
                                         WHERE tipo_asentamiento = $1
                                         AND nombre_asentamiento like '%' || $2 || '%'
@@ -404,8 +458,14 @@ async function sinNumeroExterior(direccionParsed) {
                                         // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                                         query = `
                                             SELECT *,
-                                            ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS y_centro,
-                                            ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS x_centro
+                                            CASE
+                                                WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                                                ELSE lat_y
+                                            END AS y_centro,
+                                            CASE
+                                                WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                                                ELSE lon_x
+                                            END AS x_centro
                                             FROM carto_geolocalizador
                                             WHERE tipo_asentamiento = $1
                                             AND nombre_asentamiento like '%' || $2 || '%'
@@ -448,8 +508,14 @@ async function sinNumeroExterior(direccionParsed) {
                                             // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                                             query = `
                                                 SELECT *,
-                                                ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS y_centro,
-                                                ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS x_centro
+                                                CASE
+                                                    WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                                                    ELSE lat_y
+                                                END AS y_centro,
+                                                CASE
+                                                    WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                                                    ELSE lon_x
+                                                END AS x_centro
                                                 FROM carto_geolocalizador
                                                 WHERE tipo_asentamiento = $1
                                                 AND codigo_postal = $2 
@@ -493,8 +559,14 @@ async function sinNumeroExterior(direccionParsed) {
                                                 // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                                                 query = `
                                                     SELECT *,
-                                                    ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS y_centro,
-                                                    ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS x_centro
+                                                    CASE
+                                                        WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                                                        ELSE lat_y
+                                                    END AS y_centro,
+                                                    CASE
+                                                        WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                                                        ELSE lon_x
+                                                    END AS x_centro
                                                     FROM carto_geolocalizador
                                                     WHERE tipo_asentamiento = $1
                                                     AND municipio = $2
@@ -537,8 +609,14 @@ async function sinNumeroExterior(direccionParsed) {
                                                     // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                                                     query = `
                                                         SELECT *,
-                                                        ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS y_centro,
-                                                        ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS x_centro
+                                                        CASE
+                                                            WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                                                            ELSE lat_y
+                                                        END AS y_centro,
+                                                        CASE
+                                                            WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                                                            ELSE lon_x
+                                                        END AS x_centro
                                                         FROM carto_geolocalizador
                                                         WHERE tipo_asentamiento = $1
                                                         AND codigo_postal = $2 
@@ -581,8 +659,14 @@ async function sinNumeroExterior(direccionParsed) {
                                                         // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                                                         query = `
                                                             SELECT *,
-                                                            ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS y_centro,
-                                                            ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5)) AS x_centro
+                                                            CASE
+                                                                WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                                                                ELSE lat_y
+                                                            END AS y_centro,
+                                                            CASE
+                                                                WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                                                                ELSE lon_x
+                                                            END AS x_centro
                                                             FROM carto_geolocalizador
                                                             WHERE tipo_asentamiento = $1
                                                             AND codigo_postal = $2

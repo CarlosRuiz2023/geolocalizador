@@ -14,14 +14,14 @@ async function alone(direccionParsed) {
                 WHERE poi like '%' || $1 || '%'
                 ;
             `;
-    values = [direccionParsed.COLONIA];
+    values = [direccionParsed.CALLE];
     const result = await pgClient.query(query, values);
     for (let i = 0; i < result.rows.length; i++) {
         result.rows[i].scoring = {
             fiability: 0,
             poi: 0
         };
-        const matchNombrePoi = result.rows[i].poi.match(new RegExp(direccionParsed.COLONIA, 'i'));
+        const matchNombrePoi = result.rows[i].poi.match(new RegExp(direccionParsed.CALLE, 'i'));
         if (matchNombrePoi) {
             const matchedText = matchNombrePoi[0]; // Obtiene el texto coincidente
             let igualdad = matchedText.length * 100 / result.rows[i].poi.length;

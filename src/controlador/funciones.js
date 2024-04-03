@@ -132,6 +132,7 @@ function obtenerTipoVialidad(componente) {
 
 // Función auxiliar para obtener el número exterior
 function obtenerNumeroExterior(componente) {
+    if(componente.length<=5)return null
     // Expresión regular para detectar números exteriores como "123A"
     const numeroExteriorRegex = /\b(?!(\d{5})$)(\d+)\s*([A-Z])?\b/;
     const match = componente.match(numeroExteriorRegex);

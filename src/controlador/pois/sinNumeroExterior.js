@@ -186,7 +186,7 @@ async function sinNumeroExterior(direccionParsed) {
                         AND estado = $4
                         ;
                     `;
-                    values = [direccionParsed.COLONIA, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
+                    values = [direccionParsed.CALLE, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
                     const result = await pgClient.query(query, values);
                     for (let i = 0; i < result.rows.length; i++) {
                         result.rows[i].scoring = {
@@ -197,7 +197,7 @@ async function sinNumeroExterior(direccionParsed) {
                             estado: 100,
                             colonia: 0
                         };
-                        const matchNombrePoi = result.rows[i].poi.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                        const matchNombrePoi = result.rows[i].poi.match(new RegExp(direccionParsed.CALLE, 'i'));
                         if (matchNombrePoi) {
                             const matchedText = matchNombrePoi[0]; // Obtiene el texto coincidente
                             let igualdad = matchedText.length * 100 / result.rows[i].poi.length;
@@ -228,7 +228,7 @@ async function sinNumeroExterior(direccionParsed) {
                             AND estado = $3
                             ;
                         `;
-                        values = [direccionParsed.COLONIA, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
+                        values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
                         const result = await pgClient.query(query, values);
                         for (let i = 0; i < result.rows.length; i++) {
                             result.rows[i].scoring = {
@@ -239,7 +239,7 @@ async function sinNumeroExterior(direccionParsed) {
                                 estado: 100,
                                 colonia: 0
                             };
-                            const matchNombrePoi = result.rows[i].poi.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                            const matchNombrePoi = result.rows[i].poi.match(new RegExp(direccionParsed.CALLE, 'i'));
                             if (matchNombrePoi) {
                                 const matchedText = matchNombrePoi[0]; // Obtiene el texto coincidente
                                 let igualdad = matchedText.length * 100 / result.rows[i].poi.length;
@@ -270,7 +270,7 @@ async function sinNumeroExterior(direccionParsed) {
                                 AND estado = $3
                                 ;
                             `;
-                            values = [direccionParsed.COLONIA, direccionParsed.CP, direccionParsed.ESTADO];
+                            values = [direccionParsed.CALLE, direccionParsed.CP, direccionParsed.ESTADO];
                             const result = await pgClient.query(query, values);
                             for (let i = 0; i < result.rows.length; i++) {
                                 result.rows[i].scoring = {
@@ -281,7 +281,7 @@ async function sinNumeroExterior(direccionParsed) {
                                     estado: 100,
                                     colonia: 0
                                 };
-                                const matchNombrePoi = result.rows[i].poi.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                const matchNombrePoi = result.rows[i].poi.match(new RegExp(direccionParsed.CALLE, 'i'));
                                 if (matchNombrePoi) {
                                     const matchedText = matchNombrePoi[0]; // Obtiene el texto coincidente
                                     let igualdad = matchedText.length * 100 / result.rows[i].poi.length;
@@ -394,7 +394,7 @@ async function sinNumeroExterior(direccionParsed) {
                                             AND municipio = $3
                                             ;
                                         `;
-                                        values = [direccionParsed.COLONIA, direccionParsed.CP, direccionParsed.MUNICIPIO];
+                                        values = [direccionParsed.CALLE, direccionParsed.CP, direccionParsed.MUNICIPIO];
                                         const result = await pgClient.query(query, values);
                                         for (let i = 0; i < result.rows.length; i++) {
                                             result.rows[i].scoring = {
@@ -405,7 +405,7 @@ async function sinNumeroExterior(direccionParsed) {
                                                 estado: 0,
                                                 colonia: 0
                                             };
-                                            const matchNombrePoi = result.rows[i].poi.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                            const matchNombrePoi = result.rows[i].poi.match(new RegExp(direccionParsed.CALLE, 'i'));
                                             if (matchNombrePoi) {
                                                 const matchedText = matchNombrePoi[0]; // Obtiene el texto coincidente
                                                 let igualdad = matchedText.length * 100 / result.rows[i].poi.length;
@@ -617,9 +617,9 @@ async function sinNumeroExterior(direccionParsed) {
                                                                     colonia: 0
                                                                 };
                                                                 // Calcular la distancia de Levenshtein
-                                                                const distance = levenshteinDistance(result.rows[i].poi, direccionParsed.COLONIA);
+                                                                const distance = levenshteinDistance(result.rows[i].poi, direccionParsed.CALLE);
                                                                 // Calcular la similitud como el inverso de la distancia de Levenshtein
-                                                                const maxLength = Math.max(result.rows[i].poi.length, direccionParsed.COLONIA.length);
+                                                                const maxLength = Math.max(result.rows[i].poi.length, direccionParsed.CALLE.length);
                                                                 const similarity = ((maxLength - distance) / maxLength) * 100;
                                                                 if (similarity) {
                                                                     result.rows[i].scoring.poi += similarity;
