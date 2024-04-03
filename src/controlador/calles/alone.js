@@ -78,10 +78,10 @@ async function alone(direccionParsed) {
                 fiability: 0,
                 calle: 0
             };
-            const matchNombreCalle = result.rows[i].calle.match(new RegExp(direccionParsed.COLONIA, 'i'));
+            const matchNombreCalle = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.COLONIA, 'i'));
             if (matchNombreCalle) {
                 const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
-                let igualdad = matchedText.length * 100 / result.rows[i].calle.length;
+                let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                 if (igualdad > 100) igualdad = 100;
                 result.rows[i].scoring.calle += Math.round(igualdad);
                 result.rows[i].scoring.fiability += Math.round(igualdad);

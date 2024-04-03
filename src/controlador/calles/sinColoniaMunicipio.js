@@ -20,6 +20,16 @@ async function sinColoniaMunicipio(direccionParsed) {
                                                                 WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($3 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                 ELSE 0.5
                                                             END
+                                                        WHEN $3 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                            CASE 
+                                                                WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($3 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                ELSE 0.5
+                                                            END
+                                                        WHEN $3 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                            CASE 
+                                                                WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($3 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                ELSE 0.5
+                                                            END
                                                      END)) AS y_centro,
         ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
                                                         WHEN $3 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
@@ -30,6 +40,16 @@ async function sinColoniaMunicipio(direccionParsed) {
                                                         WHEN $3 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
                                                             CASE 
                                                                 WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($3 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                ELSE 0.5
+                                                            END
+                                                        WHEN $3 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                            CASE 
+                                                                WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($3 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                ELSE 0.5
+                                                            END
+                                                        WHEN $3 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                            CASE 
+                                                                WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($3 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                 ELSE 0.5
                                                             END
                                                         END)) AS x_centro
@@ -68,6 +88,16 @@ async function sinColoniaMunicipio(direccionParsed) {
                                                                     WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($2 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                     ELSE 0.5
                                                                 END
+                                                            WHEN $2 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                                CASE 
+                                                                    WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($2 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                    ELSE 0.5
+                                                                END
+                                                            WHEN $2 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                                CASE 
+                                                                    WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($2 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                    ELSE 0.5
+                                                                END
                                                             END)) AS y_centro,
             ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
                                                             WHEN $2 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
@@ -78,6 +108,16 @@ async function sinColoniaMunicipio(direccionParsed) {
                                                             WHEN $2 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
                                                                 CASE 
                                                                     WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($2 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                    ELSE 0.5
+                                                                END
+                                                            WHEN $2 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                                CASE 
+                                                                    WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($2 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                    ELSE 0.5
+                                                                END
+                                                            WHEN $2 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                                CASE 
+                                                                    WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($2 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                     ELSE 0.5
                                                                 END
                                                             END)) AS x_centro
@@ -115,6 +155,16 @@ async function sinColoniaMunicipio(direccionParsed) {
                                                                         WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($2 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                         ELSE 0.5
                                                                     END
+                                                                WHEN $2 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                                    CASE 
+                                                                        WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($2 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                        ELSE 0.5
+                                                                    END
+                                                                WHEN $2 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                                    CASE 
+                                                                        WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($2 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                        ELSE 0.5
+                                                                    END
                                                                 END)) AS y_centro,
                 ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
                                                                 WHEN $2 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
@@ -125,6 +175,16 @@ async function sinColoniaMunicipio(direccionParsed) {
                                                                 WHEN $2 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
                                                                     CASE 
                                                                         WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($2 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                        ELSE 0.5
+                                                                    END
+                                                                WHEN $2 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                                    CASE 
+                                                                        WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($2 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                        ELSE 0.5
+                                                                    END
+                                                                WHEN $2 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                                    CASE 
+                                                                        WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($2 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                         ELSE 0.5
                                                                     END
                                                                 END)) AS x_centro

@@ -20,6 +20,16 @@ async function sinEstado(direccionParsed) {
                                                                 WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                 ELSE 0.5
                                                             END
+                                                        WHEN $4 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                            CASE 
+                                                                WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                ELSE 0.5
+                                                            END
+                                                        WHEN $4 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                            CASE 
+                                                                WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                ELSE 0.5
+                                                            END
                                                      END)) AS y_centro,
         ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
                                                         WHEN $4 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
@@ -30,6 +40,16 @@ async function sinEstado(direccionParsed) {
                                                         WHEN $4 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
                                                             CASE 
                                                                 WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                ELSE 0.5
+                                                            END
+                                                        WHEN $4 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                            CASE 
+                                                                WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                ELSE 0.5
+                                                            END
+                                                        WHEN $4 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                            CASE 
+                                                                WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                 ELSE 0.5
                                                             END
                                                      END)) AS x_centro
@@ -53,10 +73,10 @@ async function sinEstado(direccionParsed) {
             numero_exterior: 100,
             colonia: 0
         };
-        const matchNombreCalle = result.rows[i].calle.match(new RegExp(direccionParsed.CALLE, 'i'));
+        const matchNombreCalle = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.CALLE, 'i'));
         if (matchNombreCalle) {
             const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
-            let igualdad = matchedText.length * 100 / result.rows[i].calle.length;
+            let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
             if (igualdad > 100) igualdad = 100;
             result.rows[i].scoring.calle += Math.round(igualdad);
             result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
@@ -86,6 +106,16 @@ async function sinEstado(direccionParsed) {
                                                                     WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($3 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                     ELSE 0.5
                                                                 END
+                                                            WHEN $3 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                                CASE 
+                                                                    WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($3 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                    ELSE 0.5
+                                                                END
+                                                            WHEN $3 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                                CASE 
+                                                                    WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($3 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                    ELSE 0.5
+                                                                END
                                                          END)) AS y_centro,
             ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
                                                             WHEN $3 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
@@ -96,6 +126,16 @@ async function sinEstado(direccionParsed) {
                                                             WHEN $3 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
                                                                 CASE 
                                                                     WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($3 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                    ELSE 0.5
+                                                                END
+                                                            WHEN $3 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                                CASE 
+                                                                    WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($3 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                    ELSE 0.5
+                                                                END
+                                                            WHEN $3 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                                CASE 
+                                                                    WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($3 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                     ELSE 0.5
                                                                 END
                                                          END)) AS x_centro
@@ -118,10 +158,10 @@ async function sinEstado(direccionParsed) {
                 numero_exterior: 100,
                 colonia: 0
             };
-            const matchNombreCalle = result.rows[i].calle.match(new RegExp(direccionParsed.CALLE, 'i'));
+            const matchNombreCalle = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.CALLE, 'i'));
             if (matchNombreCalle) {
                 const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
-                let igualdad = matchedText.length * 100 / result.rows[i].calle.length;
+                let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                 if (igualdad > 100) igualdad = 100;
                 result.rows[i].scoring.calle += Math.round(igualdad);
                 result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
@@ -151,6 +191,16 @@ async function sinEstado(direccionParsed) {
                                                                         WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($3 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                         ELSE 0.5
                                                                     END
+                                                                WHEN $3 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                                    CASE 
+                                                                        WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($3 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                        ELSE 0.5
+                                                                    END
+                                                                WHEN $3 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                                    CASE 
+                                                                        WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($3 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                        ELSE 0.5
+                                                                    END
                                                              END)) AS y_centro,
                 ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
                                                                 WHEN $3 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
@@ -161,6 +211,16 @@ async function sinEstado(direccionParsed) {
                                                                 WHEN $3 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
                                                                     CASE 
                                                                         WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($3 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                        ELSE 0.5
+                                                                    END
+                                                                WHEN $3 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                                    CASE 
+                                                                        WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($3 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                        ELSE 0.5
+                                                                    END
+                                                                WHEN $3 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                                    CASE 
+                                                                        WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($3 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                         ELSE 0.5
                                                                     END
                                                              END)) AS x_centro
@@ -183,10 +243,10 @@ async function sinEstado(direccionParsed) {
                     numero_exterior: 100,
                     colonia: 0
                 };
-                const matchNombreCalle = result.rows[i].calle.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                const matchNombreCalle = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.COLONIA, 'i'));
                 if (matchNombreCalle) {
                     const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
-                    let igualdad = matchedText.length * 100 / result.rows[i].calle.length;
+                    let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                     if (igualdad > 100) igualdad = 100;
                     result.rows[i].scoring.calle += Math.round(igualdad);
                     result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
@@ -217,6 +277,16 @@ async function sinEstado(direccionParsed) {
                                                                             WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($2 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                             ELSE 0.5
                                                                         END
+                                                                    WHEN $2 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                                        CASE 
+                                                                            WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($2 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                            ELSE 0.5
+                                                                        END
+                                                                    WHEN $2 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                                        CASE 
+                                                                            WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($2 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                            ELSE 0.5
+                                                                        END
                                                                  END)) AS y_centro,
                     ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
                                                                     WHEN $2 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
@@ -227,6 +297,16 @@ async function sinEstado(direccionParsed) {
                                                                     WHEN $2 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
                                                                         CASE 
                                                                             WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($2 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                            ELSE 0.5
+                                                                        END
+                                                                    WHEN $2 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                                        CASE 
+                                                                            WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($2 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                            ELSE 0.5
+                                                                        END
+                                                                    WHEN $2 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                                        CASE 
+                                                                            WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($2 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                             ELSE 0.5
                                                                         END
                                                                  END)) AS x_centro
@@ -248,10 +328,10 @@ async function sinEstado(direccionParsed) {
                         numero_exterior: 100,
                         colonia: 0
                     };
-                    const matchNombreCalle = result.rows[i].calle.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                    const matchNombreCalle = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.COLONIA, 'i'));
                     if (matchNombreCalle) {
                         const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
-                        let igualdad = matchedText.length * 100 / result.rows[i].calle.length;
+                        let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                         if (igualdad > 100) igualdad = 100;
                         result.rows[i].scoring.calle += Math.round(igualdad);
                         result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
@@ -290,10 +370,10 @@ async function sinEstado(direccionParsed) {
                             numero_exterior: 0,
                             colonia: 0
                         };
-                        const matchNombreCalle = result.rows[i].calle.match(new RegExp(direccionParsed.CALLE, 'i'));
+                        const matchNombreCalle = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.CALLE, 'i'));
                         if (matchNombreCalle) {
                             const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
-                            let igualdad = matchedText.length * 100 / result.rows[i].calle.length;
+                            let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                             if (igualdad > 100) igualdad = 100;
                             result.rows[i].scoring.calle += Math.round(igualdad);
                             result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
@@ -329,10 +409,10 @@ async function sinEstado(direccionParsed) {
                                 numero_exterior: 0,
                                 colonia: 0
                             };
-                            const matchNombreCalle = result.rows[i].calle.match(new RegExp(direccionParsed.CALLE, 'i'));
+                            const matchNombreCalle = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.CALLE, 'i'));
                             if (matchNombreCalle) {
                                 const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
-                                let igualdad = matchedText.length * 100 / result.rows[i].calle.length;
+                                let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                                 if (igualdad > 100) igualdad = 100;
                                 result.rows[i].scoring.calle += Math.round(igualdad);
                                 result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
@@ -368,10 +448,10 @@ async function sinEstado(direccionParsed) {
                                     numero_exterior: 0,
                                     colonia: 0
                                 };
-                                const matchNombreCalle = result.rows[i].calle.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                const matchNombreCalle = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.COLONIA, 'i'));
                                 if (matchNombreCalle) {
                                     const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
-                                    let igualdad = matchedText.length * 100 / result.rows[i].calle.length;
+                                    let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                                     if (igualdad > 100) igualdad = 100;
                                     result.rows[i].scoring.calle += Math.round(igualdad);
                                     result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
@@ -402,6 +482,16 @@ async function sinEstado(direccionParsed) {
                                                                                             WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($3 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                                             ELSE 0.5
                                                                                         END
+                                                                                    WHEN $3 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                                                        CASE 
+                                                                                            WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($3 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                                            ELSE 0.5
+                                                                                        END
+                                                                                    WHEN $3 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                                                        CASE 
+                                                                                            WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($3 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                                            ELSE 0.5
+                                                                                        END
                                                                                  END)) AS y_centro,
                                     ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
                                                                                     WHEN $3 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
@@ -412,6 +502,16 @@ async function sinEstado(direccionParsed) {
                                                                                     WHEN $3 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
                                                                                         CASE 
                                                                                             WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($3 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                                            ELSE 0.5
+                                                                                        END
+                                                                                    WHEN $3 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                                                        CASE 
+                                                                                            WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($3 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                                            ELSE 0.5
+                                                                                        END
+                                                                                    WHEN $3 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                                                        CASE 
+                                                                                            WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($3 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                                             ELSE 0.5
                                                                                         END
                                                                                  END)) AS x_centro
@@ -435,9 +535,9 @@ async function sinEstado(direccionParsed) {
                                         colonia: 0
                                     };
                                     // Calcular la distancia de Levenshtein
-                                    const distance = levenshteinDistance(result.rows[i].calle, direccionParsed.CALLE);
+                                    const distance = levenshteinDistance(result.rows[i].nombre_vialidad, direccionParsed.CALLE);
                                     // Calcular la similitud como el inverso de la distancia de Levenshtein
-                                    const maxLength = Math.max(result.rows[i].calle.length, direccionParsed.CALLE.length);
+                                    const maxLength = Math.max(result.rows[i].nombre_vialidad.length, direccionParsed.CALLE.length);
                                     const similarity = ((maxLength - distance) / maxLength) * 100;
                                     if (similarity) {
                                         result.rows[i].scoring.calle += similarity;
@@ -468,6 +568,16 @@ async function sinEstado(direccionParsed) {
                                                                                                 WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($2 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                                                 ELSE 0.5
                                                                                             END
+                                                                                        WHEN $2 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                                                            CASE 
+                                                                                                WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($2 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                                                ELSE 0.5
+                                                                                            END
+                                                                                        WHEN $2 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                                                            CASE 
+                                                                                                WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($2 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                                                ELSE 0.5
+                                                                                            END
                                                                                      END)) AS y_centro,
                                         ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
                                                                                         WHEN $2 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
@@ -478,6 +588,16 @@ async function sinEstado(direccionParsed) {
                                                                                         WHEN $2 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
                                                                                             CASE 
                                                                                                 WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($2 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                                                ELSE 0.5
+                                                                                            END
+                                                                                        WHEN $2 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                                                            CASE 
+                                                                                                WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($2 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                                                ELSE 0.5
+                                                                                            END
+                                                                                        WHEN $2 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                                                            CASE 
+                                                                                                WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($2 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                                                 ELSE 0.5
                                                                                             END
                                                                                      END)) AS x_centro
@@ -500,9 +620,9 @@ async function sinEstado(direccionParsed) {
                                             colonia: 0
                                         };
                                         // Calcular la distancia de Levenshtein
-                                        const distance = levenshteinDistance(result.rows[i].calle, direccionParsed.CALLE);
+                                        const distance = levenshteinDistance(result.rows[i].nombre_vialidad, direccionParsed.CALLE);
                                         // Calcular la similitud como el inverso de la distancia de Levenshtein
-                                        const maxLength = Math.max(result.rows[i].calle.length, direccionParsed.CALLE.length);
+                                        const maxLength = Math.max(result.rows[i].nombre_vialidad.length, direccionParsed.CALLE.length);
                                         const similarity = ((maxLength - distance) / maxLength) * 100;
                                         if (similarity) {
                                             result.rows[i].scoring.calle += similarity;
@@ -533,6 +653,16 @@ async function sinEstado(direccionParsed) {
                                                                                                     WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($2 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                                                     ELSE 0.5
                                                                                                 END
+                                                                                            WHEN $2 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                                                                CASE 
+                                                                                                    WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($2 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                                                    ELSE 0.5
+                                                                                                END
+                                                                                            WHEN $2 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                                                                CASE 
+                                                                                                    WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($2 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                                                    ELSE 0.5
+                                                                                                END
                                                                                          END)) AS y_centro,
                                             ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
                                                                                             WHEN $2 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
@@ -543,6 +673,16 @@ async function sinEstado(direccionParsed) {
                                                                                             WHEN $2 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
                                                                                                 CASE 
                                                                                                     WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($2 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                                                    ELSE 0.5
+                                                                                                END
+                                                                                            WHEN $2 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                                                                CASE 
+                                                                                                    WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($2 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                                                    ELSE 0.5
+                                                                                                END
+                                                                                            WHEN $2 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                                                                CASE 
+                                                                                                    WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($2 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                                                     ELSE 0.5
                                                                                                 END
                                                                                          END)) AS x_centro
@@ -565,9 +705,9 @@ async function sinEstado(direccionParsed) {
                                                 colonia: 0
                                             };
                                             // Calcular la distancia de Levenshtein
-                                            const distance = levenshteinDistance(result.rows[i].calle, direccionParsed.COLONIA);
+                                            const distance = levenshteinDistance(result.rows[i].nombre_vialidad, direccionParsed.COLONIA);
                                             // Calcular la similitud como el inverso de la distancia de Levenshtein
-                                            const maxLength = Math.max(result.rows[i].calle.length, direccionParsed.COLONIA.length);
+                                            const maxLength = Math.max(result.rows[i].nombre_vialidad.length, direccionParsed.COLONIA.length);
                                             const similarity = ((maxLength - distance) / maxLength) * 100;
                                             if (similarity) {
                                                 result.rows[i].scoring.calle += similarity;
@@ -612,9 +752,9 @@ async function sinEstado(direccionParsed) {
                                                     colonia: 0
                                                 };
                                                 // Calcular la distancia de Levenshtein
-                                                const distance = levenshteinDistance(result.rows[i].calle, direccionParsed.CALLE);
+                                                const distance = levenshteinDistance(result.rows[i].nombre_vialidad, direccionParsed.CALLE);
                                                 // Calcular la similitud como el inverso de la distancia de Levenshtein
-                                                const maxLength = Math.max(result.rows[i].calle.length, direccionParsed.CALLE.length);
+                                                const maxLength = Math.max(result.rows[i].nombre_vialidad.length, direccionParsed.CALLE.length);
                                                 const similarity = ((maxLength - distance) / maxLength) * 100;
                                                 if (similarity) {
                                                     result.rows[i].scoring.calle += similarity;

@@ -24,11 +24,11 @@ function parseDireccion(direccion) {
 
         // Buscar el tipo de vialidad
         const tipoVialidad = obtenerTipoVialidad(componente);
-        if (tipoVialidad) {
+        if (tipoVialidad && !direccionParsed.CALLE && !direccionParsed.TIPOVIAL) {
             direccionParsed.TIPOVIAL = tipoVialidad;
             calle = componente.replace(tipoVialidad, '').trim();
             i++;
-            while (i < componentesDireccion.length && !obtenerTipoAsentamiento(componentesDireccion[i]) && !obtenerNumeroExterior(componentesDireccion[i])) {
+            while (i < componentesDireccion.length && !obtenerNumeroExterior(componentesDireccion[i]) && !obtenerCodigoPostal(componentesDireccion[i])) {
                 calle += ' ' + componentesDireccion[i];
                 i++;
             }
@@ -39,10 +39,11 @@ function parseDireccion(direccion) {
 
         // Buscar el número exterior
         const numeroExterior = obtenerNumeroExterior(componente);
-        if (numeroExterior) {
-            numExterior = numeroExterior;
-            direccionParsed.NUMEXTNUM1 = numeroExterior.split(' ')[0];
-            direccionParsed.NUMEXTALF1 = numeroExterior.split(' ')[1] || '';
+        if (numeroExterior && (direccionParsed.CALLE || direccionParsed.NOMASEN || direccionParsed.NOMVIAL) && !direccionParsed.NUMEXTNUM1) {
+            if (numeroExterior !== 'No se ha especificado un número exterior') {
+                direccionParsed.NUMEXTNUM1 = numeroExterior.split(' ')[0];
+                direccionParsed.NUMEXTALF1 = numeroExterior.split(' ')[1] || '';
+            }
             activo = false;
         }
 
@@ -55,11 +56,11 @@ function parseDireccion(direccion) {
 
         // Buscar el tipo de asentamiento humano
         const tipoAsentamiento = obtenerTipoAsentamiento(componente);
-        if (tipoAsentamiento) {
+        if (tipoAsentamiento && !direccionParsed.CALLE && !direccionParsed.TIPOASEN && !direccionParsed.TIPOVIAL) {
             direccionParsed.TIPOASEN = tipoAsentamiento;
             calle = componente.replace(tipoAsentamiento, '').trim();
             i++;
-            while (i < componentesDireccion.length && !obtenerEstado(componentesDireccion[i]) && !obtenerMunicipio(componentesDireccion[i], componentesDireccion[i+1])) {
+            while (i < componentesDireccion.length && !obtenerNumeroExterior(componentesDireccion[i]) && !obtenerCodigoPostal(componentesDireccion[i])) {
                 calle += ' ' + componentesDireccion[i];
                 i++;
             }
@@ -69,7 +70,7 @@ function parseDireccion(direccion) {
         }
 
         // Buscar el estado
-        if (!estado) {
+        if (!estado && (direccionParsed.MUNICIPIO || i === componentesDireccion.length - 1)) {
             estado = obtenerEstado(componente);
             if (estado) {
                 direccionParsed.ESTADO = estado;
@@ -86,18 +87,18 @@ function parseDireccion(direccion) {
             }
         }
         if (activo) {
-            if (!direccionParsed.CALLE && !direccionParsed.TIPOVIAL) {
+            if (!direccionParsed.CALLE && !direccionParsed.TIPOVIAL && !direccionParsed.TIPOASEN) {
                 cont = i;
                 direccionParsed.CALLE = componente;
-                activo=false;
+                activo = false;
             } else if (direccionParsed.CALLE && cont === i - 1) {
                 cont = i;
                 direccionParsed.CALLE += ' ' + componente;
-                activo=false;
+                activo = false;
             }
         }
         if (activo) {
-            if (!direccionParsed.COLONIA && !direccionParsed.TIPOASEN) {
+            if (!direccionParsed.COLONIA) {
                 cont2 = i;
                 direccionParsed.COLONIA = componente;
             } else if (direccionParsed.COLONIA && cont2 === i - 1) {
@@ -106,6 +107,14 @@ function parseDireccion(direccion) {
             }
         }
         activo = true;
+    }
+    if (!direccionParsed.CALLE) {
+        if (direccionParsed.NOMASEN) {
+            direccionParsed.CALLE = direccionParsed.NOMASEN
+        }
+        else {
+            direccionParsed.CALLE = direccionParsed.NOMVIAL
+        }
     }
 
     return direccionParsed;
@@ -123,14 +132,32 @@ function obtenerTipoVialidad(componente) {
 
 // Función auxiliar para obtener el número exterior
 function obtenerNumeroExterior(componente) {
-    const numeroExteriorRegex = /\b(?!(\d{5})$)([A-Z]?\d+[A-Z]?)\b/;
+    // Expresión regular para detectar números exteriores como "123A"
+    const numeroExteriorRegex = /\b(?!(\d{5})$)(\d+)\s*([A-Z])?\b/;
     const match = componente.match(numeroExteriorRegex);
     if (match) {
-        // Removemos la letra opcional al principio y al final del número capturado
-        const numExterior = match[0].replace(/[A-Z]$/, '').replace(/^[A-Z]/, '');
-        return numExterior.trim();
+        const [numCompleto, , numExtNum, numExtAlf] = match;
+        return `${numExtNum} ${numExtAlf || ''}`.trim();
+    } else {
+        // Expresión regular para detectar números exteriores como "M14"
+        const numeroExteriorRegex = /\b(?:[0-9]+[a-zA-Z]?|[a-zA-Z][0-9]+)\b/;
+        const match = componente.match(numeroExteriorRegex);
+        if (match) {
+            const numExterior = match[0].replace(/[A-Z]$/, '').replace(/^[A-Z]/, '');
+            return numExterior.trim();
+        } else if (componente === "S/N") {
+            return "No se ha especificado un número exterior";
+        } else {
+            // Expresión regular para detectar números exteriores como "E9I303"
+            const numeroExteriorRegex3 = /\b(?:[a-zA-Z]*\d+[a-zA-Z]*(\d{3,}))\b/;
+            const match = componente.match(numeroExteriorRegex3);
+            if (match) {
+                // Obtenemos el último grupo de dígitos consecutivos de 3 o más caracteres
+                const numExterior = match[1];
+                return numExterior.trim();
+            }
+        }
     }
-
     return null;
 }
 // Función auxiliar para obtener el tipo de asentamiento humano
@@ -175,14 +202,15 @@ function obtenerMunicipio(componente, estado) {
 }
 // Función para limpiar la búsqueda eliminando caracteres específicos
 function limpiarBusqueda(texto) {
-    texto.replace(/[-|+"#$%&*./;?\[{\~¡¦=¤¥]/g, ''); // Elimina los caracteres específicos
+    // Elimina caracteres específicos, excepto cuando están precedidos por un espacio y seguidos por una letra y un punto.
+    texto = texto.replace(/(?<!\S)[\-|+"#$%&*./;?\[{\~¡¦=¤¥](?=(\s[A-Z]\.))/g, '');
     return texto.replace(/Ñ/g, 'N').trim();
 }
 // Función para expandir abreviaciones de tipos de vialidad en una dirección
 function expandirAbreviaciones(direccion) {
     // Expande las abreviaciones en la dirección
     for (const abreviacion in diccionarioAbreviaciones) {
-        const regex = new RegExp(`\\b${abreviacion}\\b`, 'gi');
+        const regex = new RegExp(`\\b${abreviacion}(?:\\.\\s*|\\b)`, 'gi');
         direccion = direccion.replace(regex, diccionarioAbreviaciones[abreviacion]);
     }
     return direccion;
@@ -191,33 +219,6 @@ function expandirAbreviaciones(direccion) {
 function eliminarCaracteres(direccion) {
     const regex = /\b[A-Z]\.\s/g;
     return direccion.replace(regex, '');
-}
-// Función auxiliar para formatear la dirección parseada según la Norma Técnica
-function formatearDireccionParsed(direccionParsed) {
-    const componentes = [];
-    if (direccionParsed.TIPOVIAL && direccionParsed.NOMVIAL) {
-        componentes.push(`${direccionParsed.TIPOVIAL} ${direccionParsed.NOMVIAL}`);
-    }
-    if (direccionParsed.NUMEXTNUM1 || direccionParsed.NUMEXTALF1) {
-        const numeroExterior = `${direccionParsed.NUMEXTNUM1 || ''} ${direccionParsed.NUMEXTALF1 || ''}`.trim();
-        componentes.push(numeroExterior);
-    }
-    if (direccionParsed.TIPOASEN && direccionParsed.NOMASEN) {
-        componentes.push(`${direccionParsed.TIPOASEN} ${direccionParsed.NOMASEN}`);
-    }
-    if (direccionParsed.CP) {
-        componentes.push(direccionParsed.CP);
-    }
-    if (direccionParsed.COLONIA) {
-        componentes.push(direccionParsed.COLONIA);
-    }
-    if (direccionParsed.MUNICIPIO) {
-        componentes.push(direccionParsed.MUNICIPIO);
-    }
-    if (direccionParsed.ESTADO) {
-        componentes.push(direccionParsed.ESTADO);
-    }
-    return componentes.join(', ');
 }
 function levenshteinDistance(str1, str2) {
     const len1 = str1.length;
