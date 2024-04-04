@@ -144,8 +144,9 @@ function obtenerNumeroExterior(componente) {
         const numeroExteriorRegex = /\b(?:[0-9]+[a-zA-Z]?|[a-zA-Z][0-9]+)\b/;
         const match = componente.match(numeroExteriorRegex);
         if (match) {
-            const numExterior = match[0].replace(/[A-Z]$/, '').replace(/^[A-Z]/, '');
-            return numExterior.trim();
+            const numExterior = match[0].replace(/[A-Z]$/, '').replace(/^[A-Z]/, '').trim();
+            if(numExterior.length>=5)return null;
+            return numExterior;
         } else if (componente === "S/N") {
             return "No se ha especificado un número exterior";
         } else {
@@ -154,8 +155,9 @@ function obtenerNumeroExterior(componente) {
             const match = componente.match(numeroExteriorRegex3);
             if (match) {
                 // Obtenemos el último grupo de dígitos consecutivos de 3 o más caracteres
-                const numExterior = match[1];
-                return numExterior.trim();
+                const numExterior = match[1].trim();
+                if(numExterior.length>=5)return null;
+                return numExterior;
             }
         }
     }
