@@ -151,8 +151,8 @@ function obtenerNumeroExterior(componente) {
             return "No se ha especificado un número exterior";
         } else {
             // Expresión regular para detectar números exteriores como "E9I303"
-            const numeroExteriorRegex3 = /\b(?:[a-zA-Z]*\d+[a-zA-Z]*(\d{3,}))\b/;
-            const match = componente.match(numeroExteriorRegex3);
+            const numeroExteriorRegex = /\b(?:[a-zA-Z]*\d+[a-zA-Z]*(\d{3,}))\b/;
+            const match = componente.match(numeroExteriorRegex);
             if (match) {
                 // Obtenemos el último grupo de dígitos consecutivos de 3 o más caracteres
                 const numExterior = match[1].trim();
@@ -160,6 +160,10 @@ function obtenerNumeroExterior(componente) {
                 return numExterior;
             }
         }
+    }
+    const numeroExteriorRegex1 = /^INT\s?\d+$/;
+    if (numeroExteriorRegex1.test(componente)) {
+        return componente.replace('INT','');
     }
     return null;
 }
