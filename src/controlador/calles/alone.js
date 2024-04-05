@@ -68,7 +68,7 @@ async function alone(direccionParsed) {
                     ELSE lon_x
                 END AS x_centro
                 FROM carto_geolocalizador
-                WHERE nombre_vialidad like '%' || $1 || '%'
+                WHERE unaccent(nombre_vialidad) like '%' || $1 || '%'
                 ;
             `;
         values = [direccionParsed.CALLE];

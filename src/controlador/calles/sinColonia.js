@@ -54,10 +54,10 @@ async function sinColonia(direccionParsed) {
                                                             END
                                                      END)) AS x_centro
         FROM carto_geolocalizador
-        WHERE nombre_vialidad like '%' || $1 || '%'
+        WHERE unaccent(nombre_vialidad) like '%' || $1 || '%'
         AND codigo_postal = $2 
-        AND municipio = $3
-        AND estado = $4
+        AND unaccent(municipio) = $3
+        AND unaccent(estado) = $4
         AND (((CAST(l_refaddr AS INTEGER) <= $5 AND CAST(l_nrefaddr AS INTEGER) >= $5)
         OR (CAST(r_refaddr AS INTEGER) <= $5 AND CAST(r_nrefaddr AS INTEGER) >= $5)) 
         OR ((CAST(l_refaddr AS INTEGER) >= $5 AND CAST(l_nrefaddr AS INTEGER) <= $5)
@@ -134,9 +134,9 @@ async function sinColonia(direccionParsed) {
                                                                 END
                                                          END)) AS x_centro
             FROM carto_geolocalizador
-            WHERE nombre_vialidad like '%' || $1 || '%'
-            AND municipio = $2
-            AND estado = $3
+            WHERE unaccent(nombre_vialidad) like '%' || $1 || '%'
+            AND unaccent(municipio) = $2
+            AND unaccent(estado) = $3
             AND (((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
             OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4)) 
             OR ((CAST(l_refaddr AS INTEGER) >= $4 AND CAST(l_nrefaddr AS INTEGER) <= $4)
@@ -213,9 +213,9 @@ async function sinColonia(direccionParsed) {
                                                                     END
                                                              END)) AS x_centro
                 FROM carto_geolocalizador
-                WHERE nombre_vialidad like '%' || $1 || '%'
+                WHERE unaccent(nombre_vialidad) like '%' || $1 || '%'
                 AND codigo_postal = $2 
-                AND estado = $3
+                AND unaccent(estado) = $3
                 AND (((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
                 OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4)) 
                 OR ((CAST(l_refaddr AS INTEGER) >= $4 AND CAST(l_nrefaddr AS INTEGER) <= $4)
@@ -292,9 +292,9 @@ async function sinColonia(direccionParsed) {
                                                                         END
                                                                  END)) AS x_centro
                     FROM carto_geolocalizador
-                    WHERE nombre_vialidad like '%' || $1 || '%'
+                    WHERE unaccent(nombre_vialidad) like '%' || $1 || '%'
                     AND codigo_postal = $2 
-                    AND municipio = $3
+                    AND unaccent(municipio) = $3
                     AND (((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
                     OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4)) 
                     OR ((CAST(l_refaddr AS INTEGER) >= $4 AND CAST(l_nrefaddr AS INTEGER) <= $4)
@@ -371,8 +371,8 @@ async function sinColonia(direccionParsed) {
                                                                             END
                                                                      END)) AS x_centro
                         FROM carto_geolocalizador
-                        WHERE nombre_vialidad like '%' || $1 || '%'
-                        AND municipio = $2
+                        WHERE unaccent(nombre_vialidad) like '%' || $1 || '%'
+                        AND unaccent(municipio) = $2
                         AND (((CAST(l_refaddr AS INTEGER) <= $3 AND CAST(l_nrefaddr AS INTEGER) >= $3)
                         OR (CAST(r_refaddr AS INTEGER) <= $3 AND CAST(r_nrefaddr AS INTEGER) >= $3)) 
                         OR ((CAST(l_refaddr AS INTEGER) >= $3 AND CAST(l_nrefaddr AS INTEGER) <= $3)
@@ -449,7 +449,7 @@ async function sinColonia(direccionParsed) {
                                                                                 END
                                                                             END)) AS x_centro
                             FROM carto_geolocalizador
-                            WHERE nombre_vialidad like '%' || $1 || '%'
+                            WHERE unaccent(nombre_vialidad) like '%' || $1 || '%'
                             AND codigo_postal = $2 
                             AND (((CAST(l_refaddr AS INTEGER) <= $3 AND CAST(l_nrefaddr AS INTEGER) >= $3)
                             OR (CAST(r_refaddr AS INTEGER) <= $3 AND CAST(r_nrefaddr AS INTEGER) >= $3)) 
@@ -491,10 +491,10 @@ async function sinColonia(direccionParsed) {
                                     ELSE lon_x
                                 END AS x_centro
                                 FROM carto_geolocalizador
-                                WHERE nombre_vialidad like '%' || $1 || '%'
+                                WHERE unaccent(nombre_vialidad) like '%' || $1 || '%'
                                 AND codigo_postal = $2 
-                                AND municipio = $3
-                                AND estado = $4
+                                AND unaccent(municipio) = $3
+                                AND unaccent(estado) = $4
                                 ;
                             `;
                             values = [direccionParsed.CALLE, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
@@ -531,9 +531,9 @@ async function sinColonia(direccionParsed) {
                                         ELSE lon_x
                                     END AS x_centro
                                     FROM carto_geolocalizador
-                                    WHERE nombre_vialidad like '%' || $1 || '%'
+                                    WHERE unaccent(nombre_vialidad) like '%' || $1 || '%'
                                     AND codigo_postal = $2 
-                                    AND municipio = $3
+                                    AND unaccent(municipio) = $3
                                     ;
                                 `;
                                 values = [direccionParsed.CALLE, direccionParsed.CP, direccionParsed.MUNICIPIO];
@@ -570,9 +570,9 @@ async function sinColonia(direccionParsed) {
                                             ELSE lon_x
                                         END AS x_centro
                                         FROM carto_geolocalizador
-                                        WHERE nombre_vialidad like '%' || $1 || '%'
-                                        AND municipio = $2
-                                        AND estado = $3
+                                        WHERE unaccent(nombre_vialidad) like '%' || $1 || '%'
+                                        AND unaccent(municipio) = $2
+                                        AND unaccent(estado) = $3
                                         ;
                                     `;
                                     values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
@@ -609,9 +609,9 @@ async function sinColonia(direccionParsed) {
                                                 ELSE lon_x
                                             END AS x_centro
                                             FROM carto_geolocalizador
-                                            WHERE nombre_vialidad like '%' || $1 || '%'
+                                            WHERE unaccent(nombre_vialidad) like '%' || $1 || '%'
                                             AND codigo_postal = $2 
-                                            AND estado = $3
+                                            AND unaccent(estado) = $3
                                             ;
                                         `;
                                         values = [direccionParsed.CALLE, direccionParsed.CP, direccionParsed.ESTADO];
@@ -685,8 +685,8 @@ async function sinColonia(direccionParsed) {
                                                                                                 END)) AS x_centro
                                                 FROM carto_geolocalizador
                                                 WHERE codigo_postal = $1 
-                                                AND municipio = $2
-                                                AND estado = $3
+                                                AND unaccent(municipio) = $2
+                                                AND unaccent(estado) = $3
                                                 AND (((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
                                                 OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4)) 
                                                 OR ((CAST(l_refaddr AS INTEGER) >= $4 AND CAST(l_nrefaddr AS INTEGER) <= $4)
@@ -764,8 +764,8 @@ async function sinColonia(direccionParsed) {
                                                                                                         END
                                                                                                     END)) AS x_centro
                                                     FROM carto_geolocalizador
-                                                    WHERE municipio = $1
-                                                    AND estado = $2
+                                                    WHERE unaccent(municipio) = $1
+                                                    AND unaccent(estado) = $2
                                                     AND (((CAST(l_refaddr AS INTEGER) <= $3 AND CAST(l_nrefaddr AS INTEGER) >= $3)
                                                     OR (CAST(r_refaddr AS INTEGER) <= $3 AND CAST(r_nrefaddr AS INTEGER) >= $3)) 
                                                     OR ((CAST(l_refaddr AS INTEGER) >= $3 AND CAST(l_nrefaddr AS INTEGER) <= $3)
@@ -844,7 +844,7 @@ async function sinColonia(direccionParsed) {
                                                                                                         END)) AS x_centro
                                                         FROM carto_geolocalizador
                                                         WHERE codigo_postal = $1 
-                                                        AND municipio = $2
+                                                        AND unaccent(municipio) = $2
                                                         AND (((CAST(l_refaddr AS INTEGER) <= $3 AND CAST(l_nrefaddr AS INTEGER) >= $3)
                                                         OR (CAST(r_refaddr AS INTEGER) <= $3 AND CAST(r_nrefaddr AS INTEGER) >= $3)) 
                                                         OR ((CAST(l_refaddr AS INTEGER) >= $3 AND CAST(l_nrefaddr AS INTEGER) <= $3)
@@ -923,7 +923,7 @@ async function sinColonia(direccionParsed) {
                                                                                                          END)) AS x_centro
                                                             FROM carto_geolocalizador
                                                             WHERE codigo_postal = $1 
-                                                            AND estado = $2
+                                                            AND unaccent(estado) = $2
                                                             AND (((CAST(l_refaddr AS INTEGER) <= $3 AND CAST(l_nrefaddr AS INTEGER) >= $3)
                                                             OR (CAST(r_refaddr AS INTEGER) <= $3 AND CAST(r_nrefaddr AS INTEGER) >= $3)) 
                                                             OR ((CAST(l_refaddr AS INTEGER) >= $3 AND CAST(l_nrefaddr AS INTEGER) <= $3)
@@ -966,8 +966,8 @@ async function sinColonia(direccionParsed) {
                                                                 END AS x_centro
                                                                 FROM carto_geolocalizador
                                                                 WHERE codigo_postal = $1 
-                                                                AND municipio = $2
-                                                                AND estado = $3
+                                                                AND unaccent(municipio) = $2
+                                                                AND unaccent(estado) = $3
                                                                 ;
                                                             `;
                                                             values = [direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];

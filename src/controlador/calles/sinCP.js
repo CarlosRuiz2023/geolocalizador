@@ -54,14 +54,14 @@ async function sinCP(direccionParsed) {
                                                             END
                                                      END)) AS x_centro
         FROM carto_geolocalizador
-        WHERE nombre_vialidad like '%' || $1 || '%'
-        AND municipio = $2
-        AND estado = $3
+        WHERE unaccent(nombre_vialidad) like '%' || $1 || '%'
+        AND unaccent(municipio) = $2
+        AND unaccent(estado) = $3
         AND (((CAST(l_refaddr AS INTEGER) <= $5 AND CAST(l_nrefaddr AS INTEGER) >= $5)
         OR (CAST(r_refaddr AS INTEGER) <= $5 AND CAST(r_nrefaddr AS INTEGER) >= $5)) 
         OR ((CAST(l_refaddr AS INTEGER) >= $5 AND CAST(l_nrefaddr AS INTEGER) <= $5)
         OR (CAST(r_refaddr AS INTEGER) >= $5 AND CAST(r_nrefaddr AS INTEGER) <= $5)))
-        AND colonia LIKE '%' || $4 || '%'
+        AND unaccent(colonia) LIKE '%' || $4 || '%'
         ;
     `;
     values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
@@ -142,13 +142,13 @@ async function sinCP(direccionParsed) {
                                                                 END
                                                          END)) AS x_centro
             FROM carto_geolocalizador
-            WHERE nombre_vialidad like '%' || $1 || '%'
-            AND estado = $2
+            WHERE unaccent(nombre_vialidad) like '%' || $1 || '%'
+            AND unaccent(estado) = $2
             AND (((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
             OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4)) 
             OR ((CAST(l_refaddr AS INTEGER) >= $4 AND CAST(l_nrefaddr AS INTEGER) <= $4)
             OR (CAST(r_refaddr AS INTEGER) >= $4 AND CAST(r_nrefaddr AS INTEGER) <= $4)))
-            AND colonia LIKE '%' || $3 || '%'
+            AND unaccent(colonia) LIKE '%' || $3 || '%'
             ;
         `;
         values = [direccionParsed.CALLE, direccionParsed.ESTADO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
@@ -229,13 +229,13 @@ async function sinCP(direccionParsed) {
                                                                     END
                                                              END)) AS x_centro
                 FROM carto_geolocalizador
-                WHERE nombre_vialidad like '%' || $1 || '%'
-                AND municipio = $2
+                WHERE unaccent(nombre_vialidad) like '%' || $1 || '%'
+                AND unaccent(municipio) = $2
                 AND (((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
                 OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4)) 
                 OR ((CAST(l_refaddr AS INTEGER) >= $4 AND CAST(l_nrefaddr AS INTEGER) <= $4)
                 OR (CAST(r_refaddr AS INTEGER) >= $4 AND CAST(r_nrefaddr AS INTEGER) <= $4)))
-                AND colonia LIKE '%' || $3 || '%'
+                AND unaccent(colonia) LIKE '%' || $3 || '%'
                 ;
             `;
             values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
@@ -316,13 +316,13 @@ async function sinCP(direccionParsed) {
                                                                         END
                                                                  END)) AS x_centro
                     FROM carto_geolocalizador
-                    WHERE nombre_vialidad like '%' || $1 || '%'
-                    AND municipio = $2
+                    WHERE unaccent(nombre_vialidad) like '%' || $1 || '%'
+                    AND unaccent(municipio) = $2
                     AND (((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
                     OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4)) 
                     OR ((CAST(l_refaddr AS INTEGER) >= $4 AND CAST(l_nrefaddr AS INTEGER) <= $4)
                     OR (CAST(r_refaddr AS INTEGER) >= $4 AND CAST(r_nrefaddr AS INTEGER) <= $4)))
-                    AND estado = $3
+                    AND unaccent(estado) = $3
                     ;
                 `;
                 values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1];
@@ -404,12 +404,12 @@ async function sinCP(direccionParsed) {
                                                                             END
                                                                      END)) AS x_centro
                         FROM carto_geolocalizador
-                        WHERE nombre_vialidad like '%' || $1 || '%'
+                        WHERE unaccent(nombre_vialidad) like '%' || $1 || '%'
                         AND (((CAST(l_refaddr AS INTEGER) <= $3 AND CAST(l_nrefaddr AS INTEGER) >= $3)
                         OR (CAST(r_refaddr AS INTEGER) <= $3 AND CAST(r_nrefaddr AS INTEGER) >= $3)) 
                         OR ((CAST(l_refaddr AS INTEGER) >= $3 AND CAST(l_nrefaddr AS INTEGER) <= $3)
                         OR (CAST(r_refaddr AS INTEGER) >= $3 AND CAST(r_nrefaddr AS INTEGER) <= $3)))
-                        AND estado = $2
+                        AND unaccent(estado) = $2
                         ;
                     `;
                     values = [direccionParsed.CALLE, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1];
@@ -491,12 +491,12 @@ async function sinCP(direccionParsed) {
                                                                                 END
                                                                          END)) AS x_centro
                             FROM carto_geolocalizador
-                            WHERE nombre_vialidad like '%' || $1 || '%'
+                            WHERE unaccent(nombre_vialidad) like '%' || $1 || '%'
                             AND (((CAST(l_refaddr AS INTEGER) <= $3 AND CAST(l_nrefaddr AS INTEGER) >= $3)
                             OR (CAST(r_refaddr AS INTEGER) <= $3 AND CAST(r_nrefaddr AS INTEGER) >= $3)) 
                             OR ((CAST(l_refaddr AS INTEGER) >= $3 AND CAST(l_nrefaddr AS INTEGER) <= $3)
                             OR (CAST(r_refaddr AS INTEGER) >= $3 AND CAST(r_nrefaddr AS INTEGER) <= $3)))
-                            AND colonia LIKE '%' || $2 || '%'
+                            AND unaccent(colonia) LIKE '%' || $2 || '%'
                             ;
                         `;
                         values = [direccionParsed.CALLE, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
@@ -541,10 +541,10 @@ async function sinCP(direccionParsed) {
                                     ELSE lon_x
                                 END AS x_centro
                                 FROM carto_geolocalizador
-                                WHERE nombre_vialidad like '%' || $1 || '%'
-                                AND municipio = $2
-                                AND estado = $3
-                                AND colonia LIKE '%' || $4 || '%'
+                                WHERE unaccent(nombre_vialidad) like '%' || $1 || '%'
+                                AND unaccent(municipio) = $2
+                                AND unaccent(estado) = $3
+                                AND unaccent(colonia) LIKE '%' || $4 || '%'
                                 ;
                             `;
                             values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
@@ -625,12 +625,12 @@ async function sinCP(direccionParsed) {
                                                                                         END
                                                                                  END)) AS x_centro
                                     FROM carto_geolocalizador
-                                    WHERE nombre_vialidad like '%' || $1 || '%'
+                                    WHERE unaccent(nombre_vialidad) like '%' || $1 || '%'
                                     AND (((CAST(l_refaddr AS INTEGER) <= $3 AND CAST(l_nrefaddr AS INTEGER) >= $3)
                                     OR (CAST(r_refaddr AS INTEGER) <= $3 AND CAST(r_nrefaddr AS INTEGER) >= $3)) 
                                     OR ((CAST(l_refaddr AS INTEGER) >= $3 AND CAST(l_nrefaddr AS INTEGER) <= $3)
                                     OR (CAST(r_refaddr AS INTEGER) >= $3 AND CAST(r_nrefaddr AS INTEGER) <= $3)))
-                                    AND municipio = $2
+                                    AND unaccent(municipio) = $2
                                     ;
                                 `;
                                 values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1];
@@ -676,9 +676,9 @@ async function sinCP(direccionParsed) {
                                             ELSE lon_x
                                         END AS x_centro
                                         FROM carto_geolocalizador
-                                        WHERE nombre_vialidad like '%' || $1 || '%'
-                                        AND municipio = $2
-                                        AND colonia LIKE '%' || $3 || '%'
+                                        WHERE unaccent(nombre_vialidad) like '%' || $1 || '%'
+                                        AND unaccent(municipio) = $2
+                                        AND unaccent(colonia) LIKE '%' || $3 || '%'
                                         ;
                                     `;
                                     values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
@@ -723,9 +723,9 @@ async function sinCP(direccionParsed) {
                                                 ELSE lon_x
                                             END AS x_centro
                                             FROM carto_geolocalizador
-                                            WHERE nombre_vialidad like '%' || $1 || '%'
-                                            AND estado = $2
-                                            AND colonia LIKE '%' || $3 || '%'
+                                            WHERE unaccent(nombre_vialidad) like '%' || $1 || '%'
+                                            AND unaccent(estado) = $2
+                                            AND unaccent(colonia) LIKE '%' || $3 || '%'
                                             ;
                                         `;
                                         values = [direccionParsed.CALLE, direccionParsed.ESTADO, direccionParsed.COLONIA];
@@ -770,9 +770,9 @@ async function sinCP(direccionParsed) {
                                                     ELSE lon_x
                                                 END AS x_centro
                                                 FROM carto_geolocalizador
-                                                WHERE nombre_vialidad like '%' || $1 || '%'
-                                                AND estado = $2
-                                                AND municipio = $3
+                                                WHERE unaccent(nombre_vialidad) like '%' || $1 || '%'
+                                                AND unaccent(estado) = $2
+                                                AND unaccent(municipio) = $3
                                                 ;
                                             `;
                                             values = [direccionParsed.CALLE, direccionParsed.ESTADO, direccionParsed.MUNICIPIO];
@@ -854,13 +854,13 @@ async function sinCP(direccionParsed) {
                                                                                                         END
                                                                                                  END)) AS x_centro
                                                     FROM carto_geolocalizador
-                                                    WHERE municipio = $1
-                                                    AND estado = $2
+                                                    WHERE unaccent(municipio) = $1
+                                                    AND unaccent(estado) = $2
                                                     AND (((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
                                                     OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4)) 
                                                     OR ((CAST(l_refaddr AS INTEGER) >= $4 AND CAST(l_nrefaddr AS INTEGER) <= $4)
                                                     OR (CAST(r_refaddr AS INTEGER) >= $4 AND CAST(r_nrefaddr AS INTEGER) <= $4)))
-                                                    AND colonia LIKE '%' || $3 || '%'
+                                                    AND unaccent(colonia) LIKE '%' || $3 || '%'
                                                     ;
                                                 `;
                                                 values = [direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
@@ -874,19 +874,10 @@ async function sinCP(direccionParsed) {
                                                         numero_exterior: 100,
                                                         colonia: 0
                                                     };
-                                                    let distance=0;
-                                                    let maxLength=0;
-                                                    try {
-                                                        // Calcular la distancia de Levenshtein
-                                                        distance = levenshteinDistance(result.rows[i].nombre_vialidad, direccionParsed.CALLE);
-                                                        // Calcular la similitud como el inverso de la distancia de Levenshtein
-                                                        maxLength = Math.max(result.rows[i].nombre_vialidad.length, direccionParsed.CALLE.length);
-                                                    } catch (error) {
-                                                        // Calcular la distancia de Levenshtein
-                                                        distance = levenshteinDistance(result.rows[i].nombre_vialidad, direccionParsed.COLONIA);
-                                                        // Calcular la similitud como el inverso de la distancia de Levenshtein
-                                                        maxLength = Math.max(result.rows[i].nombre_vialidad.length, direccionParsed.COLONIA.length);
-                                                    }
+                                                    // Calcular la distancia de Levenshtein
+                                                    const distance = levenshteinDistance(result.rows[i].nombre_vialidad, direccionParsed.CALLE);
+                                                    // Calcular la similitud como el inverso de la distancia de Levenshtein
+                                                    const maxLength = Math.max(result.rows[i].nombre_vialidad.length, direccionParsed.CALLE.length);
                                                     const similarity = ((maxLength - distance) / maxLength) * 100;
                                                     if (similarity) {
                                                         result.rows[i].scoring.calle += similarity;
@@ -951,12 +942,12 @@ async function sinCP(direccionParsed) {
                                                                                                             END
                                                                                                      END)) AS x_centro
                                                         FROM carto_geolocalizador
-                                                        WHERE municipio = $1
+                                                        WHERE unaccent(municipio) = $1
                                                         AND (((CAST(l_refaddr AS INTEGER) <= $3 AND CAST(l_nrefaddr AS INTEGER) >= $3)
                                                         OR (CAST(r_refaddr AS INTEGER) <= $3 AND CAST(r_nrefaddr AS INTEGER) >= $3)) 
                                                         OR ((CAST(l_refaddr AS INTEGER) >= $3 AND CAST(l_nrefaddr AS INTEGER) <= $3)
                                                         OR (CAST(r_refaddr AS INTEGER) >= $3 AND CAST(r_nrefaddr AS INTEGER) <= $3)))
-                                                        AND colonia LIKE '%' || $2 || '%'
+                                                        AND unaccent(colonia) LIKE '%' || $2 || '%'
                                                         ;
                                                     `;
                                                     values = [direccionParsed.MUNICIPIO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
@@ -1038,12 +1029,12 @@ async function sinCP(direccionParsed) {
                                                                                                                 END
                                                                                                          END)) AS x_centro
                                                             FROM carto_geolocalizador
-                                                            WHERE estado = $1
+                                                            WHERE unaccent(estado) = $1
                                                             AND (((CAST(l_refaddr AS INTEGER) <= $3 AND CAST(l_nrefaddr AS INTEGER) >= $3)
                                                             OR (CAST(r_refaddr AS INTEGER) <= $3 AND CAST(r_nrefaddr AS INTEGER) >= $3)) 
                                                             OR ((CAST(l_refaddr AS INTEGER) >= $3 AND CAST(l_nrefaddr AS INTEGER) <= $3)
                                                             OR (CAST(r_refaddr AS INTEGER) >= $3 AND CAST(r_nrefaddr AS INTEGER) <= $3)))
-                                                            AND colonia LIKE '%' || $2 || '%'
+                                                            AND unaccent(colonia) LIKE '%' || $2 || '%'
                                                             ;
                                                         `;
                                                         values = [direccionParsed.ESTADO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
@@ -1125,12 +1116,12 @@ async function sinCP(direccionParsed) {
                                                                                                                     END
                                                                                                              END)) AS x_centro
                                                                 FROM carto_geolocalizador
-                                                                WHERE estado = $1
+                                                                WHERE unaccent(estado) = $1
                                                                 AND (((CAST(l_refaddr AS INTEGER) <= $3 AND CAST(l_nrefaddr AS INTEGER) >= $3)
                                                                 OR (CAST(r_refaddr AS INTEGER) <= $3 AND CAST(r_nrefaddr AS INTEGER) >= $3)) 
                                                                 OR ((CAST(l_refaddr AS INTEGER) >= $3 AND CAST(l_nrefaddr AS INTEGER) <= $3)
                                                                 OR (CAST(r_refaddr AS INTEGER) >= $3 AND CAST(r_nrefaddr AS INTEGER) <= $3)))
-                                                                AND municipio = $2
+                                                                AND unaccent(municipio) = $2
                                                                 ;
                                                             `;
                                                             values = [direccionParsed.ESTADO, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1];
@@ -1143,7 +1134,7 @@ async function sinCP(direccionParsed) {
                                                                     estado: 100,
                                                                     numero_exterior: 100,
                                                                     colonia: 0,
-                                                                    comosea:0
+                                                                    comosea: 0
                                                                 };
                                                                 // Calcular la distancia de Levenshtein
                                                                 const distance = levenshteinDistance(result.rows[i].nombre_vialidad, direccionParsed.CALLE);
@@ -1178,9 +1169,9 @@ async function sinCP(direccionParsed) {
                                                                         ELSE lon_x
                                                                     END AS x_centro
                                                                     FROM carto_geolocalizador
-                                                                    WHERE municipio = $1
-                                                                    AND estado = $2
-                                                                    AND colonia LIKE '%' || $3 || '%'
+                                                                    WHERE unaccent(municipio) = $1
+                                                                    AND unaccent(estado) = $2
+                                                                    AND unaccent(colonia) LIKE '%' || $3 || '%'
                                                                     ;
                                                                 `;
                                                                 values = [direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];

@@ -54,16 +54,16 @@ async function all(direccionParsed) {
                                                             END
                                                      END)) AS x_centro
         FROM carto_geolocalizador
-        WHERE tipo_vialidad = $1
-        AND nombre_vialidad like '%' || $2 || '%'
+        WHERE unaccent(tipo_vialidad) = $1
+        AND unaccent(nombre_vialidad) like '%' || $2 || '%'
         AND codigo_postal = $3 
-        AND municipio = $4
-        AND estado = $5
+        AND unaccent(municipio) = $4
+        AND unaccent(estado) = $5
         AND (((CAST(l_refaddr AS INTEGER) <= $6 AND CAST(l_nrefaddr AS INTEGER) >= $6)
         OR (CAST(r_refaddr AS INTEGER) <= $6 AND CAST(r_nrefaddr AS INTEGER) >= $6)) 
         OR ((CAST(l_refaddr AS INTEGER) >= $6 AND CAST(l_nrefaddr AS INTEGER) <= $6)
         OR (CAST(r_refaddr AS INTEGER) >= $6 AND CAST(r_nrefaddr AS INTEGER) <= $6)))
-        AND colonia LIKE '%' || $7 || '%'
+        AND unaccent(colonia) LIKE '%' || $7 || '%'
         ;
     `;
     values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1, direccionParsed.COLONIA];
@@ -146,15 +146,15 @@ async function all(direccionParsed) {
                                                                 END
                                                          END)) AS x_centro
             FROM carto_geolocalizador
-            WHERE tipo_vialidad = $1
-            AND nombre_vialidad like '%' || $2 || '%'
-            AND municipio = $3
-            AND estado = $4
+            WHERE unaccent(tipo_vialidad) = $1
+            AND unaccent(nombre_vialidad) like '%' || $2 || '%'
+            AND unaccent(municipio) = $3
+            AND unaccent(estado) = $4
             AND (((CAST(l_refaddr AS INTEGER) <= $5 AND CAST(l_nrefaddr AS INTEGER) >= $5)
             OR (CAST(r_refaddr AS INTEGER) <= $5 AND CAST(r_nrefaddr AS INTEGER) >= $5)) 
             OR ((CAST(l_refaddr AS INTEGER) >= $5 AND CAST(l_nrefaddr AS INTEGER) <= $5)
             OR (CAST(r_refaddr AS INTEGER) >= $5 AND CAST(r_nrefaddr AS INTEGER) <= $5)))
-            AND colonia LIKE '%' || $6 || '%'
+            AND unaccent(colonia) LIKE '%' || $6 || '%'
             ;
         `;
         values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1, direccionParsed.COLONIA];
@@ -237,15 +237,15 @@ async function all(direccionParsed) {
                                                                     END
                                                              END)) AS x_centro
                 FROM carto_geolocalizador
-                WHERE tipo_vialidad = $1
-                AND nombre_vialidad like '%' || $2 || '%'
+                WHERE unaccent(tipo_vialidad) = $1
+                AND unaccent(nombre_vialidad) like '%' || $2 || '%'
                 AND codigo_postal = $3 
-                AND estado = $4
+                AND unaccent(estado) = $4
                 AND (((CAST(l_refaddr AS INTEGER) <= $5 AND CAST(l_nrefaddr AS INTEGER) >= $5)
                 OR (CAST(r_refaddr AS INTEGER) <= $5 AND CAST(r_nrefaddr AS INTEGER) >= $5)) 
                 OR ((CAST(l_refaddr AS INTEGER) >= $5 AND CAST(l_nrefaddr AS INTEGER) <= $5)
                 OR (CAST(r_refaddr AS INTEGER) >= $5 AND CAST(r_nrefaddr AS INTEGER) <= $5)))
-                AND colonia LIKE '%' || $6 || '%'
+                AND unaccent(colonia) LIKE '%' || $6 || '%'
                 ;
             `;
             values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1, direccionParsed.COLONIA];
@@ -328,15 +328,15 @@ async function all(direccionParsed) {
                                                                         END
                                                                  END)) AS x_centro
                     FROM carto_geolocalizador
-                    WHERE tipo_vialidad = $1
-                    AND nombre_vialidad like '%' || $2 || '%'
+                    WHERE unaccent(tipo_vialidad) = $1
+                    AND unaccent(nombre_vialidad) like '%' || $2 || '%'
                     AND codigo_postal = $3 
-                    AND municipio = $4
+                    AND unaccent(municipio) = $4
                     AND (((CAST(l_refaddr AS INTEGER) <= $5 AND CAST(l_nrefaddr AS INTEGER) >= $5)
                     OR (CAST(r_refaddr AS INTEGER) <= $5 AND CAST(r_nrefaddr AS INTEGER) >= $5)) 
                     OR ((CAST(l_refaddr AS INTEGER) >= $5 AND CAST(l_nrefaddr AS INTEGER) <= $5)
                     OR (CAST(r_refaddr AS INTEGER) >= $5 AND CAST(r_nrefaddr AS INTEGER) <= $5)))
-                    AND colonia LIKE '%' || $6 || '%'
+                    AND unaccent(colonia) LIKE '%' || $6 || '%'
                     ;
                 `;
                 values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1, direccionParsed.COLONIA];
@@ -419,15 +419,15 @@ async function all(direccionParsed) {
                                                                             END
                                                                      END)) AS x_centro
                         FROM carto_geolocalizador
-                        WHERE tipo_vialidad = $1
-                        AND nombre_vialidad like '%' || $2 || '%'
+                        WHERE unaccent(tipo_vialidad) = $1
+                        AND unaccent(nombre_vialidad) like '%' || $2 || '%'
                         AND codigo_postal = $3 
-                        AND municipio = $4
+                        AND unaccent(municipio) = $4
                         AND (((CAST(l_refaddr AS INTEGER) <= $5 AND CAST(l_nrefaddr AS INTEGER) >= $5)
                         OR (CAST(r_refaddr AS INTEGER) <= $5 AND CAST(r_nrefaddr AS INTEGER) >= $5)) 
                         OR ((CAST(l_refaddr AS INTEGER) >= $5 AND CAST(l_nrefaddr AS INTEGER) <= $5)
                         OR (CAST(r_refaddr AS INTEGER) >= $5 AND CAST(r_nrefaddr AS INTEGER) <= $5)))
-                        AND estado = $6
+                        AND unaccent(estado) = $6
                         ;
                     `;
                     values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1, direccionParsed.ESTADO];
@@ -511,14 +511,14 @@ async function all(direccionParsed) {
                                                                                 END
                                                                          END)) AS x_centro
                             FROM carto_geolocalizador
-                            WHERE tipo_vialidad = $1
-                            AND nombre_vialidad like '%' || $2 || '%'
-                            AND municipio = $3
+                            WHERE unaccent(tipo_vialidad) = $1
+                            AND unaccent(nombre_vialidad) like '%' || $2 || '%'
+                            AND unaccent(municipio) = $3
                             AND (((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
                             OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4)) 
                             OR ((CAST(l_refaddr AS INTEGER) >= $4 AND CAST(l_nrefaddr AS INTEGER) <= $4)
                             OR (CAST(r_refaddr AS INTEGER) >= $4 AND CAST(r_nrefaddr AS INTEGER) <= $4)))
-                            AND estado = $5
+                            AND unaccent(estado) = $5
                             ;
                         `;
                         values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1, direccionParsed.ESTADO];
@@ -603,14 +603,14 @@ async function all(direccionParsed) {
                                                                                     END
                                                                              END)) AS x_centro
                                 FROM carto_geolocalizador
-                                WHERE tipo_vialidad = $1
-                                AND nombre_vialidad like '%' || $2 || '%'
+                                WHERE unaccent(tipo_vialidad) = $1
+                                AND unaccent(nombre_vialidad) like '%' || $2 || '%'
                                 AND codigo_postal = $3 
                                 AND (((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
                                 OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4)) 
                                 OR ((CAST(l_refaddr AS INTEGER) >= $4 AND CAST(l_nrefaddr AS INTEGER) <= $4)
                                 OR (CAST(r_refaddr AS INTEGER) >= $4 AND CAST(r_nrefaddr AS INTEGER) <= $4)))
-                                AND estado = $5
+                                AND unaccent(estado) = $5
                                 ;
                             `;
                             values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.NUMEXTNUM1, direccionParsed.ESTADO];
@@ -695,14 +695,14 @@ async function all(direccionParsed) {
                                                                                         END
                                                                                  END)) AS x_centro
                                     FROM carto_geolocalizador
-                                    WHERE tipo_vialidad = $1
-                                    AND nombre_vialidad like '%' || $2 || '%'
-                                    AND municipio = $3
+                                    WHERE unaccent(tipo_vialidad) = $1
+                                    AND unaccent(nombre_vialidad) like '%' || $2 || '%'
+                                    AND unaccent(municipio) = $3
                                     AND (((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
                                     OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4)) 
                                     OR ((CAST(l_refaddr AS INTEGER) >= $4 AND CAST(l_nrefaddr AS INTEGER) <= $4)
                                     OR (CAST(r_refaddr AS INTEGER) >= $4 AND CAST(r_nrefaddr AS INTEGER) <= $4)))
-                                    AND colonia LIKE '%' || $5 || '%'
+                                    AND unaccent(colonia) LIKE '%' || $5 || '%'
                                     ;
                                 `;
                                 values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1, direccionParsed.COLONIA];
@@ -786,14 +786,14 @@ async function all(direccionParsed) {
                                                                                             END
                                                                                      END)) AS x_centro
                                         FROM carto_geolocalizador
-                                        WHERE tipo_vialidad = $1
-                                        AND nombre_vialidad like '%' || $2 || '%'
+                                        WHERE unaccent(tipo_vialidad) = $1
+                                        AND unaccent(nombre_vialidad) like '%' || $2 || '%'
                                         AND codigo_postal = $3 
                                         AND (((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
                                         OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4)) 
                                         OR ((CAST(l_refaddr AS INTEGER) >= $4 AND CAST(l_nrefaddr AS INTEGER) <= $4)
                                         OR (CAST(r_refaddr AS INTEGER) >= $4 AND CAST(r_nrefaddr AS INTEGER) <= $4)))
-                                        AND colonia LIKE '%' || $5 || '%'
+                                        AND unaccent(colonia) LIKE '%' || $5 || '%'
                                         ;
                                     `;
                                     values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.NUMEXTNUM1, direccionParsed.COLONIA];
@@ -841,12 +841,12 @@ async function all(direccionParsed) {
                                                 ELSE lon_x
                                             END AS x_centro
                                             FROM carto_geolocalizador
-                                            WHERE tipo_vialidad = $1
-                                            AND nombre_vialidad like '%' || $2 || '%'
+                                            WHERE unaccent(tipo_vialidad) = $1
+                                            AND unaccent(nombre_vialidad) like '%' || $2 || '%'
                                             AND codigo_postal = $3 
-                                            AND municipio = $4
-                                            AND estado = $5
-                                            AND colonia LIKE '%' || $6 || '%'
+                                            AND unaccent(municipio) = $4
+                                            AND unaccent(estado) = $5
+                                            AND unaccent(colonia) LIKE '%' || $6 || '%'
                                             ;
                                         `;
                                         values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
@@ -929,14 +929,14 @@ async function all(direccionParsed) {
                                                                                                     END
                                                                                              END)) AS x_centro
                                                 FROM carto_geolocalizador
-                                                WHERE tipo_vialidad = $1
-                                                AND nombre_vialidad like '%' || $2 || '%'
+                                                WHERE unaccent(tipo_vialidad) = $1
+                                                AND unaccent(nombre_vialidad) like '%' || $2 || '%'
                                                 AND codigo_postal = $3 
                                                 AND (((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
                                                 OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4)) 
                                                 OR ((CAST(l_refaddr AS INTEGER) >= $4 AND CAST(l_nrefaddr AS INTEGER) <= $4)
                                                 OR (CAST(r_refaddr AS INTEGER) >= $4 AND CAST(r_nrefaddr AS INTEGER) <= $4)))
-                                                AND municipio = $5
+                                                AND unaccent(municipio) = $5
                                                 ;
                                             `;
                                             values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.NUMEXTNUM1, direccionParsed.MUNICIPIO];
@@ -984,11 +984,11 @@ async function all(direccionParsed) {
                                                         ELSE lon_x
                                                     END AS x_centro
                                                     FROM carto_geolocalizador
-                                                    WHERE tipo_vialidad = $1
-                                                    AND nombre_vialidad like '%' || $2 || '%'
+                                                    WHERE unaccent(tipo_vialidad) = $1
+                                                    AND unaccent(nombre_vialidad) like '%' || $2 || '%'
                                                     AND codigo_postal = $3 
-                                                    AND municipio = $4
-                                                    AND colonia LIKE '%' || $5 || '%'
+                                                    AND unaccent(municipio) = $4
+                                                    AND unaccent(colonia) LIKE '%' || $5 || '%'
                                                     ;
                                                 `;
                                                 values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
@@ -1035,11 +1035,11 @@ async function all(direccionParsed) {
                                                             ELSE lon_x
                                                         END AS x_centro
                                                         FROM carto_geolocalizador
-                                                        WHERE tipo_vialidad = $1
-                                                        AND nombre_vialidad like '%' || $2 || '%'
-                                                        AND municipio = $3
-                                                        AND estado = $4
-                                                        AND colonia LIKE '%' || $5 || '%'
+                                                        WHERE unaccent(tipo_vialidad) = $1
+                                                        AND unaccent(nombre_vialidad) like '%' || $2 || '%'
+                                                        AND unaccent(municipio) = $3
+                                                        AND unaccent(estado) = $4
+                                                        AND unaccent(colonia) LIKE '%' || $5 || '%'
                                                         ;
                                                     `;
                                                     values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
@@ -1086,11 +1086,11 @@ async function all(direccionParsed) {
                                                                 ELSE lon_x
                                                             END AS x_centro
                                                             FROM carto_geolocalizador
-                                                            WHERE tipo_vialidad = $1
-                                                            AND nombre_vialidad like '%' || $2 || '%'
+                                                            WHERE unaccent(tipo_vialidad) = $1
+                                                            AND unaccent(nombre_vialidad) like '%' || $2 || '%'
                                                             AND codigo_postal = $3 
-                                                            AND estado = $4
-                                                            AND colonia LIKE '%' || $5 || '%'
+                                                            AND unaccent(estado) = $4
+                                                            AND unaccent(colonia) LIKE '%' || $5 || '%'
                                                             ;
                                                         `;
                                                         values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.COLONIA];
@@ -1137,11 +1137,11 @@ async function all(direccionParsed) {
                                                                     ELSE lon_x
                                                                 END AS x_centro
                                                                 FROM carto_geolocalizador
-                                                                WHERE tipo_vialidad = $1
-                                                                AND nombre_vialidad like '%' || $2 || '%'
+                                                                WHERE unaccent(tipo_vialidad) = $1
+                                                                AND unaccent(nombre_vialidad) like '%' || $2 || '%'
                                                                 AND codigo_postal = $3 
-                                                                AND estado = $4
-                                                                AND municipio = $5
+                                                                AND unaccent(estado) = $4
+                                                                AND unaccent(municipio) = $5
                                                                 ;
                                                             `;
                                                             values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.MUNICIPIO];
@@ -1189,10 +1189,10 @@ async function all(direccionParsed) {
                                                                         ELSE lon_x
                                                                     END AS x_centro
                                                                     FROM carto_geolocalizador
-                                                                    WHERE tipo_vialidad = $1
-                                                                    AND colonia like '%' || $2 || '%'
-                                                                    AND estado = $3
-                                                                    AND municipio = $4
+                                                                    WHERE unaccent(tipo_vialidad) = $1
+                                                                    AND unaccent(colonia) like '%' || $2 || '%'
+                                                                    AND unaccent(estado) = $3
+                                                                    AND unaccent(municipio) = $4
                                                                     ;
                                                                 `;
                                                                 values = [direccionParsed.TIPOVIAL, direccionParsed.COLONIA, direccionParsed.ESTADO, direccionParsed.MUNICIPIO];
@@ -1240,10 +1240,10 @@ async function all(direccionParsed) {
                                                                             ELSE lon_x
                                                                         END AS x_centro
                                                                         FROM carto_geolocalizador
-                                                                        WHERE tipo_vialidad = $1
-                                                                        AND nombre_vialidad like '%' || $2 || '%'
-                                                                        AND estado = $3
-                                                                        AND municipio = $4
+                                                                        WHERE unaccent(tipo_vialidad) = $1
+                                                                        AND unaccent(nombre_vialidad) like '%' || $2 || '%'
+                                                                        AND unaccent(estado) = $3
+                                                                        AND unaccent(municipio) = $4
                                                                         ;
                                                                     `;
                                                                     values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.ESTADO, direccionParsed.MUNICIPIO];
@@ -1291,10 +1291,10 @@ async function all(direccionParsed) {
                                                                                 ELSE lon_x
                                                                             END AS x_centro
                                                                             FROM carto_geolocalizador
-                                                                            WHERE tipo_vialidad = $1
-                                                                            AND municipio = $2
-                                                                            AND estado = $3
-                                                                            AND colonia LIKE '%' || $4 || '%'
+                                                                            WHERE unaccent(tipo_vialidad) = $1
+                                                                            AND unaccent(municipio) = $2
+                                                                            AND unaccent(estado) = $3
+                                                                            AND unaccent(colonia) LIKE '%' || $4 || '%'
                                                                             ;
                                                                         `;
                                                                         values = [direccionParsed.TIPOVIAL, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
@@ -1378,14 +1378,14 @@ async function all(direccionParsed) {
                                                                                                                                     END
                                                                                                                              END)) AS x_centro
                                                                                 FROM carto_geolocalizador
-                                                                                WHERE tipo_vialidad = $1
-                                                                                AND municipio = $2
-                                                                                AND estado = $3
+                                                                                WHERE unaccent(tipo_vialidad) = $1
+                                                                                AND unaccent(municipio) = $2
+                                                                                AND unaccent(estado) = $3
                                                                                 AND (((CAST(l_refaddr AS INTEGER) <= $5 AND CAST(l_nrefaddr AS INTEGER) >= $5)
                                                                                 OR (CAST(r_refaddr AS INTEGER) <= $5 AND CAST(r_nrefaddr AS INTEGER) >= $5)) 
                                                                                 OR ((CAST(l_refaddr AS INTEGER) >= $5 AND CAST(l_nrefaddr AS INTEGER) <= $5)
                                                                                 OR (CAST(r_refaddr AS INTEGER) >= $5 AND CAST(r_nrefaddr AS INTEGER) <= $5)))
-                                                                                AND colonia LIKE '%' || $4 || '%'
+                                                                                AND unaccent(colonia) LIKE '%' || $4 || '%'
                                                                                 ;
                                                                             `;
                                                                             values = [direccionParsed.TIPOVIAL, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
@@ -1469,15 +1469,15 @@ async function all(direccionParsed) {
                                                                                                                                         END
                                                                                                                                  END)) AS x_centro
                                                                                     FROM carto_geolocalizador
-                                                                                    WHERE tipo_vialidad = $1
+                                                                                    WHERE unaccent(tipo_vialidad) = $1
                                                                                     AND codigo_postal = $2 
-                                                                                    AND municipio = $3
-                                                                                    AND estado = $4
+                                                                                    AND unaccent(municipio) = $3
+                                                                                    AND unaccent(estado) = $4
                                                                                     AND (((CAST(l_refaddr AS INTEGER) <= $5 AND CAST(l_nrefaddr AS INTEGER) >= $5)
                                                                                     OR (CAST(r_refaddr AS INTEGER) <= $5 AND CAST(r_nrefaddr AS INTEGER) >= $5)) 
                                                                                     OR ((CAST(l_refaddr AS INTEGER) >= $5 AND CAST(l_nrefaddr AS INTEGER) <= $5)
                                                                                     OR (CAST(r_refaddr AS INTEGER) >= $5 AND CAST(r_nrefaddr AS INTEGER) <= $5)))
-                                                                                    AND colonia LIKE '%' || $6 || '%'
+                                                                                    AND unaccent(colonia) LIKE '%' || $6 || '%'
                                                                                     ;
                                                                                 `;
                                                                                 values = [direccionParsed.TIPOVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1, direccionParsed.COLONIA];
@@ -1561,14 +1561,14 @@ async function all(direccionParsed) {
                                                                                                                                             END
                                                                                                                                      END)) AS x_centro
                                                                                         FROM carto_geolocalizador
-                                                                                        WHERE tipo_vialidad = $1
-                                                                                        AND municipio = $2
-                                                                                        AND estado = $3
+                                                                                        WHERE unaccent(tipo_vialidad) = $1
+                                                                                        AND unaccent(municipio) = $2
+                                                                                        AND unaccent(estado) = $3
                                                                                         AND (((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
                                                                                         OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4)) 
                                                                                         OR ((CAST(l_refaddr AS INTEGER) >= $4 AND CAST(l_nrefaddr AS INTEGER) <= $4)
                                                                                         OR (CAST(r_refaddr AS INTEGER) >= $4 AND CAST(r_nrefaddr AS INTEGER) <= $4)))
-                                                                                        AND colonia LIKE '%' || $5 || '%'
+                                                                                        AND unaccent(colonia) LIKE '%' || $5 || '%'
                                                                                         ;
                                                                                     `;
                                                                                     values = [direccionParsed.TIPOVIAL, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1, direccionParsed.COLONIA];
@@ -1652,14 +1652,14 @@ async function all(direccionParsed) {
                                                                                                                                                 END
                                                                                                                                          END)) AS x_centro
                                                                                             FROM carto_geolocalizador
-                                                                                            WHERE tipo_vialidad = $1
+                                                                                            WHERE unaccent(tipo_vialidad) = $1
                                                                                             AND codigo_postal = $2 
-                                                                                            AND municipio = $3
+                                                                                            AND unaccent(municipio) = $3
                                                                                             AND (((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
                                                                                             OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4)) 
                                                                                             OR ((CAST(l_refaddr AS INTEGER) >= $4 AND CAST(l_nrefaddr AS INTEGER) <= $4)
                                                                                             OR (CAST(r_refaddr AS INTEGER) >= $4 AND CAST(r_nrefaddr AS INTEGER) <= $4)))
-                                                                                            AND colonia LIKE '%' || $5 || '%'
+                                                                                            AND unaccent(colonia) LIKE '%' || $5 || '%'
                                                                                             ;
                                                                                         `;
                                                                                         values = [direccionParsed.TIPOVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1, direccionParsed.COLONIA];
@@ -1743,14 +1743,14 @@ async function all(direccionParsed) {
                                                                                                                                                     END
                                                                                                                                              END)) AS x_centro
                                                                                                 FROM carto_geolocalizador
-                                                                                                WHERE tipo_vialidad = $1
+                                                                                                WHERE unaccent(tipo_vialidad) = $1
                                                                                                 AND codigo_postal = $2 
-                                                                                                AND estado = $3
+                                                                                                AND unaccent(estado) = $3
                                                                                                 AND (((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
                                                                                                 OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4)) 
                                                                                                 OR ((CAST(l_refaddr AS INTEGER) >= $4 AND CAST(l_nrefaddr AS INTEGER) <= $4)
                                                                                                 OR (CAST(r_refaddr AS INTEGER) >= $4 AND CAST(r_nrefaddr AS INTEGER) <= $4)))
-                                                                                                AND colonia LIKE '%' || $5 || '%'
+                                                                                                AND unaccent(colonia) LIKE '%' || $5 || '%'
                                                                                                 ;
                                                                                             `;
                                                                                             values = [direccionParsed.TIPOVIAL, direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1, direccionParsed.COLONIA];
@@ -1834,14 +1834,14 @@ async function all(direccionParsed) {
                                                                                                                                                         END
                                                                                                                                                  END)) AS x_centro
                                                                                                     FROM carto_geolocalizador
-                                                                                                    WHERE tipo_vialidad = $1
+                                                                                                    WHERE unaccent(tipo_vialidad) = $1
                                                                                                     AND codigo_postal = $2 
-                                                                                                    AND estado = $3
+                                                                                                    AND unaccent(estado) = $3
                                                                                                     AND (((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
                                                                                                     OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4)) 
                                                                                                     OR ((CAST(l_refaddr AS INTEGER) >= $4 AND CAST(l_nrefaddr AS INTEGER) <= $4)
                                                                                                     OR (CAST(r_refaddr AS INTEGER) >= $4 AND CAST(r_nrefaddr AS INTEGER) <= $4)))
-                                                                                                    AND municipio = $5
+                                                                                                    AND unaccent(municipio) = $5
                                                                                                     ;
                                                                                                 `;
                                                                                                 values = [direccionParsed.TIPOVIAL, direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1, direccionParsed.MUNICIPIO];
@@ -1890,11 +1890,11 @@ async function all(direccionParsed) {
                                                                                                             ELSE lon_x
                                                                                                         END AS x_centro
                                                                                                         FROM carto_geolocalizador
-                                                                                                        WHERE tipo_vialidad = $1
+                                                                                                        WHERE unaccent(tipo_vialidad) = $1
                                                                                                         AND codigo_postal = $2 
-                                                                                                        AND municipio = $3
-                                                                                                        AND estado = $4
-                                                                                                        AND colonia LIKE '%' || $5 || '%'
+                                                                                                        AND unaccent(municipio) = $3
+                                                                                                        AND unaccent(estado) = $4
+                                                                                                        AND unaccent(colonia) LIKE '%' || $5 || '%'
                                                                                                         ;
                                                                                                     `;
                                                                                                     values = [direccionParsed.TIPOVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
@@ -1942,10 +1942,10 @@ async function all(direccionParsed) {
                                                                                                                 ELSE lon_x
                                                                                                             END AS x_centro
                                                                                                             FROM carto_geolocalizador
-                                                                                                            WHERE nombre_vialidad LIKE '%' || $4 || '%'
+                                                                                                            WHERE unaccent(nombre_vialidad) LIKE '%' || $4 || '%'
                                                                                                             AND codigo_postal = $1 
-                                                                                                            AND municipio = $2
-                                                                                                            AND estado = $3
+                                                                                                            AND unaccent(municipio) = $2
+                                                                                                            AND unaccent(estado) = $3
                                                                                                             ;
                                                                                                         `;
                                                                                                         values = [direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];

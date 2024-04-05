@@ -1,6 +1,5 @@
 const tiposAsentamiento = [
     "AEROPUERTO",
-    "AMPLIACION",
     "BARRIO",
     "CANTON",
     "CIUDAD",

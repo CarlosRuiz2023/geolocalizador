@@ -55,7 +55,7 @@ async function sinColoniaMunicipio(direccionParsed) {
                                                         END)) AS x_centro
         FROM carto_geolocalizador
         WHERE codigo_postal = $1 
-        AND estado = $2
+        AND unaccent(estado) = $2
         AND (((CAST(l_refaddr AS INTEGER) <= $3 AND CAST(l_nrefaddr AS INTEGER) >= $3)
         OR (CAST(r_refaddr AS INTEGER) <= $3 AND CAST(r_nrefaddr AS INTEGER) >= $3)) 
         OR ((CAST(l_refaddr AS INTEGER) >= $3 AND CAST(l_nrefaddr AS INTEGER) <= $3)
@@ -122,7 +122,7 @@ async function sinColoniaMunicipio(direccionParsed) {
                                                                 END
                                                             END)) AS x_centro
             FROM carto_geolocalizador
-            WHERE estado = $1
+            WHERE unaccent(estado) = $1
             AND (((CAST(l_refaddr AS INTEGER) <= $2 AND CAST(l_nrefaddr AS INTEGER) >= $2)
             OR (CAST(r_refaddr AS INTEGER) <= $2 AND CAST(r_nrefaddr AS INTEGER) >= $2)) 
             OR ((CAST(l_refaddr AS INTEGER) >= $2 AND CAST(l_nrefaddr AS INTEGER) <= $2)
@@ -221,7 +221,7 @@ async function sinColoniaMunicipio(direccionParsed) {
                     END AS x_centro
                     FROM carto_geolocalizador
                     WHERE codigo_postal = $1 
-                    AND estado = $2
+                    AND unaccent(estado) = $2
                     ;
                 `;
                 values = [direccionParsed.CP,direccionParsed.ESTADO];

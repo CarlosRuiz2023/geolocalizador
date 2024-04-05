@@ -17,8 +17,8 @@ async function alone(direccionParsed) {
                     lon_x
                 END AS x_centro
                 FROM carto_geolocalizador
-                WHERE tipo_vialidad = $1
-                AND nombre_vialidad like '%' || $2 || '%'
+                WHERE unaccent(tipo_vialidad) = $1
+                AND unaccent(nombre_vialidad) like '%' || $2 || '%'
                 ;
             `;
     values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL];

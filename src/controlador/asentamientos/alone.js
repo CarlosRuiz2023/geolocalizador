@@ -17,8 +17,8 @@ async function alone(direccionParsed) {
                     ELSE lon_x
                 END AS x_centro
                 FROM carto_geolocalizador
-                WHERE tipo_asentamiento = $1
-                AND nombre_asentamiento like '%' || $2 || '%'
+                WHERE unaccent(tipo_asentamiento) = $1
+                AND unaccent(nombre_asentamiento) like '%' || $2 || '%'
                 ;
             `;
     values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL];

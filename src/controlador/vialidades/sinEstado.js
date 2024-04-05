@@ -54,14 +54,14 @@ async function sinEstado(direccionParsed) {
                                                             END
                                                      END)) AS x_centro
         FROM carto_geolocalizador
-        WHERE tipo_vialidad = $1
-        AND nombre_vialidad like '%' || $2 || '%'
+        WHERE unaccent(tipo_vialidad) = $1
+        AND unaccent(nombre_vialidad) like '%' || $2 || '%'
         AND codigo_postal = $3 
         AND (((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
         OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4)) 
         OR ((CAST(l_refaddr AS INTEGER) >= $4 AND CAST(l_nrefaddr AS INTEGER) <= $4)
         OR (CAST(r_refaddr AS INTEGER) >= $4 AND CAST(r_nrefaddr AS INTEGER) <= $4)))
-        AND colonia LIKE '%' || $5 || '%'
+        AND unaccent(colonia) LIKE '%' || $5 || '%'
         ;
     `;
     values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.NUMEXTNUM1, direccionParsed.COLONIA];
@@ -142,13 +142,13 @@ async function sinEstado(direccionParsed) {
                                                                 END
                                                          END)) AS x_centro
             FROM carto_geolocalizador
-            WHERE tipo_vialidad = $1
-            AND nombre_vialidad like '%' || $2 || '%'
+            WHERE unaccent(tipo_vialidad) = $1
+            AND unaccent(nombre_vialidad) like '%' || $2 || '%'
             AND (((CAST(l_refaddr AS INTEGER) <= $3 AND CAST(l_nrefaddr AS INTEGER) >= $3)
             OR (CAST(r_refaddr AS INTEGER) <= $3 AND CAST(r_nrefaddr AS INTEGER) >= $3)) 
             OR ((CAST(l_refaddr AS INTEGER) >= $3 AND CAST(l_nrefaddr AS INTEGER) <= $3)
             OR (CAST(r_refaddr AS INTEGER) >= $3 AND CAST(r_nrefaddr AS INTEGER) <= $3)))
-            AND colonia LIKE '%' || $4 || '%'
+            AND unaccent(colonia) LIKE '%' || $4 || '%'
             ;
         `;
         values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.NUMEXTNUM1, direccionParsed.COLONIA];
@@ -229,8 +229,8 @@ async function sinEstado(direccionParsed) {
                                                                     END
                                                              END)) AS x_centro
                 FROM carto_geolocalizador
-                WHERE tipo_vialidad = $1
-                AND nombre_vialidad like '%' || $2 || '%'
+                WHERE unaccent(tipo_vialidad) = $1
+                AND unaccent(nombre_vialidad) like '%' || $2 || '%'
                 AND codigo_postal = $3 
                 AND (((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
                 OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4)) 
@@ -317,8 +317,8 @@ async function sinEstado(direccionParsed) {
                                                                         END
                                                                  END)) AS x_centro
                     FROM carto_geolocalizador
-                    WHERE tipo_vialidad = $1
-                    AND nombre_vialidad like '%' || $2 || '%'
+                    WHERE unaccent(tipo_vialidad) = $1
+                    AND unaccent(nombre_vialidad) like '%' || $2 || '%'
                     AND (((CAST(l_refaddr AS INTEGER) <= $3 AND CAST(l_nrefaddr AS INTEGER) >= $3)
                     OR (CAST(r_refaddr AS INTEGER) <= $3 AND CAST(r_nrefaddr AS INTEGER) >= $3)) 
                     OR ((CAST(l_refaddr AS INTEGER) >= $3 AND CAST(l_nrefaddr AS INTEGER) <= $3)
@@ -369,10 +369,10 @@ async function sinEstado(direccionParsed) {
                             ELSE lon_x
                         END AS x_centro
                         FROM carto_geolocalizador
-                        WHERE tipo_vialidad = $1
-                        AND nombre_vialidad like '%' || $2 || '%'
+                        WHERE unaccent(tipo_vialidad) = $1
+                        AND unaccent(nombre_vialidad) like '%' || $2 || '%'
                         AND codigo_postal = $3 
-                        AND colonia LIKE '%' || $4 || '%'
+                        AND unaccent(colonia) LIKE '%' || $4 || '%'
                         ;
                     `;
                     values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.COLONIA];
@@ -417,9 +417,9 @@ async function sinEstado(direccionParsed) {
                                 ELSE lon_x
                             END AS x_centro
                             FROM carto_geolocalizador
-                            WHERE tipo_vialidad = $1
-                            AND nombre_vialidad like '%' || $2 || '%'
-                            AND colonia LIKE '%' || $3 || '%'
+                            WHERE unaccent(tipo_vialidad) = $1
+                            AND unaccent(nombre_vialidad) like '%' || $2 || '%'
+                            AND unaccent(colonia) LIKE '%' || $3 || '%'
                             ;
                         `;
                         values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.COLONIA];
@@ -464,8 +464,8 @@ async function sinEstado(direccionParsed) {
                                     ELSE lon_x
                                 END AS x_centro
                                 FROM carto_geolocalizador
-                                WHERE tipo_vialidad = $1
-                                AND nombre_vialidad like '%' || $2 || '%'
+                                WHERE unaccent(tipo_vialidad) = $1
+                                AND unaccent(nombre_vialidad) like '%' || $2 || '%'
                                 AND codigo_postal = $3 
                                 ;
                             `;
@@ -548,13 +548,13 @@ async function sinEstado(direccionParsed) {
                                                                                         END
                                                                                  END)) AS x_centro
                                     FROM carto_geolocalizador
-                                    WHERE tipo_vialidad = $1
+                                    WHERE unaccent(tipo_vialidad) = $1
                                     AND codigo_postal = $2 
                                     AND (((CAST(l_refaddr AS INTEGER) <= $3 AND CAST(l_nrefaddr AS INTEGER) >= $3)
                                     OR (CAST(r_refaddr AS INTEGER) <= $3 AND CAST(r_nrefaddr AS INTEGER) >= $3)) 
                                     OR ((CAST(l_refaddr AS INTEGER) >= $3 AND CAST(l_nrefaddr AS INTEGER) <= $3)
                                     OR (CAST(r_refaddr AS INTEGER) >= $3 AND CAST(r_nrefaddr AS INTEGER) <= $3)))
-                                    AND colonia LIKE '%' || $4 || '%'
+                                    AND unaccent(colonia) LIKE '%' || $4 || '%'
                                     ;
                                 `;
                                 values = [direccionParsed.TIPOVIAL, direccionParsed.CP, direccionParsed.NUMEXTNUM1, direccionParsed.COLONIA];
@@ -636,12 +636,12 @@ async function sinEstado(direccionParsed) {
                                                                                             END
                                                                                      END)) AS x_centro
                                         FROM carto_geolocalizador
-                                        WHERE tipo_vialidad = $1
+                                        WHERE unaccent(tipo_vialidad) = $1
                                         AND (((CAST(l_refaddr AS INTEGER) <= $2 AND CAST(l_nrefaddr AS INTEGER) >= $2)
                                         OR (CAST(r_refaddr AS INTEGER) <= $2 AND CAST(r_nrefaddr AS INTEGER) >= $2)) 
                                         OR ((CAST(l_refaddr AS INTEGER) >= $2 AND CAST(l_nrefaddr AS INTEGER) <= $2)
                                         OR (CAST(r_refaddr AS INTEGER) >= $2 AND CAST(r_nrefaddr AS INTEGER) <= $2)))
-                                        AND colonia LIKE '%' || $3 || '%'
+                                        AND unaccent(colonia) LIKE '%' || $3 || '%'
                                         ;
                                     `;
                                     values = [direccionParsed.TIPOVIAL, direccionParsed.NUMEXTNUM1, direccionParsed.COLONIA];
@@ -723,7 +723,7 @@ async function sinEstado(direccionParsed) {
                                                                                                 END
                                                                                          END)) AS x_centro
                                             FROM carto_geolocalizador
-                                            WHERE tipo_vialidad = $1
+                                            WHERE unaccent(tipo_vialidad) = $1
                                             AND codigo_postal = $2 
                                             AND (((CAST(l_refaddr AS INTEGER) <= $3 AND CAST(l_nrefaddr AS INTEGER) >= $3)
                                             OR (CAST(r_refaddr AS INTEGER) <= $3 AND CAST(r_nrefaddr AS INTEGER) >= $3)) 
@@ -775,9 +775,9 @@ async function sinEstado(direccionParsed) {
                                                     ELSE lon_x
                                                 END AS x_centro
                                                 FROM carto_geolocalizador
-                                                WHERE tipo_vialidad = $1
+                                                WHERE unaccent(tipo_vialidad) = $1
                                                 AND codigo_postal = $2 
-                                                AND colonia LIKE '%' || $3 || '%'
+                                                AND unaccent(colonia) LIKE '%' || $3 || '%'
                                                 ;
                                             `;
                                             values = [direccionParsed.TIPOVIAL, direccionParsed.CP, direccionParsed.COLONIA];

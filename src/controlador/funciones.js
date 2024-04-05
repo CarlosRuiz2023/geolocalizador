@@ -212,7 +212,12 @@ function limpiarBusqueda(texto) {
     // Elimina caracteres específicos, excepto cuando están precedidos por un espacio y seguidos por una letra y un punto.
     texto = texto.replace(/(?<!\S)[\-|+"#$%&*./;?\[{\~¡¦=¤¥](?=(\s[A-Z]\.))/g, '');
     texto=texto.replace(/,/g, '');
-    return texto.replace(/Ñ/g, 'N').trim();
+    texto=texto.replace(/Á/g, 'A');
+    texto=texto.replace(/É/g, 'E');
+    texto=texto.replace(/Í/g, 'I');
+    texto=texto.replace(/Ó/g, 'O');
+    texto=texto.replace(/Ú/g, 'U');
+    return texto.trim();
 }
 // Función para expandir abreviaciones de tipos de vialidad en una dirección
 function expandirAbreviaciones(direccion) {

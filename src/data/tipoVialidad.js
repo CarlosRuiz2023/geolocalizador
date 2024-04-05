@@ -18,7 +18,6 @@ const tiposVialidad = [
     "PASAJE",
     "PEATONAL",
     "PERIFERICO",
-    "PRIVADA",
     "PROLONGACION",
     "RETORNO",
     "TERRACERIA",

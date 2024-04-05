@@ -12,10 +12,10 @@ async function sinEstado(direccionParsed) {
         lat_y AS y_centro,
         lon_x AS x_centro
         FROM carto_geolocalizador
-        WHERE poi like '%' || $1 || '%'
+        WHERE unaccent(poi) like '%' || $1 || '%'
         AND codigo_postal = $2 
         AND numero = $4
-        AND colonia LIKE '%' || $3 || '%'
+        AND unaccent(colonia) LIKE '%' || $3 || '%'
         ;
     `;
     values = [direccionParsed.CALLE, direccionParsed.CP, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
@@ -53,9 +53,9 @@ async function sinEstado(direccionParsed) {
             lat_y AS y_centro,
             lon_x AS x_centro
             FROM carto_geolocalizador
-            WHERE poi like '%' || $1 || '%'
+            WHERE unaccent(poi) like '%' || $1 || '%'
             AND numero = $3
-            AND colonia LIKE '%' || $2 || '%'
+            AND unaccent(colonia) LIKE '%' || $2 || '%'
             ;
         `;
         values = [direccionParsed.CALLE, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
@@ -93,7 +93,7 @@ async function sinEstado(direccionParsed) {
                 lat_y AS y_centro,
                 lon_x AS x_centro
                 FROM carto_geolocalizador
-                WHERE poi like '%' || $1 || '%'
+                WHERE unaccent(poi) like '%' || $1 || '%'
                 AND codigo_postal = $2 
                 AND numero = $3
                 ;
@@ -134,7 +134,7 @@ async function sinEstado(direccionParsed) {
                     lat_y AS y_centro,
                     lon_x AS x_centro
                     FROM carto_geolocalizador
-                    WHERE poi like '%' || $1 || '%'
+                    WHERE unaccent(poi) like '%' || $1 || '%'
                     AND numero = $2
                     ;
                 `;
@@ -175,9 +175,9 @@ async function sinEstado(direccionParsed) {
                         lat_y AS y_centro,
                         lon_x AS x_centro
                         FROM carto_geolocalizador
-                        WHERE poi like '%' || $1 || '%'
+                        WHERE unaccent(poi) like '%' || $1 || '%'
                         AND codigo_postal = $2 
-                        AND colonia LIKE '%' || $3 || '%'
+                        AND unaccent(colonia) LIKE '%' || $3 || '%'
                         ;
                     `;
                     values = [direccionParsed.CALLE, direccionParsed.CP, direccionParsed.COLONIA];
@@ -215,8 +215,8 @@ async function sinEstado(direccionParsed) {
                             lat_y AS y_centro,
                             lon_x AS x_centro
                             FROM carto_geolocalizador
-                            WHERE poi like '%' || $1 || '%'
-                            AND colonia LIKE '%' || $2 || '%'
+                            WHERE unaccent(poi) like '%' || $1 || '%'
+                            AND unaccent(colonia) LIKE '%' || $2 || '%'
                             ;
                         `;
                         values = [direccionParsed.CALLE, direccionParsed.COLONIA];
@@ -254,7 +254,7 @@ async function sinEstado(direccionParsed) {
                                 lat_y AS y_centro,
                                 lon_x AS x_centro
                                 FROM carto_geolocalizador
-                                WHERE poi like '%' || $1 || '%'
+                                WHERE unaccent(poi) like '%' || $1 || '%'
                                 AND codigo_postal = $2 
                                 ;
                             `;
@@ -296,7 +296,7 @@ async function sinEstado(direccionParsed) {
                                     FROM carto_geolocalizador
                                     WHERE codigo_postal = $1 
                                     AND numero = $3
-                                    AND colonia LIKE '%' || $2 || '%'
+                                    AND unaccent(colonia) LIKE '%' || $2 || '%'
                                     ;
                                 `;
                                 values = [direccionParsed.CP, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
@@ -336,7 +336,7 @@ async function sinEstado(direccionParsed) {
                                         lon_x AS x_centro
                                         FROM carto_geolocalizador
                                         WHERE numero = $2
-                                        AND colonia LIKE '%' || $1 || '%'
+                                        AND unaccent(colonia) LIKE '%' || $1 || '%'
                                         ;
                                     `;
                                     values = [direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
@@ -417,7 +417,7 @@ async function sinEstado(direccionParsed) {
                                                 lon_x AS x_centro
                                                 FROM carto_geolocalizador
                                                 WHERE codigo_postal = $1 
-                                                AND colonia LIKE '%' || $2 || '%'
+                                                AND unaccent(colonia) LIKE '%' || $2 || '%'
                                                 ;
                                             `;
                                             values = [direccionParsed.CP, direccionParsed.COLONIA];

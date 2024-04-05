@@ -17,12 +17,12 @@ async function sinNumeroExterior(direccionParsed) {
             ELSE lon_x
         END AS x_centro
         FROM carto_geolocalizador
-        WHERE tipo_asentamiento = $1
-        AND nombre_asentamiento like '%' || $2 || '%'
+        WHERE unaccent(tipo_asentamiento) = $1
+        AND unaccent(nombre_asentamiento) like '%' || $2 || '%'
         AND codigo_postal = $3 
-        AND municipio = $4
-        AND estado = $5
-        AND colonia LIKE '%' || $6 || '%'
+        AND unaccent(municipio) = $4
+        AND unaccent(estado) = $5
+        AND unaccent(colonia) LIKE '%' || $6 || '%'
         ;
     `;
     values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
@@ -68,11 +68,11 @@ async function sinNumeroExterior(direccionParsed) {
                 ELSE lon_x
             END AS x_centro
             FROM carto_geolocalizador
-            WHERE tipo_asentamiento = $1
-            AND nombre_asentamiento like '%' || $2 || '%'
-            AND municipio = $3
-            AND estado = $4
-            AND colonia LIKE '%' || $5 || '%'
+            WHERE unaccent(tipo_asentamiento) = $1
+            AND unaccent(nombre_asentamiento) like '%' || $2 || '%'
+            AND unaccent(municipio) = $3
+            AND unaccent(estado) = $4
+            AND unaccent(colonia) LIKE '%' || $5 || '%'
             ;
         `;
         values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
@@ -118,11 +118,11 @@ async function sinNumeroExterior(direccionParsed) {
                     ELSE lon_x
                 END AS x_centro
                 FROM carto_geolocalizador
-                WHERE tipo_asentamiento = $1
-                AND nombre_asentamiento like '%' || $2 || '%'
+                WHERE unaccent(tipo_asentamiento) = $1
+                AND unaccent(nombre_asentamiento) like '%' || $2 || '%'
                 AND codigo_postal = $3 
-                AND estado = $4
-                AND colonia LIKE '%' || $5 || '%'
+                AND unaccent(estado) = $4
+                AND unaccent(colonia) LIKE '%' || $5 || '%'
                 ;
             `;
             values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.COLONIA];
@@ -168,11 +168,11 @@ async function sinNumeroExterior(direccionParsed) {
                         ELSE lon_x
                     END AS x_centro
                     FROM carto_geolocalizador
-                    WHERE tipo_asentamiento = $1
-                    AND nombre_asentamiento like '%' || $2 || '%'
+                    WHERE unaccent(tipo_asentamiento) = $1
+                    AND unaccent(nombre_asentamiento) like '%' || $2 || '%'
                     AND codigo_postal = $3
-                    AND municipio = $4
-                    AND colonia LIKE '%' || $5 || '%'
+                    AND unaccent(municipio) = $4
+                    AND unaccent(colonia) LIKE '%' || $5 || '%'
                     ;
                 `;
                 values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
@@ -218,11 +218,11 @@ async function sinNumeroExterior(direccionParsed) {
                             ELSE lon_x
                         END AS x_centro
                         FROM carto_geolocalizador
-                        WHERE tipo_asentamiento = $1
-                        AND nombre_asentamiento like '%' || $2 || '%'
+                        WHERE unaccent(tipo_asentamiento) = $1
+                        AND unaccent(nombre_asentamiento) like '%' || $2 || '%'
                         AND codigo_postal = $3
-                        AND municipio = $4
-                        AND estado = $5
+                        AND unaccent(municipio) = $4
+                        AND unaccent(estado) = $5
                         ;
                     `;
                     values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
@@ -269,10 +269,10 @@ async function sinNumeroExterior(direccionParsed) {
                                 ELSE lon_x
                             END AS x_centro
                             FROM carto_geolocalizador
-                            WHERE tipo_asentamiento = $1
-                            AND nombre_asentamiento like '%' || $2 || '%'
-                            AND municipio = $3
-                            AND estado = $4
+                            WHERE unaccent(tipo_asentamiento) = $1
+                            AND unaccent(nombre_asentamiento) like '%' || $2 || '%'
+                            AND unaccent(municipio) = $3
+                            AND unaccent(estado) = $4
                             ;
                         `;
                         values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
@@ -319,10 +319,10 @@ async function sinNumeroExterior(direccionParsed) {
                                     ELSE lon_x
                                 END AS x_centro
                                 FROM carto_geolocalizador
-                                WHERE tipo_asentamiento = $1
-                                AND nombre_asentamiento like '%' || $2 || '%'
+                                WHERE unaccent(tipo_asentamiento) = $1
+                                AND unaccent(nombre_asentamiento) like '%' || $2 || '%'
                                 AND codigo_postal = $3 
-                                AND estado = $4
+                                AND unaccent(estado) = $4
                                 ;
                             `;
                             values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.CP, direccionParsed.ESTADO];
@@ -369,10 +369,10 @@ async function sinNumeroExterior(direccionParsed) {
                                         ELSE lon_x
                                     END AS x_centro
                                     FROM carto_geolocalizador
-                                    WHERE tipo_asentamiento = $1
-                                    AND nombre_asentamiento like '%' || $2 || '%'
-                                    AND municipio = $3
-                                    AND colonia LIKE '%' || $4 || '%'
+                                    WHERE unaccent(tipo_asentamiento) = $1
+                                    AND unaccent(nombre_asentamiento) like '%' || $2 || '%'
+                                    AND unaccent(municipio) = $3
+                                    AND unaccent(colonia) LIKE '%' || $4 || '%'
                                     ;
                                 `;
                                 values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
@@ -418,10 +418,10 @@ async function sinNumeroExterior(direccionParsed) {
                                             ELSE lon_x
                                         END AS x_centro
                                         FROM carto_geolocalizador
-                                        WHERE tipo_asentamiento = $1
-                                        AND nombre_asentamiento like '%' || $2 || '%'
+                                        WHERE unaccent(tipo_asentamiento) = $1
+                                        AND unaccent(nombre_asentamiento) like '%' || $2 || '%'
                                         AND codigo_postal = $3 
-                                        AND colonia LIKE '%' || $4 || '%'
+                                        AND unaccent(colonia) LIKE '%' || $4 || '%'
                                         ;
                                     `;
                                     values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.CP, direccionParsed.COLONIA];
@@ -467,10 +467,10 @@ async function sinNumeroExterior(direccionParsed) {
                                                 ELSE lon_x
                                             END AS x_centro
                                             FROM carto_geolocalizador
-                                            WHERE tipo_asentamiento = $1
-                                            AND nombre_asentamiento like '%' || $2 || '%'
+                                            WHERE unaccent(tipo_asentamiento) = $1
+                                            AND unaccent(nombre_asentamiento) like '%' || $2 || '%'
                                             AND codigo_postal = $3 
-                                            AND municipio = $4
+                                            AND unaccent(municipio) = $4
                                             ;
                                         `;
                                         values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.CP, direccionParsed.MUNICIPIO];
@@ -517,11 +517,11 @@ async function sinNumeroExterior(direccionParsed) {
                                                     ELSE lon_x
                                                 END AS x_centro
                                                 FROM carto_geolocalizador
-                                                WHERE tipo_asentamiento = $1
+                                                WHERE unaccent(tipo_asentamiento) = $1
                                                 AND codigo_postal = $2 
-                                                AND municipio = $3
-                                                AND estado = $4
-                                                AND colonia LIKE '%' || $5 || '%'
+                                                AND unaccent(municipio) = $3
+                                                AND unaccent(estado) = $4
+                                                AND unaccent(colonia) LIKE '%' || $5 || '%'
                                                 ;
                                             `;
                                             values = [direccionParsed.TIPOASEN, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
@@ -568,10 +568,10 @@ async function sinNumeroExterior(direccionParsed) {
                                                         ELSE lon_x
                                                     END AS x_centro
                                                     FROM carto_geolocalizador
-                                                    WHERE tipo_asentamiento = $1
-                                                    AND nombre_asentamiento like '%' || $2 || '%'
-                                                    AND estado = $3
-                                                    AND colonia LIKE '%' || $4 || '%'
+                                                    WHERE unaccent(tipo_asentamiento) = $1
+                                                    AND unaccent(nombre_asentamiento) like '%' || $2 || '%'
+                                                    AND unaccent(estado) = $3
+                                                    AND unaccent(colonia) LIKE '%' || $4 || '%'
                                                     ;
                                                 `;
                                                 values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.ESTADO, direccionParsed.COLONIA];
@@ -617,10 +617,10 @@ async function sinNumeroExterior(direccionParsed) {
                                                             ELSE lon_x
                                                         END AS x_centro
                                                         FROM carto_geolocalizador
-                                                        WHERE tipo_asentamiento = $1
-                                                        AND municipio = $2
-                                                        AND estado = $3
-                                                        AND colonia LIKE '%' || $4 || '%'
+                                                        WHERE unaccent(tipo_asentamiento) = $1
+                                                        AND unaccent(municipio) = $2
+                                                        AND unaccent(estado) = $3
+                                                        AND unaccent(colonia) LIKE '%' || $4 || '%'
                                                         ;
                                                     `;
                                                     values = [direccionParsed.TIPOASEN, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
@@ -667,10 +667,10 @@ async function sinNumeroExterior(direccionParsed) {
                                                                 ELSE lon_x
                                                             END AS x_centro
                                                             FROM carto_geolocalizador
-                                                            WHERE tipo_asentamiento = $1
+                                                            WHERE unaccent(tipo_asentamiento) = $1
                                                             AND codigo_postal = $2 
-                                                            AND municipio = $3
-                                                            AND colonia LIKE '%' || $4 || '%'
+                                                            AND unaccent(municipio) = $3
+                                                            AND unaccent(colonia) LIKE '%' || $4 || '%'
                                                             ;
                                                         `;
                                                         values = [direccionParsed.TIPOASEN, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
@@ -717,10 +717,10 @@ async function sinNumeroExterior(direccionParsed) {
                                                                     ELSE lon_x
                                                                 END AS x_centro
                                                                 FROM carto_geolocalizador
-                                                                WHERE tipo_asentamiento = $1
+                                                                WHERE unaccent(tipo_asentamiento) = $1
                                                                 AND codigo_postal = $2
-                                                                AND estado = $3
-                                                                AND colonia LIKE '%' || $4 || '%'
+                                                                AND unaccent(estado) = $3
+                                                                AND unaccent(colonia) LIKE '%' || $4 || '%'
                                                                 ;
                                                             `;
                                                             values = [direccionParsed.TIPOASEN, direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.COLONIA];
@@ -767,10 +767,10 @@ async function sinNumeroExterior(direccionParsed) {
                                                                         ELSE lon_x
                                                                     END AS x_centro
                                                                     FROM carto_geolocalizador
-                                                                    WHERE tipo_asentamiento = $1
+                                                                    WHERE unaccent(tipo_asentamiento) = $1
                                                                     AND codigo_postal = $2 
-                                                                    AND estado = $3
-                                                                    AND municipio = $4
+                                                                    AND unaccent(estado) = $3
+                                                                    AND unaccent(municipio) = $4
                                                                     ;
                                                                 `;
                                                                 values = [direccionParsed.TIPOASEN, direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.MUNICIPIO];
