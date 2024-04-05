@@ -1289,30 +1289,70 @@ async function all(direccionParsed) {
                                                                         // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                                                                         query = `
                                                                             SELECT *,
-                                                                            CASE
-                                                                                WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
-                                                                                ELSE lat_y
-                                                                            END AS y_centro,
-                                                                            CASE
-                                                                                WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
-                                                                                ELSE lon_x
-                                                                            END AS x_centro
+                                                                            ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
+                                                                                                                            WHEN $4 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
+                                                                                                                                CASE 
+                                                                                                                                    WHEN l_nrefaddr::float - l_refaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                                                                                    ELSE 0.5
+                                                                                                                                END
+                                                                                                                            WHEN $4 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
+                                                                                                                                CASE 
+                                                                                                                                    WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                                                                                    ELSE 0.5
+                                                                                                                                END
+                                                                                                                            WHEN $4 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                                                                                                CASE 
+                                                                                                                                    WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                                                                                    ELSE 0.5
+                                                                                                                                END
+                                                                                                                            WHEN $4 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                                                                                                CASE 
+                                                                                                                                    WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                                                                                    ELSE 0.5
+                                                                                                                                END
+                                                                                                                         END)) AS y_centro,
+                                                                            ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
+                                                                                                                            WHEN $4 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
+                                                                                                                                CASE 
+                                                                                                                                    WHEN l_nrefaddr::float - l_refaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                                                                                    ELSE 0.5
+                                                                                                                                END
+                                                                                                                            WHEN $4 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
+                                                                                                                                CASE 
+                                                                                                                                    WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                                                                                    ELSE 0.5
+                                                                                                                                END
+                                                                                                                            WHEN $4 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                                                                                                CASE 
+                                                                                                                                    WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                                                                                    ELSE 0.5
+                                                                                                                                END
+                                                                                                                            WHEN $4 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                                                                                                CASE 
+                                                                                                                                    WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                                                                                    ELSE 0.5
+                                                                                                                                END
+                                                                                                                         END)) AS x_centro
                                                                             FROM carto_geolocalizador
                                                                             WHERE unaccent(colonia) like '%' || $1 || '%'
                                                                             AND unaccent(estado) = $2
                                                                             AND unaccent(municipio) = $3
+                                                                            AND (((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
+                                                                            OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4)) 
+                                                                            OR ((CAST(l_refaddr AS INTEGER) >= $4 AND CAST(l_nrefaddr AS INTEGER) <= $4)
+                                                                            OR (CAST(r_refaddr AS INTEGER) >= $4 AND CAST(r_nrefaddr AS INTEGER) <= $4)))
                                                                             ;
                                                                         `;
-                                                                        values = [direccionParsed.COLONIA, direccionParsed.ESTADO, direccionParsed.MUNICIPIO];
+                                                                        values = [direccionParsed.COLONIA, direccionParsed.ESTADO, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1];
                                                                         const result = await pgClient.query(query, values);
                                                                         for (let i = 0; i < result.rows.length; i++) {
                                                                             result.rows[i].scoring = {
-                                                                                fiability: 20,
+                                                                                fiability: 30,
                                                                                 calle: 0,
                                                                                 codigo_postal: 0,
                                                                                 municipio: 100,
                                                                                 estado: 100,
-                                                                                numero_exterior: 0,
+                                                                                numero_exterior: 100,
                                                                                 colonia: 0
                                                                             };
                                                                             // Calcular la distancia de Levenshtein
@@ -1338,70 +1378,30 @@ async function all(direccionParsed) {
                                                                             // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                                                                             query = `
                                                                                 SELECT *,
-                                                                                ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
-                                                                                                                                WHEN $4 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
-                                                                                                                                    CASE 
-                                                                                                                                        WHEN l_nrefaddr::float - l_refaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
-                                                                                                                                        ELSE 0.5
-                                                                                                                                    END
-                                                                                                                                WHEN $4 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
-                                                                                                                                    CASE 
-                                                                                                                                        WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
-                                                                                                                                        ELSE 0.5
-                                                                                                                                    END
-                                                                                                                                WHEN $4 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
-                                                                                                                                    CASE 
-                                                                                                                                        WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
-                                                                                                                                        ELSE 0.5
-                                                                                                                                    END
-                                                                                                                                WHEN $4 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
-                                                                                                                                    CASE 
-                                                                                                                                        WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
-                                                                                                                                        ELSE 0.5
-                                                                                                                                    END
-                                                                                                                             END)) AS y_centro,
-                                                                                ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
-                                                                                                                                WHEN $4 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
-                                                                                                                                    CASE 
-                                                                                                                                        WHEN l_nrefaddr::float - l_refaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
-                                                                                                                                        ELSE 0.5
-                                                                                                                                    END
-                                                                                                                                WHEN $4 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
-                                                                                                                                    CASE 
-                                                                                                                                        WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
-                                                                                                                                        ELSE 0.5
-                                                                                                                                    END
-                                                                                                                                WHEN $4 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
-                                                                                                                                    CASE 
-                                                                                                                                        WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
-                                                                                                                                        ELSE 0.5
-                                                                                                                                    END
-                                                                                                                                WHEN $4 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
-                                                                                                                                    CASE 
-                                                                                                                                        WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
-                                                                                                                                        ELSE 0.5
-                                                                                                                                    END
-                                                                                                                             END)) AS x_centro
+                                                                                CASE
+                                                                                    WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                                                                                    ELSE lat_y
+                                                                                END AS y_centro,
+                                                                                CASE
+                                                                                    WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                                                                                    ELSE lon_x
+                                                                                END AS x_centro
                                                                                 FROM carto_geolocalizador
                                                                                 WHERE unaccent(colonia) like '%' || $1 || '%'
                                                                                 AND unaccent(estado) = $2
                                                                                 AND unaccent(municipio) = $3
-                                                                                AND (((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
-                                                                                OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4)) 
-                                                                                OR ((CAST(l_refaddr AS INTEGER) >= $4 AND CAST(l_nrefaddr AS INTEGER) <= $4)
-                                                                                OR (CAST(r_refaddr AS INTEGER) >= $4 AND CAST(r_nrefaddr AS INTEGER) <= $4)))
                                                                                 ;
                                                                             `;
-                                                                            values = [direccionParsed.COLONIA, direccionParsed.ESTADO, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1];
+                                                                            values = [direccionParsed.COLONIA, direccionParsed.ESTADO, direccionParsed.MUNICIPIO];
                                                                             const result = await pgClient.query(query, values);
                                                                             for (let i = 0; i < result.rows.length; i++) {
                                                                                 result.rows[i].scoring = {
-                                                                                    fiability: 30,
+                                                                                    fiability: 20,
                                                                                     calle: 0,
                                                                                     codigo_postal: 0,
                                                                                     municipio: 100,
                                                                                     estado: 100,
-                                                                                    numero_exterior: 100,
+                                                                                    numero_exterior: 0,
                                                                                     colonia: 0
                                                                                 };
                                                                                 // Calcular la distancia de Levenshtein
