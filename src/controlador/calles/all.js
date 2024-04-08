@@ -1264,7 +1264,8 @@ async function all(direccionParsed) {
                                                                             municipio: 100,
                                                                             estado: 100,
                                                                             numero_exterior: 100,
-                                                                            colonia: 0
+                                                                            colonia: 0,
+                                                                            comosea:0
                                                                         };
                                                                         // Calcular la distancia de Levenshtein
                                                                         const distance = levenshteinDistance(result.rows[i].nombre_vialidad, direccionParsed.CALLE);

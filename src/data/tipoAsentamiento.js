@@ -4,7 +4,6 @@ const tiposAsentamiento = [
     "CANTON",
     "CIUDAD",
     "CIUDAD INDUSTRIAL",
-    "COLONIA",
     "CONDOMINIO",
     "CONJUNTO HABITACIONAL",
     "CORREDOR INDUSTRIAL",
