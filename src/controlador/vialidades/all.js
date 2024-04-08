@@ -1908,7 +1908,7 @@ async function all(direccionParsed) {
                                                                                                             municipio: 100,
                                                                                                             estado: 100,
                                                                                                             numero_exterior: 0,
-                                                                                                            colonia: 100
+                                                                                                            colonia: 0
                                                                                                         };
                                                                                                         // Calcular la distancia de Levenshtein
                                                                                                         const distance = levenshteinDistance(result.rows[i].nombre_vialidad, direccionParsed.NOMVIAL);
@@ -1953,6 +1953,7 @@ async function all(direccionParsed) {
                                                                                                         for (let i = 0; i < result.rows.length; i++) {
                                                                                                             result.rows[i].scoring = {
                                                                                                                 fiability: 30,
+                                                                                                                tipo_vialidad: 0,
                                                                                                                 calle: 0,
                                                                                                                 codigo_postal: 100,
                                                                                                                 municipio: 100,
