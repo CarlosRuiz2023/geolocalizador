@@ -1,5 +1,5 @@
 const pgClient = require("../../data/conexion");
-const { levenshteinDistance } = require("../funciones");
+const { levenshteinDistance, quitarAcentos } = require("../funciones");
 
 async function sinNumeroExterior(direccionParsed) {
     let query = '';
@@ -37,7 +37,8 @@ async function sinNumeroExterior(direccionParsed) {
             estado: 100,
             colonia: 0
         };
-        const matchNombreVialidad = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
+        const nombreVialidadSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
+        const matchNombreVialidad = nombreVialidadSinAcentos.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
         if (matchNombreVialidad) {
             const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
             let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
@@ -45,7 +46,8 @@ async function sinNumeroExterior(direccionParsed) {
             result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
             result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
         }
-        const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
+        const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+        const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
         if (matchColonia) {
             const matchedText = matchColonia[0]; // Obtiene el texto coincidente
             let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
@@ -87,7 +89,8 @@ async function sinNumeroExterior(direccionParsed) {
                 estado: 100,
                 colonia: 0
             };
-            const matchNombreVialidad = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
+            const nombreVialidadSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
+            const matchNombreVialidad = nombreVialidadSinAcentos.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
             if (matchNombreVialidad) {
                 const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
                 let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
@@ -95,7 +98,8 @@ async function sinNumeroExterior(direccionParsed) {
                 result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
                 result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
             }
-            const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
+            const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+            const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
             if (matchColonia) {
                 const matchedText = matchColonia[0]; // Obtiene el texto coincidente
                 let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
@@ -137,7 +141,8 @@ async function sinNumeroExterior(direccionParsed) {
                     estado: 100,
                     colonia: 0
                 };
-                const matchNombreVialidad = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
+                const nombreVialidadSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
+                const matchNombreVialidad = nombreVialidadSinAcentos.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
                 if (matchNombreVialidad) {
                     const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
                     let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
@@ -145,7 +150,8 @@ async function sinNumeroExterior(direccionParsed) {
                     result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
                     result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                 }
-                const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+                const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
                 if (matchColonia) {
                     const matchedText = matchColonia[0]; // Obtiene el texto coincidente
                     let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
@@ -187,7 +193,8 @@ async function sinNumeroExterior(direccionParsed) {
                         estado: 0,
                         colonia: 0
                     };
-                    const matchNombreVialidad = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
+                    const nombreVialidadSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
+                    const matchNombreVialidad = nombreVialidadSinAcentos.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
                     if (matchNombreVialidad) {
                         const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
                         let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
@@ -195,7 +202,8 @@ async function sinNumeroExterior(direccionParsed) {
                         result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
                         result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                     }
-                    const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                    const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+                    const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
                     if (matchColonia) {
                         const matchedText = matchColonia[0]; // Obtiene el texto coincidente
                         let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
@@ -237,7 +245,8 @@ async function sinNumeroExterior(direccionParsed) {
                             estado: 100,
                             colonia: 0
                         };
-                        const matchNombreVialidad = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
+                        const nombreVialidadSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
+                        const matchNombreVialidad = nombreVialidadSinAcentos.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
                         if (matchNombreVialidad) {
                             const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
                             let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
@@ -287,7 +296,8 @@ async function sinNumeroExterior(direccionParsed) {
                                 estado: 100,
                                 colonia: 0
                             };
-                            const matchNombreVialidad = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
+                            const nombreVialidadSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
+                            const matchNombreVialidad = nombreVialidadSinAcentos.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
                             if (matchNombreVialidad) {
                                 const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
                                 let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
@@ -337,7 +347,8 @@ async function sinNumeroExterior(direccionParsed) {
                                     estado: 100,
                                     colonia: 0
                                 };
-                                const matchNombreVialidad = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
+                                const nombreVialidadSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
+                                const matchNombreVialidad = nombreVialidadSinAcentos.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
                                 if (matchNombreVialidad) {
                                     const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
                                     let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
@@ -387,7 +398,8 @@ async function sinNumeroExterior(direccionParsed) {
                                         estado: 0,
                                         colonia: 0
                                     };
-                                    const matchNombreVialidad = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
+                                    const nombreVialidadSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
+                                    const matchNombreVialidad = nombreVialidadSinAcentos.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
                                     if (matchNombreVialidad) {
                                         const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
                                         let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
@@ -395,7 +407,8 @@ async function sinNumeroExterior(direccionParsed) {
                                         result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
                                         result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                                     }
-                                    const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                    const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+                                    const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
                                     if (matchColonia) {
                                         const matchedText = matchColonia[0]; // Obtiene el texto coincidente
                                         let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
@@ -436,7 +449,8 @@ async function sinNumeroExterior(direccionParsed) {
                                             estado: 0,
                                             colonia: 0
                                         };
-                                        const matchNombreVialidad = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
+                                        const nombreVialidadSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
+                                        const matchNombreVialidad = nombreVialidadSinAcentos.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
                                         if (matchNombreVialidad) {
                                             const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
                                             let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
@@ -444,7 +458,8 @@ async function sinNumeroExterior(direccionParsed) {
                                             result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
                                             result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                                         }
-                                        const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                        const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+                                        const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
                                         if (matchColonia) {
                                             const matchedText = matchColonia[0]; // Obtiene el texto coincidente
                                             let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
@@ -485,7 +500,8 @@ async function sinNumeroExterior(direccionParsed) {
                                                 estado: 0,
                                                 colonia: 0
                                             };
-                                            const matchNombreVialidad = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
+                                            const nombreVialidadSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
+                                            const matchNombreVialidad = nombreVialidadSinAcentos.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
                                             if (matchNombreVialidad) {
                                                 const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
                                                 let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
@@ -545,7 +561,8 @@ async function sinNumeroExterior(direccionParsed) {
                                                     result.rows[i].scoring.nombre_vialidad += similarity;
                                                     result.rows[i].scoring.fiability += (similarity * 0.5);
                                                 }
-                                                const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                                const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+                                                const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
                                                 if (matchColonia) {
                                                     const matchedText = matchColonia[0]; // Obtiene el texto coincidente
                                                     let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
@@ -586,7 +603,8 @@ async function sinNumeroExterior(direccionParsed) {
                                                         estado: 100,
                                                         colonia: 0
                                                     };
-                                                    const matchNombreVialidad = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
+                                                    const nombreVialidadSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
+                                                    const matchNombreVialidad = nombreVialidadSinAcentos.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
                                                     if (matchNombreVialidad) {
                                                         const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
                                                         let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
@@ -594,7 +612,8 @@ async function sinNumeroExterior(direccionParsed) {
                                                         result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
                                                         result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                                                     }
-                                                    const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                                    const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+                                                    const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
                                                     if (matchColonia) {
                                                         const matchedText = matchColonia[0]; // Obtiene el texto coincidente
                                                         let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
@@ -644,7 +663,8 @@ async function sinNumeroExterior(direccionParsed) {
                                                             result.rows[i].scoring.nombre_vialidad += similarity;
                                                             result.rows[i].scoring.fiability += (similarity * 0.5);
                                                         }
-                                                        const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                                        const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+                                                        const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
                                                         if (matchColonia) {
                                                             const matchedText = matchColonia[0]; // Obtiene el texto coincidente
                                                             let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
@@ -694,7 +714,8 @@ async function sinNumeroExterior(direccionParsed) {
                                                                 result.rows[i].scoring.nombre_vialidad += similarity;
                                                                 result.rows[i].scoring.fiability += (similarity * 0.5);
                                                             }
-                                                            const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                                            const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+                                                            const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
                                                             if (matchColonia) {
                                                                 const matchedText = matchColonia[0]; // Obtiene el texto coincidente
                                                                 let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
@@ -744,7 +765,8 @@ async function sinNumeroExterior(direccionParsed) {
                                                                     result.rows[i].scoring.nombre_vialidad += similarity;
                                                                     result.rows[i].scoring.fiability += (similarity * 0.5);
                                                                 }
-                                                                const matchColonia = result.rows[i].colonia.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                                                const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+                                                                const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
                                                                 if (matchColonia) {
                                                                     const matchedText = matchColonia[0]; // Obtiene el texto coincidente
                                                                     let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;

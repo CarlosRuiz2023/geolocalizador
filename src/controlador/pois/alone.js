@@ -1,4 +1,5 @@
 const pgClient = require("../../data/conexion");
+const { quitarAcentos } = require("../funciones");
 
 // Aplicable solo en caso de llevar todos los campos
 async function alone(direccionParsed) {
@@ -21,7 +22,8 @@ async function alone(direccionParsed) {
             fiability: 0,
             poi: 0
         };
-        const matchNombrePoi = result.rows[i].poi.match(new RegExp(direccionParsed.CALLE, 'i'));
+        const nombrePoiSinAcentos = quitarAcentos(result.rows[i].poi);
+        const matchNombrePoi = nombrePoiSinAcentos.match(new RegExp(direccionParsed.CALLE, 'i'));
         if (matchNombrePoi) {
             const matchedText = matchNombrePoi[0]; // Obtiene el texto coincidente
             let igualdad = matchedText.length * 100 / result.rows[i].poi.length;

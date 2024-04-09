@@ -1,5 +1,5 @@
 const pgClient = require("../../data/conexion");
-const { levenshteinDistance } = require("../funciones");
+const { levenshteinDistance, quitarAcentos } = require("../funciones");
 
 // Aplicable solo en caso de llevar todos los campos
 async function all(direccionParsed) {
@@ -28,7 +28,8 @@ async function all(direccionParsed) {
             estado: 100,
             numero_exterior: 100
         };
-        const matchNombrePoi = result.rows[i].poi.match(new RegExp(direccionParsed.CALLE, 'i'));
+        const nombrePoiSinAcentos = quitarAcentos(result.rows[i].poi);
+        const matchNombrePoi = nombrePoiSinAcentos.match(new RegExp(direccionParsed.CALLE, 'i'));
         if (matchNombrePoi) {
             const matchedText = matchNombrePoi[0]; // Obtiene el texto coincidente
             let igualdad = matchedText.length * 100 / result.rows[i].poi.length;
@@ -60,7 +61,8 @@ async function all(direccionParsed) {
                 estado: 100,
                 numero_exterior: 100
             };
-            const matchNombrePoi = result.rows[i].poi.match(new RegExp(direccionParsed.CALLE, 'i'));
+            const nombrePoiSinAcentos = quitarAcentos(result.rows[i].poi);
+            const matchNombrePoi = nombrePoiSinAcentos.match(new RegExp(direccionParsed.CALLE, 'i'));
             if (matchNombrePoi) {
                 const matchedText = matchNombrePoi[0]; // Obtiene el texto coincidente
                 let igualdad = matchedText.length * 100 / result.rows[i].poi.length;
@@ -92,7 +94,8 @@ async function all(direccionParsed) {
                     estado: 0,
                     numero_exterior: 100
                 };
-                const matchNombrePoi = result.rows[i].poi.match(new RegExp(direccionParsed.CALLE, 'i'));
+                const nombrePoiSinAcentos = quitarAcentos(result.rows[i].poi);
+                const matchNombrePoi = nombrePoiSinAcentos.match(new RegExp(direccionParsed.CALLE, 'i'));
                 if (matchNombrePoi) {
                     const matchedText = matchNombrePoi[0]; // Obtiene el texto coincidente
                     let igualdad = matchedText.length * 100 / result.rows[i].poi.length;
@@ -124,7 +127,8 @@ async function all(direccionParsed) {
                         estado: 0,
                         numero_exterior: 100
                     };
-                    const matchNombrePoi = result.rows[i].poi.match(new RegExp(direccionParsed.CALLE, 'i'));
+                    const nombrePoiSinAcentos = quitarAcentos(result.rows[i].poi);
+                    const matchNombrePoi = nombrePoiSinAcentos.match(new RegExp(direccionParsed.CALLE, 'i'));
                     if (matchNombrePoi) {
                         const matchedText = matchNombrePoi[0]; // Obtiene el texto coincidente
                         let igualdad = matchedText.length * 100 / result.rows[i].poi.length;
@@ -156,7 +160,8 @@ async function all(direccionParsed) {
                             estado: 100,
                             numero_exterior: 0
                         };
-                        const matchNombrePoi = result.rows[i].poi.match(new RegExp(direccionParsed.CALLE, 'i'));
+                        const nombrePoiSinAcentos = quitarAcentos(result.rows[i].poi);
+                        const matchNombrePoi = nombrePoiSinAcentos.match(new RegExp(direccionParsed.CALLE, 'i'));
                         if (matchNombrePoi) {
                             const matchedText = matchNombrePoi[0]; // Obtiene el texto coincidente
                             let igualdad = matchedText.length * 100 / result.rows[i].poi.length;
@@ -187,7 +192,8 @@ async function all(direccionParsed) {
                                 estado: 0,
                                 numero_exterior: 0
                             };
-                            const matchNombrePoi = result.rows[i].poi.match(new RegExp(direccionParsed.CALLE, 'i'));
+                            const nombrePoiSinAcentos = quitarAcentos(result.rows[i].poi);
+                            const matchNombrePoi = nombrePoiSinAcentos.match(new RegExp(direccionParsed.CALLE, 'i'));
                             if (matchNombrePoi) {
                                 const matchedText = matchNombrePoi[0]; // Obtiene el texto coincidente
                                 let igualdad = matchedText.length * 100 / result.rows[i].poi.length;
@@ -218,7 +224,8 @@ async function all(direccionParsed) {
                                     estado: 100,
                                     numero_exterior: 0
                                 };
-                                const matchNombrePoi = result.rows[i].poi.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
+                                const nombrePoiSinAcentos = quitarAcentos(result.rows[i].poi);
+                                const matchNombrePoi = nombrePoiSinAcentos.match(new RegExp(direccionParsed.CALLE, 'i'));
                                 if (matchNombrePoi) {
                                     const matchedText = matchNombrePoi[0]; // Obtiene el texto coincidente
                                     let igualdad = matchedText.length * 100 / result.rows[i].poi.length;

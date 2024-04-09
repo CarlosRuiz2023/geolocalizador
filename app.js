@@ -26,15 +26,11 @@ app.post('/geolocalizar', async (req, res) => {
         const direccionParsed = parseDireccion(direccion);
         console.log(direccionParsed);
         
+        // Funcion que enrutara acorde al parseo recibido
         const results= await scoringMaestro(direccionParsed);
-
-        // Ordenar scoring mas alto primero
-        const sortedResults = results.sort((a, b) => b.scoring.fiability - a.scoring.fiability);
-        // Recortar a solo 10 resultados
-        const topResults = sortedResults.slice(0, 5);
         // Devolver las coordenadas encontradas
         if (results.length > 0) {
-            res.status(200).json({ok:true,results:topResults});
+            res.status(200).json({ok:true,results});
         } else {
             res.status(404).json({ ok:false,error: 'Sin resultados.' });
         }

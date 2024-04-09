@@ -1,5 +1,5 @@
 const pgClient = require("../../data/conexion");
-const { levenshteinDistance } = require("../funciones");
+const { levenshteinDistance,quitarAcentos } = require("../funciones");
 
 async function sinNumeroExteriorColonia(direccionParsed) {
     let query = '';
@@ -35,7 +35,8 @@ async function sinNumeroExteriorColonia(direccionParsed) {
             municipio: 100,
             estado: 100
         };
-        const matchNombreAsentamiento = result.rows[i].nombre_asentamiento.match(new RegExp(direccionParsed.NOMASEN, 'i'));
+        const nombreAsentamientoSinAcentos = quitarAcentos(result.rows[i].nombre_asentamiento);
+        const matchNombreAsentamiento = nombreAsentamientoSinAcentos.match(new RegExp(direccionParsed.NOMASEN, 'i'));
         if (matchNombreAsentamiento) {
             const matchedText = matchNombreAsentamiento[0]; // Obtiene el texto coincidente
             let igualdad = matchedText.length * 100 / result.rows[i].nombre_asentamiento.length;
@@ -75,7 +76,8 @@ async function sinNumeroExteriorColonia(direccionParsed) {
                 municipio: 100,
                 estado: 100
             };
-            const matchNombreAsentamiento = result.rows[i].nombre_asentamiento.match(new RegExp(direccionParsed.NOMASEN, 'i'));
+            const nombreAsentamientoSinAcentos = quitarAcentos(result.rows[i].nombre_asentamiento);
+            const matchNombreAsentamiento = nombreAsentamientoSinAcentos.match(new RegExp(direccionParsed.NOMASEN, 'i'));
             if (matchNombreAsentamiento) {
                 const matchedText = matchNombreAsentamiento[0]; // Obtiene el texto coincidente
                 let igualdad = matchedText.length * 100 / result.rows[i].nombre_asentamiento.length;
@@ -115,7 +117,8 @@ async function sinNumeroExteriorColonia(direccionParsed) {
                     municipio: 0,
                     estado: 100
                 };
-                const matchNombreAsentamiento = result.rows[i].nombre_asentamiento.match(new RegExp(direccionParsed.NOMASEN, 'i'));
+                const nombreAsentamientoSinAcentos = quitarAcentos(result.rows[i].nombre_asentamiento);
+                const matchNombreAsentamiento = nombreAsentamientoSinAcentos.match(new RegExp(direccionParsed.NOMASEN, 'i'));
                 if (matchNombreAsentamiento) {
                     const matchedText = matchNombreAsentamiento[0]; // Obtiene el texto coincidente
                     let igualdad = matchedText.length * 100 / result.rows[i].nombre_asentamiento.length;
@@ -154,7 +157,8 @@ async function sinNumeroExteriorColonia(direccionParsed) {
                         municipio: 100,
                         estado: 0
                     };
-                    const matchNombreAsentamiento = result.rows[i].nombre_asentamiento.match(new RegExp(direccionParsed.NOMASEN, 'i'));
+                    const nombreAsentamientoSinAcentos = quitarAcentos(result.rows[i].nombre_asentamiento);
+                    const matchNombreAsentamiento = nombreAsentamientoSinAcentos.match(new RegExp(direccionParsed.NOMASEN, 'i'));
                     if (matchNombreAsentamiento) {
                         const matchedText = matchNombreAsentamiento[0]; // Obtiene el texto coincidente
                         let igualdad = matchedText.length * 100 / result.rows[i].nombre_asentamiento.length;
@@ -193,7 +197,8 @@ async function sinNumeroExteriorColonia(direccionParsed) {
                             municipio: 0,
                             estado: 0
                         };
-                        const matchNombreAsentamiento = result.rows[i].nombre_asentamiento.match(new RegExp(direccionParsed.NOMASEN, 'i'));
+                        const nombreAsentamientoSinAcentos = quitarAcentos(result.rows[i].nombre_asentamiento);
+                        const matchNombreAsentamiento = nombreAsentamientoSinAcentos.match(new RegExp(direccionParsed.NOMASEN, 'i'));
                         if (matchNombreAsentamiento) {
                             const matchedText = matchNombreAsentamiento[0]; // Obtiene el texto coincidente
                             let igualdad = matchedText.length * 100 / result.rows[i].nombre_asentamiento.length;

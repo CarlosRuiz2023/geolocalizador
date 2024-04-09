@@ -80,7 +80,7 @@ function parseDireccion(direccion) {
 
         // Buscar el municipio
         if (!municipio) {
-            municipio = obtenerMunicipio(componente, componentesDireccion[i + 1]);
+            municipio = obtenerMunicipio(componente, componentesDireccion, i);
             if (municipio) {
                 direccionParsed.MUNICIPIO = municipio;
                 activo = false;
@@ -137,7 +137,7 @@ function obtenerNumeroExterior(componente) {
     const match = componente.match(numeroExteriorRegex);
     if (match) {
         const [numCompleto, , numExtNum, numExtAlf] = match;
-        if(numExtNum.length>=5)return null;
+        if (numExtNum.length >= 5) return null;
         return `${numExtNum} ${numExtAlf || ''}`.trim();
     } else {
         // Expresión regular para detectar números exteriores como "M14"
@@ -145,7 +145,7 @@ function obtenerNumeroExterior(componente) {
         const match = componente.match(numeroExteriorRegex);
         if (match) {
             const numExterior = match[0].replace(/[A-Z]$/, '').replace(/^[A-Z]/, '').trim();
-            if(numExterior.length>=5)return null;
+            if (numExterior.length >= 5) return null;
             return numExterior;
         } else if (componente === "S/N") {
             return "No se ha especificado un número exterior";
@@ -156,14 +156,14 @@ function obtenerNumeroExterior(componente) {
             if (match) {
                 // Obtenemos el último grupo de dígitos consecutivos de 3 o más caracteres
                 const numExterior = match[1].trim();
-                if(numExterior.length>=5)return null;
+                if (numExterior.length >= 5) return null;
                 return numExterior;
             }
         }
     }
     const numeroExteriorRegex1 = /^INT\s?\d+$/;
     if (numeroExteriorRegex1.test(componente)) {
-        return componente.replace('INT','');
+        return componente.replace('INT', '');
     }
     return null;
 }
@@ -195,28 +195,46 @@ function obtenerEstado(componente) {
     return null;
 }
 // Función auxiliar para obtener el tipo de asentamiento humano
-function obtenerMunicipio(componente, estado) {
+function obtenerMunicipio(componente, componentesDireccion, i) {
     try {
-        const municipios = municipiosEstado[estado];
+        const municipios = municipiosEstado[componentesDireccion[componentesDireccion.length - 2]];
         for (const municipio of municipios) {
-            if (componente.toUpperCase().includes(municipio)) {
-                if (componente.toUpperCase() === municipio) return municipio;
+            // Verificar si el municipio contiene el componente actual
+            if (municipio.includes(componente)) {
+                // Si coincide exactamente con el municipio, lo devolvemos
+                if (municipio === componente) {
+                    return municipio;
+                }
+                let municipioConcat = componente; // Variable para almacenar la calle si es necesario
+                let j=i;
+                j++;
+                while (j < (componentesDireccion.length - 2)) {
+                    municipioConcat += ' ' + componentesDireccion[j];
+                    j++;
+                }
+                if (municipio === municipioConcat) {
+                    return municipio;
+                }
             }
         }
+        return null; // Si no se encontró un municipio, devolvemos null
     } catch (error) {
+        //console.log(error);
         return null;
     }
 }
+
 // Función para limpiar la búsqueda eliminando caracteres específicos
 function limpiarBusqueda(texto) {
     // Elimina caracteres específicos, excepto cuando están precedidos por un espacio y seguidos por una letra y un punto.
     texto = texto.replace(/(?<!\S)[\-|+"#$%&*./;?\[{\~¡¦=¤¥](?=(\s[A-Z]\.))/g, '');
-    texto=texto.replace(/,/g, '');
-    texto=texto.replace(/Á/g, 'A');
-    texto=texto.replace(/É/g, 'E');
-    texto=texto.replace(/Í/g, 'I');
-    texto=texto.replace(/Ó/g, 'O');
-    texto=texto.replace(/Ú/g, 'U');
+    texto = texto.replace(/,/g, '');
+    texto = texto.replace(/Ñ/g, 'N');
+    texto = texto.replace(/Á/g, 'A');
+    texto = texto.replace(/É/g, 'E');
+    texto = texto.replace(/Í/g, 'I');
+    texto = texto.replace(/Ó/g, 'O');
+    texto = texto.replace(/Ú/g, 'U');
     return texto.trim();
 }
 // Función para expandir abreviaciones de tipos de vialidad en una dirección
@@ -263,4 +281,8 @@ function levenshteinDistance(str1, str2) {
     // La distancia de edición entre las cadenas es el valor en la esquina inferior derecha de la matriz
     return distances[len1][len2];
 }
-module.exports = { parseDireccion, levenshteinDistance };
+function quitarAcentos(texto) {
+    texto = texto.replace(/Ñ/g, 'N');
+    return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+module.exports = { parseDireccion, levenshteinDistance, quitarAcentos };

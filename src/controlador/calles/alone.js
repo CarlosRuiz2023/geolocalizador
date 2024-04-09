@@ -1,5 +1,5 @@
 const pgClient = require("../../data/conexion");
-const { levenshteinDistance } = require("../funciones");
+const { levenshteinDistance, quitarAcentos } = require("../funciones");
 
 // Aplicable solo en caso de llevar todos los campos
 async function alone(direccionParsed) {
@@ -36,7 +36,8 @@ async function alone(direccionParsed) {
                 numero_exterior: 0,
                 colonia: 0
             };
-            const matchNombreCalle = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.CALLE, 'i'));
+            const nombreCalleSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
+            const matchNombreCalle = nombreCalleSinAcentos.match(new RegExp(direccionParsed.CALLE, 'i'));
             if (matchNombreCalle) {
                 const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
                 let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
@@ -78,7 +79,8 @@ async function alone(direccionParsed) {
                 fiability: 0,
                 calle: 0
             };
-            const matchNombreCalle = result.rows[i].nombre_vialidad.match(new RegExp(direccionParsed.CALLE, 'i'));
+            const nombreCalleSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
+            const matchNombreCalle = nombreCalleSinAcentos.match(new RegExp(direccionParsed.CALLE, 'i'));
             if (matchNombreCalle) {
                 const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
                 let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
