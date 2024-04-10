@@ -28,7 +28,7 @@ async function sinCP(direccionParsed) {
             municipio: 100,
             estado: 100,
             numero_exterior: 100,
-            colonia: 0,
+            colonia: 0
         };
         const nombrePoiSinAcentos = quitarAcentos(result.rows[i].poi);
         const matchNombrePoi = nombrePoiSinAcentos.match(new RegExp(direccionParsed.CALLE, 'i'));
@@ -101,7 +101,7 @@ async function sinCP(direccionParsed) {
                 lat_y AS y_centro,
                 lon_x AS x_centro
                 FROM carto_geolocalizador
-                WHERE unaccent(nombre_vialidad) like '%' || $1 || '%'
+                WHERE unaccent(poi) like '%' || $1 || '%'
                 AND unaccent(municipio) = $2
                 AND numero = $4
                 AND unaccent(colonia) LIKE '%' || $3 || '%'
@@ -257,7 +257,7 @@ async function sinCP(direccionParsed) {
                                 result.rows[i].scoring.poi += Math.round(igualdad);
                                 result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                             }
-                            const coloniaSinAcentos = quitarAcentos(result.rows[i].colonias);
+                            const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                             const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
                             if (matchColonia) {
                                 const matchedText = matchColonia[0]; // Obtiene el texto coincidente
@@ -367,7 +367,7 @@ async function sinCP(direccionParsed) {
                                         AND unaccent(colonia) LIKE '%' || $3 || '%'
                                         ;
                                     `;
-                                    values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
+                                    values = [direccionParsed.CALLE, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
                                     const result = await pgClient.query(query, values);
                                     for (let i = 0; i < result.rows.length; i++) {
                                         result.rows[i].scoring = {
@@ -673,12 +673,12 @@ async function sinCP(direccionParsed) {
                                                                 const result = await pgClient.query(query, values);
                                                                 for (let i = 0; i < result.rows.length; i++) {
                                                                     result.rows[i].scoring = {
-                                                                        fiability: 20,
+                                                                        fiability: 30,
                                                                         poi: 0,
                                                                         municipio: 100,
                                                                         estado: 100,
                                                                         numero_exterior: 0,
-                                                                        colonia: 0
+                                                                        colonia: 100
                                                                     };
                                                                     // Calcular la distancia de Levenshtein
                                                                     const distance = levenshteinDistance(result.rows[i].poi, direccionParsed.CALLE);
@@ -703,21 +703,16 @@ async function sinCP(direccionParsed) {
                                                             }
                                                         }
                                                     }
-
                                                 }
                                             }
                                         }
-
                                     }
                                 }
                             }
-
                         }
                     }
-
                 }
             }
-
         }
     }
     return rows;

@@ -8,13 +8,13 @@ async function alone(direccionParsed) {
     let rows = [];
     // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
     query = `
-                SELECT *,
-                lat_y AS y_centro,
-                lon_x AS x_centro
-                FROM carto_geolocalizador
-                WHERE unaccent(poi) like '%' || $1 || '%'
-                ;
-            `;
+        SELECT *,
+        lat_y AS y_centro,
+        lon_x AS x_centro
+        FROM carto_geolocalizador
+        WHERE unaccent(poi) like '%' || $1 || '%'
+        ;
+    `;
     values = [direccionParsed.CALLE];
     const result = await pgClient.query(query, values);
     for (let i = 0; i < result.rows.length; i++) {

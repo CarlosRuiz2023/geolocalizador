@@ -1976,17 +1976,18 @@ async function all(direccionParsed) {
                                                                                                                 ELSE lon_x
                                                                                                             END AS x_centro
                                                                                                             FROM carto_geolocalizador
-                                                                                                            WHERE unaccent(nombre_vialidad) LIKE '%' || $4 || '%'
+                                                                                                            WHERE unaccent(nombre_asentamiento) LIKE '%' || $4 || '%'
                                                                                                             AND codigo_postal = $1 
                                                                                                             AND unaccent(municipio) = $2
                                                                                                             AND unaccent(estado) = $3
                                                                                                             ;
                                                                                                         `;
-                                                                                                        values = [direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
+                                                                                                        values = [direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.NOMASEN];
                                                                                                         const result = await pgClient.query(query, values);
                                                                                                         for (let i = 0; i < result.rows.length; i++) {
                                                                                                             result.rows[i].scoring = {
                                                                                                                 fiability: 30,
+                                                                                                                tipo_asentamiento: 0,
                                                                                                                 calle: 0,
                                                                                                                 codigo_postal: 100,
                                                                                                                 municipio: 100,
@@ -1996,17 +1997,17 @@ async function all(direccionParsed) {
                                                                                                             };
                                                                                                             const nombreAsentamientoSinAcentos = quitarAcentos(result.rows[i].nombre_asentamiento);
                                                                                                             const matchNombreAsentamiento = nombreAsentamientoSinAcentos.match(new RegExp(direccionParsed.NOMASEN, 'i'));
-                                                                                                            if (matchNombreCalle) {
-                                                                                                                const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
-                                                                                                                let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
+                                                                                                            if (matchNombreAsentamiento) {
+                                                                                                                const matchedText = matchNombreAsentamiento[0]; // Obtiene el texto coincidente
+                                                                                                                let igualdad = matchedText.length * 100 / result.rows[i].nombre_asentamiento.length;
                                                                                                                 if (igualdad > 100) igualdad = 100;
                                                                                                                 result.rows[i].scoring.calle += Math.round(igualdad);
                                                                                                                 result.rows[i].scoring.fiability += Math.round(igualdad * 0.5);
                                                                                                             }
                                                                                                             // Calcular la distancia de Levenshtein
-                                                                                                            const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.NOMASEN);
+                                                                                                            const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
                                                                                                             // Calcular la similitud como el inverso de la distancia de Levenshtein
-                                                                                                            const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.NOMASEN.length);
+                                                                                                            const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
                                                                                                             const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                                                                                                             if (similarityColonia) {
                                                                                                                 result.rows[i].scoring.colonia += similarityColonia;

@@ -1179,7 +1179,6 @@ async function all(direccionParsed) {
                                                                     municipio: 100,
                                                                     estado: 100,
                                                                     numero_exterior: 0,
-                                                                    comosea: 0,
                                                                     colonia: 0
                                                                 };
                                                                 const nombreVialidadSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);

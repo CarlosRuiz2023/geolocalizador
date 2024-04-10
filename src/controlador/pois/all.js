@@ -105,7 +105,7 @@ async function all(direccionParsed) {
                 lat_y AS y_centro,
                 lon_x AS x_centro
                 FROM carto_geolocalizador
-                WHERE unaccent(poi) like '%' || $1 || '%'
+                WHERE unaccent(poi) like '%' || $1 || '%' 
                 AND codigo_postal = $2 
                 AND unaccent(estado) = $3
                 AND numero = $5

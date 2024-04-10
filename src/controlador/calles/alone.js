@@ -6,7 +6,7 @@ async function alone(direccionParsed) {
     let query = '';
     let values = [];
     let rows = [];
-    if (direccionParsed.ESTADO && direccionParsed.MUNICIPIO && direccionParsed.COLONIA && direccionParsed.CALLE) {
+    if (direccionParsed.ESTADO && direccionParsed.MUNICIPIO && direccionParsed.CALLE) {
         // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
         query = `
             SELECT *,
@@ -28,13 +28,10 @@ async function alone(direccionParsed) {
         const result = await pgClient.query(query, values);
         for (let i = 0; i < result.rows.length; i++) {
             result.rows[i].scoring = {
-                fiability: 20,
+                fiability: 50,
                 calle: 0,
-                codigo_postal: 0,
                 municipio: 100,
-                estado: 100,
-                numero_exterior: 0,
-                colonia: 0
+                estado: 100
             };
             const nombreCalleSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
             const matchNombreCalle = nombreCalleSinAcentos.match(new RegExp(direccionParsed.CALLE, 'i'));
@@ -44,15 +41,6 @@ async function alone(direccionParsed) {
                 if (igualdad > 100) igualdad = 100;
                 result.rows[i].scoring.calle += Math.round(igualdad);
                 result.rows[i].scoring.fiability += Math.round(igualdad * 0.5);
-            }
-            // Calcular la distancia de Levenshtein
-            const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
-            // Calcular la similitud como el inverso de la distancia de Levenshtein
-            const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
-            const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
-            if (similarityColonia) {
-                result.rows[i].scoring.colonia += similarityColonia;
-                result.rows[i].scoring.fiability += (similarityColonia * 0.1);
             }
         }
         rows = rows.concat(result.rows);

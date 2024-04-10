@@ -20,14 +20,14 @@ app.use(express.static("public"));
 app.post('/geolocalizar', async (req, res) => {
     try {
         // Obtener la dirección proporcionada por el usuario desde el cuerpo de la solicitud
-        const { direccion='' } = req.body;
+        const { direccion='', limit=5 } = req.body;
 
         // Parsear la dirección según la Norma Técnica sobre Domicilios Geográficos
         const direccionParsed = parseDireccion(direccion);
         console.log(direccionParsed);
         
         // Funcion que enrutara acorde al parseo recibido
-        const results= await scoringMaestro(direccionParsed);
+        const results= await scoringMaestro(direccionParsed,limit);
         // Devolver las coordenadas encontradas
         if (results.length > 0) {
             res.status(200).json({ok:true,results});

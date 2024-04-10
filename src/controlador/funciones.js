@@ -1,14 +1,32 @@
-const estados = require("../data/estados");
-const municipiosEstado = require("../data/municipios.json");
+//const municipiosEstado = require("../data/municipios.json");
 const tiposAsentamiento = require("../data/tipoAsentamiento");
 const tiposVialidad = require("../data/tipoVialidad");
 const diccionarioAbreviaciones = require("../data/diccionarioAbreviaciones.json");
+const obtenerEstadosPromise = require("../data/estados1");
+const obtenerMunicipiosPromise = require("../data/municipios1");
 
+let estados = [];
+let municipiosEstado;
+// Función para manejar la importación de estados
+async function importaciones() {
+    try {
+        // Espera a que se resuelva la promesa que obtiene los estados
+        estados = await obtenerEstadosPromise;
+        // Espera a que se resuelva la promesa que obtiene los municipios
+        municipiosEstado = await obtenerMunicipiosPromise;
+    } catch (error) {
+        // Maneja cualquier error que ocurra
+        console.error('Error al importar los estados:', error);
+    }
+}
+
+// Llamas a la función para importar los estados y municipios
+importaciones();
 
 // Función para parsear la dirección según la Norma Técnica sobre Domicilios Geográficos
 function parseDireccion(direccion) {
-    const direccionExpandida = expandirAbreviaciones(limpiarBusqueda(direccion.toUpperCase()));
-    const componentesDireccion = direccionExpandida.split(' ');
+    let direccionExpandida = expandirAbreviaciones(limpiarBusqueda(direccion.toUpperCase()));
+    const componentesDireccion = direccionExpandida.trim().split(' ');
     const direccionParsed = {};
     let estado = '';
     let municipio = '';
@@ -19,6 +37,11 @@ function parseDireccion(direccion) {
     let cont = 0;
     let cont2 = 0;
 
+    // Buscar el estado
+    estado = obtenerEstado(componentesDireccion);
+    if (estado) {
+        direccionParsed.ESTADO = estado;
+    }
     for (let i = 0; i < componentesDireccion.length; i++) {
         const componente = componentesDireccion[i].trim();
 
@@ -28,7 +51,7 @@ function parseDireccion(direccion) {
             direccionParsed.TIPOVIAL = tipoVialidad;
             calle = componente.replace(tipoVialidad, '').trim();
             i++;
-            while (i < componentesDireccion.length && !obtenerNumeroExterior(componentesDireccion[i]) && !obtenerCodigoPostal(componentesDireccion[i])) {
+            while (i < componentesDireccion.length && (!obtenerNumeroExterior(componentesDireccion[i]) || i === 1) && !obtenerCodigoPostal(componentesDireccion[i]) && !obtenerMunicipio(estado, componentesDireccion, i)) {
                 calle += ' ' + componentesDireccion[i];
                 i++;
             }
@@ -60,7 +83,7 @@ function parseDireccion(direccion) {
             direccionParsed.TIPOASEN = tipoAsentamiento;
             calle = componente.replace(tipoAsentamiento, '').trim();
             i++;
-            while (i < componentesDireccion.length && !obtenerNumeroExterior(componentesDireccion[i]) && !obtenerCodigoPostal(componentesDireccion[i])) {
+            while (i < componentesDireccion.length && !obtenerNumeroExterior(componentesDireccion[i]) && !obtenerCodigoPostal(componentesDireccion[i]) && !obtenerMunicipio(estado, componentesDireccion, i)) {
                 calle += ' ' + componentesDireccion[i];
                 i++;
             }
@@ -69,38 +92,36 @@ function parseDireccion(direccion) {
             activo = false;
         }
 
-        // Buscar el estado
-        if (!estado && (direccionParsed.MUNICIPIO || i === componentesDireccion.length - 1)) {
-            estado = obtenerEstado(componente);
-            if (estado) {
-                direccionParsed.ESTADO = estado;
-                activo = false;
-            }
-        }
-
         // Buscar el municipio
-        if (!municipio) {
-            municipio = obtenerMunicipio(componente, componentesDireccion, i);
+        if (!municipio && activo) {
+            municipio = obtenerMunicipio(estado, componentesDireccion, i);
             if (municipio) {
                 direccionParsed.MUNICIPIO = municipio;
                 activo = false;
             }
         }
+
         if (activo) {
             if (!direccionParsed.CALLE && !direccionParsed.TIPOVIAL && !direccionParsed.TIPOASEN) {
-                cont = i;
-                direccionParsed.CALLE = componente;
-                activo = false;
-            } else if (direccionParsed.CALLE && cont === i - 1) {
+                if (componente === 'COLONIA') {
+                    direccionParsed.CALLE = ' ';
+                } else {
+                    cont = i;
+                    direccionParsed.CALLE = componente;
+                    activo = false;
+                }
+            } else if (direccionParsed.CALLE && cont === i - 1 && direccionParsed.CALLE !== ' ' && componente !== 'COLONIA') {
                 cont = i;
                 direccionParsed.CALLE += ' ' + componente;
                 activo = false;
             }
         }
-        if (activo) {
+        if (activo && !direccionParsed.MUNICIPIO && !obtenerNumeroExterior(componente)) {
             if (!direccionParsed.COLONIA) {
                 cont2 = i;
-                direccionParsed.COLONIA = componente;
+                if (componente !== 'COLONIA') {
+                    direccionParsed.COLONIA = componente;
+                }
             } else if (direccionParsed.COLONIA && cont2 === i - 1) {
                 cont2 = i;
                 direccionParsed.COLONIA += ' ' + componente;
@@ -186,34 +207,72 @@ function obtenerCodigoPostal(componente) {
     return null;
 }
 // Función auxiliar para obtener el tipo de asentamiento humano
-function obtenerEstado(componente) {
+function obtenerEstado(componentesDireccion) {
+    let estadoEncontrado = '';
+    estadoEncontrado = componentesDireccion[componentesDireccion.length - 1];
     for (const estado of estados) {
-        if (componente.toUpperCase().includes(estado)) {
+        if (estadoEncontrado === estado) {
+            return estado;
+        }
+    }
+    estadoEncontrado = componentesDireccion[componentesDireccion.length - 2] + ' ' + componentesDireccion[componentesDireccion.length - 1];
+    for (const estado of estados) {
+        if (estadoEncontrado === estado) {
+            return estado;
+        }
+    }
+    estadoEncontrado = componentesDireccion[componentesDireccion.length - 3] + ' ' + componentesDireccion[componentesDireccion.length - 2] + ' ' + componentesDireccion[componentesDireccion.length - 1];
+    for (const estado of estados) {
+        if (estadoEncontrado === estado) {
+            return estado;
+        }
+    }
+    estadoEncontrado = componentesDireccion[componentesDireccion.length - 4] + ' ' + componentesDireccion[componentesDireccion.length - 3] + ' ' + componentesDireccion[componentesDireccion.length - 2] + ' ' + componentesDireccion[componentesDireccion.length - 1];
+    for (const estado of estados) {
+        if (estadoEncontrado === estado) {
+            return estado;
+        }
+    }
+    estadoEncontrado = componentesDireccion[componentesDireccion.length - 5] + ' ' +componentesDireccion[componentesDireccion.length - 4] + ' ' +componentesDireccion[componentesDireccion.length - 3] + ' ' + componentesDireccion[componentesDireccion.length - 2] + ' ' + componentesDireccion[componentesDireccion.length - 1];
+    for (const estado of estados) {
+        if (estadoEncontrado === estado) {
+            return estado;
+        }
+    }
+    estadoEncontrado = componentesDireccion[componentesDireccion.length - 6] + ' ' +componentesDireccion[componentesDireccion.length - 5] + ' ' +componentesDireccion[componentesDireccion.length - 4] + ' ' +componentesDireccion[componentesDireccion.length - 3] + ' ' + componentesDireccion[componentesDireccion.length - 2] + ' ' + componentesDireccion[componentesDireccion.length - 1];
+    for (const estado of estados) {
+        if (estadoEncontrado === estado) {
             return estado;
         }
     }
     return null;
 }
 // Función auxiliar para obtener el tipo de asentamiento humano
-function obtenerMunicipio(componente, componentesDireccion, i) {
+function obtenerMunicipio(estado, componentesDireccion, i) {
     try {
-        const municipios = municipiosEstado[componentesDireccion[componentesDireccion.length - 2]];
+        const municipios = municipiosEstado[estado];
+        const parseo = estado.split(' ');
+        let count = parseo.length;
+        // if(estado==='GUANAJUATO')count++;
         for (const municipio of municipios) {
             // Verificar si el municipio contiene el componente actual
-            if (municipio.includes(componente)) {
+            if (municipio.includes(componentesDireccion[i])) {
                 // Si coincide exactamente con el municipio, lo devolvemos
-                if (municipio === componente) {
-                    return municipio;
+                if (municipio === componentesDireccion[i]) {
+                    if (i === componentesDireccion.length - (count+1)) return municipio;
+                    return null;
                 }
-                let municipioConcat = componente; // Variable para almacenar la calle si es necesario
-                let j=i;
+                let municipioConcat = componentesDireccion[i]; // Variable para almacenar la calle si es necesario
+                let j = i;
                 j++;
-                while (j < (componentesDireccion.length - 2)) {
+                while (j < (componentesDireccion.length - count)) {
                     municipioConcat += ' ' + componentesDireccion[j];
                     j++;
                 }
                 if (municipio === municipioConcat) {
-                    return municipio;
+                    const parseo = municipioConcat.split(' ');
+                    if (i === componentesDireccion.length - parseo.length - count) return municipio;
+                    return null;
                 }
             }
         }
