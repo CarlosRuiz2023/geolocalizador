@@ -401,14 +401,14 @@ async function sinCP(direccionParsed) {
                             result.rows[i].scoring.calle += Math.round(igualdad);
                             result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                         }
-                        // Calcular la distancia de Levenshtein
-                        const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
-                        // Calcular la similitud como el inverso de la distancia de Levenshtein
-                        const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
-                        const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
-                        if (similarityColonia) {
-                            result.rows[i].scoring.colonia += similarityColonia;
-                            result.rows[i].scoring.fiability += (similarityColonia * 0.1);
+                        const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+                        const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                        if (matchColonia) {
+                            const matchedText = matchColonia[0]; // Obtiene el texto coincidente
+                            let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
+                            if (igualdad > 100) igualdad = 100;
+                            result.rows[i].scoring.colonia += Math.round(igualdad);
+                            result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
                         }
                     }
                     rows = rows.concat(result.rows);

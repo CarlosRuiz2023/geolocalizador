@@ -532,7 +532,6 @@ async function all(direccionParsed) {
                         `;
                         values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1, direccionParsed.ESTADO];
                         const result = await pgClient.query(query, values);
-
                         for (let i = 0; i < result.rows.length; i++) {
                             result.rows[i].scoring = {
                                 fiability: 40,
