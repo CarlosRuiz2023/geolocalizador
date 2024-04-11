@@ -1,7 +1,7 @@
-const { all, sinNumeroExterior, sinCP, sinMunicipio, sinColonia, sinEstado, alone, sinNumeroExteriorCP, sinNumeroExteriorCPColonia } = require("./vialidades");
-const { all : all1, sinNumeroExterior: sinNumeroExterior1, sinCP:sinCP1, sinMunicipio:sinMunicipio1, sinEstado:sinEstado1, sinColonia:sinColonia1, alone:alone1 } = require("./asentamientos");
-const { all : all2, sinNumeroExterior: sinNumeroExterior2, sinCP:sinCP2, sinMunicipio:sinMunicipio2, sinEstado:sinEstado2, sinColonia:sinColonia2, alone:alone2 } = require("./calles");
-const { all : all3, sinNumeroExterior: sinNumeroExterior3, sinCP:sinCP3, sinMunicipio:sinMunicipio3, sinEstado:sinEstado3, sinColonia:sinColonia3, alone:alone3 } = require("./pois");
+const { all, sinNumeroExterior, sinCP, sinMunicipio, sinColonia, sinEstado, alone, sinNumeroExteriorCP, sinNumeroExteriorCPColonia, sinColoniaCP, sinColoniaNumeroExterior } = require("./vialidades");
+const { all : all1, sinNumeroExterior: sinNumeroExterior1, sinCP:sinCP1, sinMunicipio:sinMunicipio1, sinEstado:sinEstado1, sinColonia:sinColonia1, alone:alone1, sinNumeroExteriorCP:sinNumeroExteriorCP1, sinNumeroExteriorCPColonia:sinNumeroExteriorCPColonia1, sinColoniaCP:sinColoniaCP1, sinColoniaNumeroExterior:sinColoniaNumeroExterior1 } = require("./asentamientos");
+const { all : all2, sinNumeroExterior: sinNumeroExterior2, sinCP:sinCP2, sinMunicipio:sinMunicipio2, sinEstado:sinEstado2, sinColonia:sinColonia2, alone:alone2, sinNumeroExteriorCP:sinNumeroExteriorCP2, sinNumeroExteriorCPColonia:sinNumeroExteriorCPColonia2, sinColoniaCP:sinColoniaCP2, sinColoniaNumeroExterior:sinColoniaNumeroExterior2 } = require("./calles");
+const { all : all3, sinNumeroExterior: sinNumeroExterior3, sinCP:sinCP3, sinMunicipio:sinMunicipio3, sinEstado:sinEstado3, sinColonia:sinColonia3, alone:alone3, sinNumeroExteriorCP:sinNumeroExteriorCP3, sinNumeroExteriorCPColonia:sinNumeroExteriorCPColonia3, sinColoniaCP:sinColoniaCP3, sinColoniaNumeroExterior:sinColoniaNumeroExterior3 } = require("./pois");
 
 // Función para parsear la dirección según la Norma Técnica sobre Domicilios Geográficos
 async function scoringMaestro(direccionParsed,limit) {
@@ -27,6 +27,12 @@ async function scoringMaestro(direccionParsed,limit) {
         }
         else if (direccionParsed.CP && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
             results=await sinEstado(direccionParsed);
+        }
+        else if (direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.MUNICIPIO) {
+            results=await sinColoniaCP(direccionParsed);
+        }
+        else if (direccionParsed.ESTADO && direccionParsed.CP && direccionParsed.MUNICIPIO) {
+            results=await sinColoniaNumeroExterior(direccionParsed);
         }
         else if (direccionParsed.ESTADO && direccionParsed.MUNICIPIO && direccionParsed.COLONIA) {
             results=await sinNumeroExteriorCP(direccionParsed);
@@ -65,6 +71,18 @@ async function scoringMaestro(direccionParsed,limit) {
         else if (direccionParsed.CP && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
             results=await sinEstado1(direccionParsed);
         }
+        else if (direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.MUNICIPIO) {
+            results=await sinColoniaCP1(direccionParsed);
+        }
+        else if (direccionParsed.ESTADO && direccionParsed.CP && direccionParsed.MUNICIPIO) {
+            results=await sinColoniaNumeroExterior1(direccionParsed);
+        }
+        else if (direccionParsed.ESTADO && direccionParsed.MUNICIPIO && direccionParsed.COLONIA) {
+            results=await sinNumeroExteriorCP1(direccionParsed);
+        }
+        else if (direccionParsed.ESTADO && direccionParsed.MUNICIPIO) {
+            results=await sinNumeroExteriorCPColonia1(direccionParsed);
+        }
         else {
             results=await alone1(direccionParsed);
         }
@@ -98,6 +116,18 @@ async function scoringMaestro(direccionParsed,limit) {
         else if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1) {
             results=await sinColonia2(direccionParsed);
         }
+        else if (direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.MUNICIPIO) {
+            results=await sinColoniaCP2(direccionParsed);
+        }
+        else if (direccionParsed.ESTADO && direccionParsed.CP && direccionParsed.MUNICIPIO) {
+            results=await sinColoniaNumeroExterior2(direccionParsed);
+        }
+        else if (direccionParsed.ESTADO && direccionParsed.MUNICIPIO && direccionParsed.COLONIA) {
+            results=await sinNumeroExteriorCP2(direccionParsed);
+        }
+        else if (direccionParsed.ESTADO && direccionParsed.MUNICIPIO) {
+            results=await sinNumeroExteriorCPColonia2(direccionParsed);
+        }
         else {
             results=await alone2(direccionParsed);
         }
@@ -130,6 +160,18 @@ async function scoringMaestro(direccionParsed,limit) {
         }
         else if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1) {
             results=await sinColonia3(direccionParsed);
+        }
+        else if (direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.MUNICIPIO) {
+            results=await sinColoniaCP2(direccionParsed);
+        }
+        else if (direccionParsed.ESTADO && direccionParsed.CP && direccionParsed.MUNICIPIO) {
+            results=await sinColoniaNumeroExterior2(direccionParsed);
+        }
+        else if (direccionParsed.ESTADO && direccionParsed.MUNICIPIO && direccionParsed.COLONIA) {
+            results=await sinNumeroExteriorCP3(direccionParsed);
+        }
+        else if (direccionParsed.ESTADO && direccionParsed.MUNICIPIO) {
+            results=await sinNumeroExteriorCPColonia3(direccionParsed);
         }
         else {
             results=await alone3(direccionParsed);

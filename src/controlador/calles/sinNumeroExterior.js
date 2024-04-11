@@ -811,18 +811,17 @@ async function sinNumeroExterior(direccionParsed) {
                                                                             ELSE lon_x
                                                                         END AS x_centro
                                                                         FROM carto_geolocalizador
-                                                                        WHERE codigo_postal = $1 
-                                                                        AND unaccent(estado) = $2
-                                                                        AND unaccent(municipio) = $3
+                                                                        WHERE unaccent(estado) = $1
+                                                                        AND unaccent(municipio) = $2
                                                                         ;
                                                                     `;
-                                                                    values = [direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.MUNICIPIO];
+                                                                    values = [direccionParsed.ESTADO,direccionParsed.MUNICIPIO];
                                                                     const result = await pgClient.query(query, values);
                                                                     for (let i = 0; i < result.rows.length; i++) {
                                                                         result.rows[i].scoring = {
-                                                                            fiability: 30,
+                                                                            fiability: 20,
                                                                             calle: 0,
-                                                                            codigo_postal: 100,
+                                                                            codigo_postal: 0,
                                                                             municipio: 100,
                                                                             estado: 100,
                                                                             colonia: 0
@@ -847,6 +846,56 @@ async function sinNumeroExterior(direccionParsed) {
                                                                         }
                                                                     }
                                                                     rows = rows.concat(result.rows);
+                                                                    if (result.rows.length === 0) {
+                                                                        // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+                                                                        query = `
+                                                                            SELECT *,
+                                                                            CASE
+                                                                                WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                                                                                ELSE lat_y
+                                                                            END AS y_centro,
+                                                                            CASE
+                                                                                WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                                                                                ELSE lon_x
+                                                                            END AS x_centro
+                                                                            FROM carto_geolocalizador
+                                                                            WHERE codigo_postal = $1 
+                                                                            AND unaccent(estado) = $2
+                                                                            AND unaccent(municipio) = $3
+                                                                            ;
+                                                                        `;
+                                                                        values = [direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.MUNICIPIO];
+                                                                        const result = await pgClient.query(query, values);
+                                                                        for (let i = 0; i < result.rows.length; i++) {
+                                                                            result.rows[i].scoring = {
+                                                                                fiability: 30,
+                                                                                calle: 0,
+                                                                                codigo_postal: 100,
+                                                                                municipio: 100,
+                                                                                estado: 100,
+                                                                                colonia: 0
+                                                                            };
+                                                                            // Calcular la distancia de Levenshtein
+                                                                            const distance = levenshteinDistance(result.rows[i].nombre_vialidad, direccionParsed.CALLE);
+                                                                            // Calcular la similitud como el inverso de la distancia de Levenshtein
+                                                                            const maxLength = Math.max(result.rows[i].nombre_vialidad.length, direccionParsed.CALLE.length);
+                                                                            const similarity = ((maxLength - distance) / maxLength) * 100;
+                                                                            if (similarity) {
+                                                                                result.rows[i].scoring.calle += similarity;
+                                                                                result.rows[i].scoring.fiability += (similarity * 0.6);
+                                                                            }
+                                                                            // Calcular la distancia de Levenshtein
+                                                                            const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
+                                                                            // Calcular la similitud como el inverso de la distancia de Levenshtein
+                                                                            const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
+                                                                            const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
+                                                                            if (similarityColonia) {
+                                                                                result.rows[i].scoring.colonia += similarityColonia;
+                                                                                result.rows[i].scoring.fiability += (similarityColonia * 0.1);
+                                                                            }
+                                                                        }
+                                                                        rows = rows.concat(result.rows);
+                                                                    }
                                                                 }
                                                             }
                                                         }

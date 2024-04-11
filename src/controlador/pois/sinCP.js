@@ -367,7 +367,7 @@ async function sinCP(direccionParsed) {
                                         AND unaccent(colonia) LIKE '%' || $3 || '%'
                                         ;
                                     `;
-                                    values = [direccionParsed.CALLE, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
+                                    values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
                                     const result = await pgClient.query(query, values);
                                     for (let i = 0; i < result.rows.length; i++) {
                                         result.rows[i].scoring = {

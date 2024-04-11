@@ -34,6 +34,7 @@ function parseDireccion(direccion) {
     let calle = '';
     let numExterior = '';
     let activo = true;
+    let coloniaEscondida = true;
     let cont = 0;
     let cont2 = 0;
 
@@ -101,10 +102,11 @@ function parseDireccion(direccion) {
             }
         }
 
-        if (activo) {
+        if (activo && coloniaEscondida) {
             if (!direccionParsed.CALLE && !direccionParsed.TIPOVIAL && !direccionParsed.TIPOASEN) {
                 if (componente === 'COLONIA') {
-                    direccionParsed.CALLE = ' ';
+                    direccionParsed.CALLE = '_';
+                    coloniaEscondida = false;
                 } else {
                     cont = i;
                     direccionParsed.CALLE = componente;
@@ -137,6 +139,10 @@ function parseDireccion(direccion) {
             direccionParsed.CALLE = direccionParsed.NOMVIAL
         }
     }
+    if (direccionParsed.COLONIA) direccionParsed.COLONIA = direccionParsed.COLONIA.replace("  ", " ");
+    if (direccionParsed.CALLE) direccionParsed.CALLE = direccionParsed.CALLE.replace("  ", " ");
+    if (direccionParsed.NOMVIAL) direccionParsed.NOMVIAL = direccionParsed.NOMVIAL.replace("  ", " ");
+    if (direccionParsed.NOMASEN) direccionParsed.NOMASEN = direccionParsed.NOMASEN.replace("  ", " ");
 
     return direccionParsed;
 }
@@ -233,13 +239,13 @@ function obtenerEstado(componentesDireccion) {
             return estado;
         }
     }
-    estadoEncontrado = componentesDireccion[componentesDireccion.length - 5] + ' ' +componentesDireccion[componentesDireccion.length - 4] + ' ' +componentesDireccion[componentesDireccion.length - 3] + ' ' + componentesDireccion[componentesDireccion.length - 2] + ' ' + componentesDireccion[componentesDireccion.length - 1];
+    estadoEncontrado = componentesDireccion[componentesDireccion.length - 5] + ' ' + componentesDireccion[componentesDireccion.length - 4] + ' ' + componentesDireccion[componentesDireccion.length - 3] + ' ' + componentesDireccion[componentesDireccion.length - 2] + ' ' + componentesDireccion[componentesDireccion.length - 1];
     for (const estado of estados) {
         if (estadoEncontrado === estado) {
             return estado;
         }
     }
-    estadoEncontrado = componentesDireccion[componentesDireccion.length - 6] + ' ' +componentesDireccion[componentesDireccion.length - 5] + ' ' +componentesDireccion[componentesDireccion.length - 4] + ' ' +componentesDireccion[componentesDireccion.length - 3] + ' ' + componentesDireccion[componentesDireccion.length - 2] + ' ' + componentesDireccion[componentesDireccion.length - 1];
+    estadoEncontrado = componentesDireccion[componentesDireccion.length - 6] + ' ' + componentesDireccion[componentesDireccion.length - 5] + ' ' + componentesDireccion[componentesDireccion.length - 4] + ' ' + componentesDireccion[componentesDireccion.length - 3] + ' ' + componentesDireccion[componentesDireccion.length - 2] + ' ' + componentesDireccion[componentesDireccion.length - 1];
     for (const estado of estados) {
         if (estadoEncontrado === estado) {
             return estado;
@@ -250,33 +256,63 @@ function obtenerEstado(componentesDireccion) {
 // Función auxiliar para obtener el tipo de asentamiento humano
 function obtenerMunicipio(estado, componentesDireccion, i) {
     try {
-        const municipios = municipiosEstado[estado];
-        const parseo = estado.split(' ');
-        let count = parseo.length;
-        // if(estado==='GUANAJUATO')count++;
-        for (const municipio of municipios) {
-            // Verificar si el municipio contiene el componente actual
-            if (municipio.includes(componentesDireccion[i])) {
-                // Si coincide exactamente con el municipio, lo devolvemos
-                if (municipio === componentesDireccion[i]) {
-                    if (i === componentesDireccion.length - (count+1)) return municipio;
-                    return null;
-                }
-                let municipioConcat = componentesDireccion[i]; // Variable para almacenar la calle si es necesario
-                let j = i;
-                j++;
-                while (j < (componentesDireccion.length - count)) {
-                    municipioConcat += ' ' + componentesDireccion[j];
+        if (estado) {
+            const municipios = municipiosEstado[estado];
+            const parseo = estado.split(' ');
+            let count = parseo.length;
+            // if(estado==='GUANAJUATO')count++;
+            for (const municipio of municipios) {
+                // Verificar si el municipio contiene el componente actual
+                if (municipio.includes(componentesDireccion[i])) {
+                    // Si coincide exactamente con el municipio, lo devolvemos
+                    if (municipio === componentesDireccion[i]) {
+                        if (i === componentesDireccion.length - (count + 1)) return municipio;
+                        return null;
+                    }
+                    let municipioConcat = componentesDireccion[i]; // Variable para almacenar la calle si es necesario
+                    let j = i;
                     j++;
-                }
-                if (municipio === municipioConcat) {
-                    const parseo = municipioConcat.split(' ');
-                    if (i === componentesDireccion.length - parseo.length - count) return municipio;
-                    return null;
+                    while (j < (componentesDireccion.length - count)) {
+                        municipioConcat += ' ' + componentesDireccion[j];
+                        j++;
+                    }
+                    if (municipio === municipioConcat) {
+                        const parseo = municipioConcat.split(' ');
+                        if (i === componentesDireccion.length - parseo.length - count) return municipio;
+                        return null;
+                    }
                 }
             }
+            return null; // Si no se encontró un municipio, devolvemos null
+        } else {
+            for (const estado of estados) {
+                const municipios = municipiosEstado[estado];
+                // if(estado==='GUANAJUATO')count++;
+                for (const municipio of municipios) {
+                    // Verificar si el municipio contiene el componente actual
+                    if (municipio.includes(componentesDireccion[i])) {
+                        // Si coincide exactamente con el municipio, lo devolvemos
+                        if (municipio === componentesDireccion[i]) {
+                            if (i === componentesDireccion.length - 1) return municipio;
+                            return null;
+                        }
+                        let municipioConcat = componentesDireccion[i]; // Variable para almacenar la calle si es necesario
+                        let j = i;
+                        j++;
+                        while (j < (componentesDireccion.length - 1)) {
+                            municipioConcat += ' ' + componentesDireccion[j];
+                            j++;
+                        }
+                        if (municipio === municipioConcat) {
+                            const parseo = municipioConcat.split(' ');
+                            if (i === componentesDireccion.length - parseo.length ) return municipio;
+                            return null;
+                        }
+                    }
+                }
+            }
+            return null; // Si no se encontró un municipio, devolvemos null
         }
-        return null; // Si no se encontró un municipio, devolvemos null
     } catch (error) {
         //console.log(error);
         return null;
