@@ -1,5 +1,5 @@
 const pgClient = require("../../data/conexion");
-const { quitarAcentos } = require("../funciones");
+const { levenshteinDistance, quitarAcentos } = require("../funciones");
 
 // Aplicable solo en caso de llevar todos los campos
 async function alone(direccionParsed) {

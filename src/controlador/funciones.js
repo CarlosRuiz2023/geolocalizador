@@ -30,9 +30,7 @@ function parseDireccion(direccion) {
     const direccionParsed = {};
     let estado = '';
     let municipio = '';
-    let colonia = '';
     let calle = '';
-    let numExterior = '';
     let activo = true;
     let coloniaEscondida = true;
     let cont = 0;
@@ -45,7 +43,6 @@ function parseDireccion(direccion) {
     }
     for (let i = 0; i < componentesDireccion.length; i++) {
         const componente = componentesDireccion[i].trim();
-
         // Buscar el tipo de vialidad
         const tipoVialidad = obtenerTipoVialidad(componente);
         if (tipoVialidad && !direccionParsed.CALLE && !direccionParsed.TIPOVIAL) {
@@ -60,7 +57,6 @@ function parseDireccion(direccion) {
             direccionParsed.NOMVIAL = calle.trim();
             activo = false;
         }
-
         // Buscar el número exterior
         const numeroExterior = obtenerNumeroExterior(componente);
         if (numeroExterior && (direccionParsed.CALLE || direccionParsed.NOMASEN || direccionParsed.NOMVIAL) && !direccionParsed.NUMEXTNUM1) {
@@ -70,14 +66,12 @@ function parseDireccion(direccion) {
             }
             activo = false;
         }
-
         // Buscar el código postal
         const codigoPostal = obtenerCodigoPostal(componente);
         if (codigoPostal) {
             direccionParsed.CP = codigoPostal;
             activo = false;
         }
-
         // Buscar el tipo de asentamiento humano
         const tipoAsentamiento = obtenerTipoAsentamiento(componente);
         if (tipoAsentamiento && !direccionParsed.CALLE && !direccionParsed.TIPOASEN && !direccionParsed.TIPOVIAL) {
@@ -92,7 +86,6 @@ function parseDireccion(direccion) {
             direccionParsed.NOMASEN = calle.trim();
             activo = false;
         }
-
         // Buscar el municipio
         if (!municipio && activo) {
             municipio = obtenerMunicipio(estado, componentesDireccion, i);
@@ -101,7 +94,6 @@ function parseDireccion(direccion) {
                 activo = false;
             }
         }
-
         if (activo && coloniaEscondida && (i < componentesDireccion.length-estado.split(" ").length)) {
             if (!direccionParsed.CALLE && !direccionParsed.TIPOVIAL && !direccionParsed.TIPOASEN) {
                 if (componente === 'COLONIA') {
@@ -156,7 +148,6 @@ function parseDireccion(direccion) {
 
     return direccionParsed;
 }
-
 // Función auxiliar para obtener el tipo de vialidad
 function obtenerTipoVialidad(componente) {
     for (const tipoVialidad of tiposVialidad) {
@@ -166,7 +157,6 @@ function obtenerTipoVialidad(componente) {
     }
     return null;
 }
-
 // Función auxiliar para obtener el número exterior
 function obtenerNumeroExterior(componente) {
     // Expresión regular para detectar números exteriores como "123A"
@@ -328,7 +318,6 @@ function obtenerMunicipio(estado, componentesDireccion, i) {
         return null;
     }
 }
-
 // Función para limpiar la búsqueda eliminando caracteres específicos
 function limpiarBusqueda(texto) {
     // Elimina caracteres específicos, excepto cuando están precedidos por un espacio y seguidos por una letra y un punto.
@@ -351,11 +340,7 @@ function expandirAbreviaciones(direccion) {
     }
     return direccion;
 }
-// Función para eliminar ciertos caracteres ilegibles seguidos de un . ejemplo J. 
-function eliminarCaracteres(direccion) {
-    const regex = /\b[A-Z]\.\s/g;
-    return direccion.replace(regex, '');
-}
+// Función para determinar la similitud de 2 strings. 
 function levenshteinDistance(str1, str2) {
     const len1 = str1.length;
     const len2 = str2.length;
