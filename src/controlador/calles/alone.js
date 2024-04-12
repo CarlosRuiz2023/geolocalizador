@@ -19,9 +19,9 @@ async function alone(direccionParsed) {
                 ELSE lon_x
             END AS x_centro
             FROM carto_geolocalizador
-            WHERE nombre_vialidad LIKE '%' || $1 || '%'
-            AND municipio = $2
-            AND estado = $3
+            WHERE unaccent(nombre_vialidad) LIKE '%' || $1 || '%'
+            AND unaccent(municipio) = $2
+            AND unaccent(estado) = $3
             ;
         `;
         values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
@@ -78,6 +78,41 @@ async function alone(direccionParsed) {
             }
         }
         rows = rows.concat(result.rows);
+        if (result.rows.length === 0) {
+            // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+            query = `
+                SELECT *,
+                CASE
+                    WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                    ELSE lat_y
+                END AS y_centro,
+                CASE
+                    WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                    ELSE lon_x
+                END AS x_centro
+                FROM carto_geolocalizador
+                WHERE unaccent(nombre_vialidad) like '%' || $1 || '%'
+                ;
+            `;
+            values = ["_"];
+            const result = await pgClient.query(query, values);
+            for (let i = 0; i < result.rows.length; i++) {
+                result.rows[i].scoring = {
+                    fiability: 0,
+                    calle: 0
+                };
+                // Calcular la distancia de Levenshtein
+                const distance = levenshteinDistance(result.rows[i].nombre_vialidad, direccionParsed.CALLE);
+                // Calcular la similitud como el inverso de la distancia de Levenshtein
+                const maxLength = Math.max(result.rows[i].nombre_vialidad.length, direccionParsed.CALLE.length);
+                const similarity = ((maxLength - distance) / maxLength) * 100;
+                if (similarity) {
+                    result.rows[i].scoring.calle += similarity;
+                    result.rows[i].scoring.fiability += (similarity);
+                }
+            }
+            rows = rows.concat(result.rows);
+        }
     }
     return rows;
 }

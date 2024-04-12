@@ -102,10 +102,9 @@ function parseDireccion(direccion) {
             }
         }
 
-        if (activo && coloniaEscondida) {
+        if (activo && coloniaEscondida && (i < componentesDireccion.length-estado.split(" ").length)) {
             if (!direccionParsed.CALLE && !direccionParsed.TIPOVIAL && !direccionParsed.TIPOASEN) {
                 if (componente === 'COLONIA') {
-                    direccionParsed.CALLE = '_';
                     coloniaEscondida = false;
                 } else {
                     if (componente === 'C' || componente === 'C.') {
@@ -146,7 +145,7 @@ function parseDireccion(direccion) {
         if (direccionParsed.NOMASEN) {
             direccionParsed.CALLE = direccionParsed.NOMASEN
         }
-        else {
+        else if(direccionParsed.NOMVIAL){
             direccionParsed.CALLE = direccionParsed.NOMVIAL
         }
     }
