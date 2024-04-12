@@ -817,7 +817,7 @@ async function sinNumeroExterior(direccionParsed) {
                                                                         const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
                                                                         let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                                                                         if (igualdad > 100) igualdad = 100;
-                                                                        result.rows[i].scoring.calle += Math.round(igualdad);
+                                                                        result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
                                                                         result.rows[i].scoring.fiability += Math.round(igualdad * 0.5);
                                                                     }
                                                                     // Calcular la distancia de Levenshtein

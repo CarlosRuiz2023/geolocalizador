@@ -817,7 +817,7 @@ async function sinNumeroExterior(direccionParsed) {
                                                                         const matchedText = matchNombreAsentamiento[0]; // Obtiene el texto coincidente
                                                                         let igualdad = matchedText.length * 100 / result.rows[i].nombre_asentamiento.length;
                                                                         if (igualdad > 100) igualdad = 100;
-                                                                        result.rows[i].scoring.calle += Math.round(igualdad);
+                                                                        result.rows[i].scoring.nombre_asentamiento += Math.round(igualdad);
                                                                         result.rows[i].scoring.fiability += Math.round(igualdad * 0.5);
                                                                     }
                                                                     const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);

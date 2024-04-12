@@ -1431,7 +1431,7 @@ async function sinMunicipio(direccionParsed) {
                                                                                     const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
                                                                                     let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                                                                                     if (igualdad > 100) igualdad = 100;
-                                                                                    result.rows[i].scoring.calle += Math.round(igualdad);
+                                                                                    result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
                                                                                     result.rows[i].scoring.fiability += Math.round(igualdad * 0.5);
                                                                                 }
                                                                                 // Calcular la distancia de Levenshtein
@@ -1610,7 +1610,7 @@ async function sinMunicipio(direccionParsed) {
                                                                                             result.rows[i].scoring = {
                                                                                                 fiability: 10,
                                                                                                 tipo_vialidad: 0,
-                                                                                                calle: 0,
+                                                                                                nombre_vialidad: 0,
                                                                                                 codigo_postal: 100,
                                                                                                 estado: 100,
                                                                                                 numero_exterior: 0,
@@ -1622,7 +1622,7 @@ async function sinMunicipio(direccionParsed) {
                                                                                                 const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
                                                                                                 let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                                                                                                 if (igualdad > 100) igualdad = 100;
-                                                                                                result.rows[i].scoring.calle += Math.round(igualdad);
+                                                                                                result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
                                                                                                 result.rows[i].scoring.fiability += Math.round(igualdad * 0.5);
                                                                                             }
                                                                                             // Calcular la distancia de Levenshtein
