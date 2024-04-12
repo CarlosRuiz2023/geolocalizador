@@ -26,6 +26,7 @@ importaciones();
 // Función para parsear la dirección según la Norma Técnica sobre Domicilios Geográficos
 function parseDireccion(direccion) {
     let direccionExpandida = expandirAbreviaciones(limpiarBusqueda(direccion.toUpperCase()));
+    direccionExpandida = direccionExpandida.replace("  "," ");
     const componentesDireccion = direccionExpandida.trim().split(' ');
     const direccionParsed = {};
     let estado = '';
@@ -141,10 +142,10 @@ function parseDireccion(direccion) {
             direccionParsed.CALLE = direccionParsed.NOMVIAL
         }
     }
-    if (direccionParsed.COLONIA) direccionParsed.COLONIA = direccionParsed.COLONIA.replace("  ", " ");
-    if (direccionParsed.CALLE) direccionParsed.CALLE = direccionParsed.CALLE.replace("  ", " ");
-    if (direccionParsed.NOMVIAL) direccionParsed.NOMVIAL = direccionParsed.NOMVIAL.replace("  ", " ");
-    if (direccionParsed.NOMASEN) direccionParsed.NOMASEN = direccionParsed.NOMASEN.replace("  ", " ");
+    if (direccionParsed.COLONIA) direccionParsed.COLONIA = direccionParsed.COLONIA.replace("  ", " ").trim();
+    if (direccionParsed.CALLE) direccionParsed.CALLE = direccionParsed.CALLE.replace("  ", " ").trim();
+    if (direccionParsed.NOMVIAL) direccionParsed.NOMVIAL = direccionParsed.NOMVIAL.replace("  ", " ").trim();
+    if (direccionParsed.NOMASEN) direccionParsed.NOMASEN = direccionParsed.NOMASEN.replace("  ", " ").trim();
 
     return direccionParsed;
 }

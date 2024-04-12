@@ -22,6 +22,9 @@ app.post('/geolocalizar', async (req, res) => {
         // Obtener la dirección proporcionada por el usuario desde el cuerpo de la solicitud
         const { direccion = '', limit = 5 } = req.body;
 
+        // Validar que venga la direccion con algun valor de busqueda.
+        if(!direccion) return res.status(404).json({ ok: false, error: 'Falta capturar alguna direccion al servicio. Intente nuevamente' });
+
         // Parsear la dirección según la Norma Técnica sobre Domicilios Geográficos
         const direccionParsed = parseDireccion(direccion);
         console.log(direccionParsed);
@@ -34,14 +37,14 @@ app.post('/geolocalizar', async (req, res) => {
         sortedResults = sortedResults.slice(0, limit);
         // Devolver las coordenadas encontradas
         if (results.length > 0) {
-            res.status(200).json({ ok: true, results: sortedResults });
+            return res.status(200).json({ ok: true, results: sortedResults });
         } else {
-            res.status(404).json({ ok: false, error: 'Sin resultados.' });
+            return res.status(404).json({ ok: false, error: 'Sin resultados.' });
         }
     } catch (error) {
         // Manejar cualquier error que pueda ocurrir durante el proceso de geolocalización
         console.error('Error al geolocalizar dirección:', error);
-        res.status(500).json({ ok: false, error: 'Contacte al Administrador.' });
+        return res.status(500).json({ ok: false, error: 'Contacte al Administrador.' });
     }
 });
 

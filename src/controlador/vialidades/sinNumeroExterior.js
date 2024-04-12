@@ -644,7 +644,7 @@ async function sinNumeroExterior(direccionParsed) {
                                                         WHERE unaccent(tipo_vialidad) = $1
                                                         AND unaccent(municipio) = $2
                                                         AND unaccent(estado) = $3
-                                                        AND unaccent(colonia) LIKE '%' || $5 || '%'
+                                                        AND unaccent(colonia) LIKE '%' || $4 || '%'
                                                         ;
                                                     `;
                                                     values = [direccionParsed.TIPOVIAL, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
