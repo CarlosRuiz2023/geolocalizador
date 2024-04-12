@@ -4,11 +4,8 @@ const { all : all2, sinNumeroExterior: sinNumeroExterior2, sinCP:sinCP2, sinMuni
 const { all : all3, sinNumeroExterior: sinNumeroExterior3, sinCP:sinCP3, sinMunicipio:sinMunicipio3, sinEstado:sinEstado3, sinColonia:sinColonia3, alone:alone3, sinNumeroExteriorCP:sinNumeroExteriorCP3, sinNumeroExteriorCPColonia:sinNumeroExteriorCPColonia3, sinColoniaCP:sinColoniaCP3, sinColoniaNumeroExterior:sinColoniaNumeroExterior3 } = require("./pois");
 
 // Función para parsear la dirección según la Norma Técnica sobre Domicilios Geográficos
-async function scoringMaestro(direccionParsed,limit) {
+async function scoringMaestro(direccionParsed) {
     let results = [];
-    let sortedResults = [];
-    let maxResults = [];
-    let fiability=0;
     if (direccionParsed.TIPOVIAL) {
         if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
             results=await all(direccionParsed);
@@ -45,12 +42,7 @@ async function scoringMaestro(direccionParsed,limit) {
         }
     }
     if(results.length!==0){
-        // Ordenar scoring mas alto primero
-        sortedResults = results.sort((a, b) => b.scoring.fiability - a.scoring.fiability);
-        // Recortar a solo 10 resultados
-        sortedResults = sortedResults.slice(0,limit);
-        fiability=sortedResults[0].scoring.fiability;
-        maxResults = sortedResults;
+        return results;
     }
     if (direccionParsed.TIPOASEN) {
         if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
@@ -88,14 +80,7 @@ async function scoringMaestro(direccionParsed,limit) {
         }
     }
     if(results.length!==0){
-        // Ordenar scoring mas alto primero
-        sortedResults = results.sort((a, b) => b.scoring.fiability - a.scoring.fiability);
-        // Recortar a solo 10 resultados
-        sortedResults = sortedResults.slice(0,limit);
-        if(fiability<sortedResults[0].scoring.fiability){
-            fiability=sortedResults[0].scoring.fiability;
-            maxResults = sortedResults;
-        }
+        return results;
     }
     if (direccionParsed.CALLE) {
         if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
@@ -133,14 +118,7 @@ async function scoringMaestro(direccionParsed,limit) {
         }
     }
     if(results.length!==0){
-        // Ordenar scoring mas alto primero
-        sortedResults = results.sort((a, b) => b.scoring.fiability - a.scoring.fiability);
-        // Recortar a solo 10 resultados
-        sortedResults = sortedResults.slice(0,limit);
-        if(fiability<sortedResults[0].scoring.fiability){
-            fiability=sortedResults[0].scoring.fiability;
-            maxResults = sortedResults;
-        }
+        return results;
     }
     if (direccionParsed.CALLE) {
         if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
@@ -178,15 +156,8 @@ async function scoringMaestro(direccionParsed,limit) {
         }
     }
     if(results.length!==0){
-        // Ordenar scoring mas alto primero
-        sortedResults = results.sort((a, b) => b.scoring.fiability - a.scoring.fiability);
-        // Recortar a solo 10 resultados
-        sortedResults = sortedResults.slice(0,limit);
-        if(fiability<sortedResults[0].scoring.fiability){
-            fiability=sortedResults[0].scoring.fiability;
-            maxResults = sortedResults;
-        }
+        return results;
     }
-    return maxResults;
+    return results;
 }
 module.exports = scoringMaestro;

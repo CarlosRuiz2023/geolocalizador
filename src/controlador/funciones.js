@@ -108,9 +108,20 @@ function parseDireccion(direccion) {
                     direccionParsed.CALLE = '_';
                     coloniaEscondida = false;
                 } else {
-                    cont = i;
-                    direccionParsed.CALLE = componente;
-                    activo = false;
+                    if (componente === 'C' || componente === 'C.') {
+                        direccionParsed.TIPOVIAL = 'CALLE';
+                        i++;
+                        while (i < componentesDireccion.length && (!obtenerNumeroExterior(componentesDireccion[i]) || i === 1) && !obtenerCodigoPostal(componentesDireccion[i]) && !obtenerMunicipio(estado, componentesDireccion, i)) {
+                            calle += ' ' + componentesDireccion[i];
+                            i++;
+                        }
+                        direccionParsed.NOMVIAL = calle.trim();
+                        activo = false;
+                    } else {
+                        cont = i;
+                        direccionParsed.CALLE = componente;
+                        activo = false;
+                    }
                 }
             } else if (direccionParsed.CALLE && cont === i - 1 && direccionParsed.CALLE !== ' ' && componente !== 'COLONIA') {
                 cont = i;
@@ -121,7 +132,7 @@ function parseDireccion(direccion) {
         if (activo && !direccionParsed.MUNICIPIO && !obtenerNumeroExterior(componente)) {
             if (!direccionParsed.COLONIA) {
                 cont2 = i;
-                if (componente !== 'COLONIA') {
+                if (componente !== 'COLONIA' && componente !== 'A' && componente !== 'B' && componente !== 'C' && componente !== 'D' && componente !== 'E' && componente !== 'F') {
                     direccionParsed.COLONIA = componente;
                 }
             } else if (direccionParsed.COLONIA && cont2 === i - 1) {
@@ -305,7 +316,7 @@ function obtenerMunicipio(estado, componentesDireccion, i) {
                         }
                         if (municipio === municipioConcat) {
                             const parseo = municipioConcat.split(' ');
-                            if (i === componentesDireccion.length - parseo.length ) return municipio;
+                            if (i === componentesDireccion.length - parseo.length) return municipio;
                             return null;
                         }
                     }

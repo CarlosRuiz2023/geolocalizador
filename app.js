@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const {parseDireccion} = require('./src/controlador/funciones');
+const { parseDireccion } = require('./src/controlador/funciones');
 const scoringMaestro = require('./src/controlador/scoring');
 // CARGA LAS VARIABLES DE ENTORNO DESDE EL ARCHIVO .env
 require("dotenv").config();
@@ -20,24 +20,28 @@ app.use(express.static("public"));
 app.post('/geolocalizar', async (req, res) => {
     try {
         // Obtener la dirección proporcionada por el usuario desde el cuerpo de la solicitud
-        const { direccion='', limit=5 } = req.body;
+        const { direccion = '', limit = 5 } = req.body;
 
         // Parsear la dirección según la Norma Técnica sobre Domicilios Geográficos
         const direccionParsed = parseDireccion(direccion);
         console.log(direccionParsed);
-        
+
         // Funcion que enrutara acorde al parseo recibido
-        const results= await scoringMaestro(direccionParsed,limit);
+        const results = await scoringMaestro(direccionParsed);
+        // Ordenar scoring mas alto primero
+        let sortedResults = results.sort((a, b) => b.scoring.fiability - a.scoring.fiability);
+        // Recortar a solo 10 resultados
+        sortedResults = sortedResults.slice(0, limit);
         // Devolver las coordenadas encontradas
         if (results.length > 0) {
-            res.status(200).json({ok:true,results});
+            res.status(200).json({ ok: true, results: sortedResults });
         } else {
-            res.status(404).json({ ok:false,error: 'Sin resultados.' });
+            res.status(404).json({ ok: false, error: 'Sin resultados.' });
         }
     } catch (error) {
         // Manejar cualquier error que pueda ocurrir durante el proceso de geolocalización
         console.error('Error al geolocalizar dirección:', error);
-        res.status(500).json({ ok:false,error: 'Contacte al Administrador.' });
+        res.status(500).json({ ok: false, error: 'Contacte al Administrador.' });
     }
 });
 
