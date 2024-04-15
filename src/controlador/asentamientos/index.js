@@ -2,6 +2,8 @@
 
 const all = require('./all');
 const alone = require('./alone');
+const municipioEstado = require('./municipioEstado');
+const municipioNumeroExterior = require('./municipioNumeroExterior');
 const sinCP = require('./sinCP');
 const sinColonia = require('./sinColonia');
 const sinColoniaCP = require('./sinColoniaCP');
@@ -23,5 +25,7 @@ module.exports = {
     sinNumeroExteriorCP,
     sinNumeroExteriorCPColonia,
     sinColoniaCP,
-    sinColoniaNumeroExterior
+    sinColoniaNumeroExterior,
+    municipioNumeroExterior,
+    municipioEstado
 };

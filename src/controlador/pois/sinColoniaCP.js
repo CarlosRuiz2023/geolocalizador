@@ -47,19 +47,19 @@ async function sinColoniaCP(direccionParsed) {
             lon_x AS x_centro
             FROM carto_geolocalizador
             WHERE unaccent(poi) like '%' || $1 || '%'
-            AND unaccent(estado) = $2
-            AND numero = $3
+            AND unaccent(municipio) = $2
+            AND unaccent(estado) = $3
             ;
         `;
-        values = [direccionParsed.CALLE, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1];
+        values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
         const result = await pgClient.query(query, values);
         for (let i = 0; i < result.rows.length; i++) {
             result.rows[i].scoring = {
-                fiability: 35,
+                fiability: 30,
                 poi: 0,
-                municipio: 0,
+                municipio: 100,
                 estado: 100,
-                numero_exterior: 100
+                numero_exterior: 0
             };
             const nombrePoiSinAcentos = quitarAcentos(result.rows[i].poi);
             const matchNombrePoi = nombrePoiSinAcentos.match(new RegExp(direccionParsed.CALLE, 'i'));
@@ -80,18 +80,18 @@ async function sinColoniaCP(direccionParsed) {
                 lon_x AS x_centro
                 FROM carto_geolocalizador
                 WHERE unaccent(poi) like '%' || $1 || '%'
-                AND unaccent(municipio) = $2
+                AND unaccent(estado) = $2
                 AND numero = $3
                 ;
             `;
-            values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1];
+            values = [direccionParsed.CALLE, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1];
             const result = await pgClient.query(query, values);
             for (let i = 0; i < result.rows.length; i++) {
                 result.rows[i].scoring = {
                     fiability: 35,
                     poi: 0,
-                    municipio: 100,
-                    estado: 0,
+                    municipio: 0,
+                    estado: 100,
                     numero_exterior: 100
                 };
                 const nombrePoiSinAcentos = quitarAcentos(result.rows[i].poi);
@@ -113,16 +113,17 @@ async function sinColoniaCP(direccionParsed) {
                     lon_x AS x_centro
                     FROM carto_geolocalizador
                     WHERE unaccent(poi) like '%' || $1 || '%'
-                    AND numero = $2
+                    AND unaccent(municipio) = $2
+                    AND numero = $3
                     ;
                 `;
-                values = [direccionParsed.CALLE, direccionParsed.NUMEXTNUM1];
+                values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1];
                 const result = await pgClient.query(query, values);
                 for (let i = 0; i < result.rows.length; i++) {
                     result.rows[i].scoring = {
-                        fiability: 20,
+                        fiability: 35,
                         poi: 0,
-                        municipio: 0,
+                        municipio: 100,
                         estado: 0,
                         numero_exterior: 100
                     };
@@ -145,19 +146,18 @@ async function sinColoniaCP(direccionParsed) {
                         lon_x AS x_centro
                         FROM carto_geolocalizador
                         WHERE unaccent(poi) like '%' || $1 || '%'
-                        AND unaccent(municipio) = $2
-                        AND unaccent(estado) = $3
+                        AND numero = $2
                         ;
                     `;
-                    values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
+                    values = [direccionParsed.CALLE, direccionParsed.NUMEXTNUM1];
                     const result = await pgClient.query(query, values);
                     for (let i = 0; i < result.rows.length; i++) {
                         result.rows[i].scoring = {
-                            fiability: 30,
+                            fiability: 20,
                             poi: 0,
-                            municipio: 100,
-                            estado: 100,
-                            numero_exterior: 0
+                            municipio: 0,
+                            estado: 0,
+                            numero_exterior: 100
                         };
                         const nombrePoiSinAcentos = quitarAcentos(result.rows[i].poi);
                         const matchNombrePoi = nombrePoiSinAcentos.match(new RegExp(direccionParsed.CALLE, 'i'));

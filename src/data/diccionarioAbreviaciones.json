@@ -46,5 +46,8 @@
     "NOVENA":"9NA ",
     "PTE":"PONIENTE ",
     "OTE":"ORIENTE ",
-    "STA":"SANTA "
+    "STA":"SANTA ",
+    "BARR":"BARRIO ",
+    "SN":"SAN",
+    "PROLG":"PROLONGACION"
 }

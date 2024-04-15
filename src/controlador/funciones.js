@@ -26,8 +26,14 @@ importaciones();
 // Función para parsear la dirección según la Norma Técnica sobre Domicilios Geográficos
 function parseDireccion(direccion) {
     let direccionExpandida = expandirAbreviaciones(limpiarBusqueda(direccion.toUpperCase()));
-    direccionExpandida = direccionExpandida.replace("  "," ");
-    const componentesDireccion = direccionExpandida.trim().split(' ');
+    direccionExpandida = direccionExpandida.replace("      ", " ");
+    direccionExpandida = direccionExpandida.replace("     ", " ");
+    direccionExpandida = direccionExpandida.replace("    ", " ");
+    direccionExpandida = direccionExpandida.replace("   ", " ");
+    direccionExpandida = direccionExpandida.replace("  ", " ");
+    direccionExpandida = direccionExpandida.trim();
+    console.log(direccionExpandida);
+    const componentesDireccion = direccionExpandida.split(' ');
     const direccionParsed = {};
     let estado = '';
     let municipio = '';
@@ -46,11 +52,11 @@ function parseDireccion(direccion) {
         const componente = componentesDireccion[i].trim();
         // Buscar el tipo de vialidad
         const tipoVialidad = obtenerTipoVialidad(componente);
-        if (tipoVialidad && !direccionParsed.CALLE && !direccionParsed.TIPOVIAL) {
+        if (tipoVialidad && !direccionParsed.CALLE && !direccionParsed.TIPOVIAL && !direccionParsed.COLONIA) {
             direccionParsed.TIPOVIAL = tipoVialidad;
             calle = componente.replace(tipoVialidad, '').trim();
             i++;
-            while (i < componentesDireccion.length && (!obtenerNumeroExterior(componentesDireccion[i]) || i === 1) && !obtenerCodigoPostal(componentesDireccion[i]) && !obtenerMunicipio(estado, componentesDireccion, i)) {
+            while (i < componentesDireccion.length && (!obtenerNumeroExterior(componentesDireccion[i]) || i === 0) && !obtenerCodigoPostal(componentesDireccion[i]) && !obtenerMunicipio(estado, componentesDireccion, i) && componentesDireccion[i] !== "COLONIA" && i!==componentesDireccion.length - (estado ? estado.split(" ").length : 0)) {
                 calle += ' ' + componentesDireccion[i];
                 i++;
             }
@@ -75,11 +81,11 @@ function parseDireccion(direccion) {
         }
         // Buscar el tipo de asentamiento humano
         const tipoAsentamiento = obtenerTipoAsentamiento(componente);
-        if (tipoAsentamiento && !direccionParsed.CALLE && !direccionParsed.TIPOASEN && !direccionParsed.TIPOVIAL) {
+        if (tipoAsentamiento && !direccionParsed.CALLE && !direccionParsed.TIPOASEN && !direccionParsed.TIPOVIAL && !direccionParsed.COLONIA) {
             direccionParsed.TIPOASEN = tipoAsentamiento;
             calle = componente.replace(tipoAsentamiento, '').trim();
             i++;
-            while (i < componentesDireccion.length && !obtenerNumeroExterior(componentesDireccion[i]) && !obtenerCodigoPostal(componentesDireccion[i]) && !obtenerMunicipio(estado, componentesDireccion, i)) {
+            while (i < componentesDireccion.length && !obtenerNumeroExterior(componentesDireccion[i]) && !obtenerCodigoPostal(componentesDireccion[i]) && !obtenerMunicipio(estado, componentesDireccion, i) && componentesDireccion[i] !== "COLONIA" && i!==componentesDireccion.length - (estado ? estado.split(" ").length : 0)) {
                 calle += ' ' + componentesDireccion[i];
                 i++;
             }
@@ -95,7 +101,7 @@ function parseDireccion(direccion) {
                 activo = false;
             }
         }
-        if (activo && coloniaEscondida && (i < componentesDireccion.length-estado.split(" ").length)) {
+        if (activo && coloniaEscondida && (i < componentesDireccion.length - (estado ? estado.split(" ").length : 0))) {
             if (!direccionParsed.CALLE && !direccionParsed.TIPOVIAL && !direccionParsed.TIPOASEN) {
                 if (componente === 'COLONIA') {
                     coloniaEscondida = false;
@@ -103,7 +109,7 @@ function parseDireccion(direccion) {
                     if (componente === 'C' || componente === 'C.') {
                         direccionParsed.TIPOVIAL = 'CALLE';
                         i++;
-                        while (i < componentesDireccion.length && (!obtenerNumeroExterior(componentesDireccion[i]) || i === 1) && !obtenerCodigoPostal(componentesDireccion[i]) && !obtenerMunicipio(estado, componentesDireccion, i)) {
+                        while (i < componentesDireccion.length && (!obtenerNumeroExterior(componentesDireccion[i]) || i === 1) && !obtenerCodigoPostal(componentesDireccion[i]) && !obtenerMunicipio(estado, componentesDireccion, i) && componentesDireccion[i] !== "COLONIA" && i!==componentesDireccion.length - (estado ? estado.split(" ").length : 0)) {
                             calle += ' ' + componentesDireccion[i];
                             i++;
                         }
@@ -121,7 +127,7 @@ function parseDireccion(direccion) {
                 activo = false;
             }
         }
-        if (activo && !direccionParsed.MUNICIPIO && !obtenerNumeroExterior(componente)) {
+        if (activo && !direccionParsed.MUNICIPIO && !obtenerCodigoPostal(componente) && !obtenerMunicipio(estado, componentesDireccion, i) && i!==componentesDireccion.length - (estado ? estado.split(" ").length : 0)) {
             if (!direccionParsed.COLONIA) {
                 cont2 = i;
                 if (componente !== 'COLONIA' && componente !== 'A' && componente !== 'B' && componente !== 'C' && componente !== 'D' && componente !== 'E' && componente !== 'F') {
@@ -138,7 +144,7 @@ function parseDireccion(direccion) {
         if (direccionParsed.NOMASEN) {
             direccionParsed.CALLE = direccionParsed.NOMASEN
         }
-        else if(direccionParsed.NOMVIAL){
+        else if (direccionParsed.NOMVIAL) {
             direccionParsed.CALLE = direccionParsed.NOMVIAL
         }
     }
@@ -160,38 +166,46 @@ function obtenerTipoVialidad(componente) {
 }
 // Función auxiliar para obtener el número exterior
 function obtenerNumeroExterior(componente) {
+    console.log(componente);
     // Expresión regular para detectar números exteriores como "123A"
     const numeroExteriorRegex = /\b(?!(\d{5})$)(\d+)\s*([A-Z])?\b/;
+    componente=componente.replace("-","");
     const match = componente.match(numeroExteriorRegex);
     if (match) {
         const [numCompleto, , numExtNum, numExtAlf] = match;
         if (numExtNum.length >= 5) return null;
         return `${numExtNum} ${numExtAlf || ''}`.trim();
-    } else {
-        // Expresión regular para detectar números exteriores como "M14"
-        const numeroExteriorRegex = /\b(?:[0-9]+[a-zA-Z]?|[a-zA-Z][0-9]+)\b/;
-        const match = componente.match(numeroExteriorRegex);
-        if (match) {
-            const numExterior = match[0].replace(/[A-Z]$/, '').replace(/^[A-Z]/, '').trim();
-            if (numExterior.length >= 5) return null;
-            return numExterior;
-        } else if (componente === "S/N") {
-            return "No se ha especificado un número exterior";
-        } else {
-            // Expresión regular para detectar números exteriores como "E9I303"
-            const numeroExteriorRegex = /\b(?:[a-zA-Z]*\d+[a-zA-Z]*(\d{3,}))\b/;
-            const match = componente.match(numeroExteriorRegex);
-            if (match) {
-                // Obtenemos el último grupo de dígitos consecutivos de 3 o más caracteres
-                const numExterior = match[1].trim();
-                if (numExterior.length >= 5) return null;
-                return numExterior;
-            }
-        }
     }
-    const numeroExteriorRegex1 = /^INT\s?\d+$/;
-    if (numeroExteriorRegex1.test(componente)) {
+    // Expresión regular para detectar números exteriores como "M14"
+    const numeroExteriorRegex1 = /\b(?:[0-9]+[a-zA-Z]?|[a-zA-Z][0-9]+)\b/;
+    const match1 = componente.match(numeroExteriorRegex1);
+    if (match1) {
+        const numExterior = match1[0].replace(/[A-Z]$/, '').replace(/^[A-Z]/, '').trim();
+        if (numExterior.length >= 5) return null;
+        return numExterior;
+    }
+    // Expresión regular para detectar números exteriores como "E9I303"
+    const numeroExteriorRegex2 = /\b(?:[a-zA-Z]*\d+[a-zA-Z]*(\d{3,}))\b/;
+    const match2 = componente.match(numeroExteriorRegex2);
+    if (match2) {
+        // Obtenemos el último grupo de dígitos consecutivos de 3 o más caracteres
+        const numExterior = match2[1].trim();
+        if (numExterior.length >= 5) return null;
+        return numExterior;
+    }
+    // 
+    const numeroExteriorRegex3 = /^INT\s?\d+$/;
+    if (numeroExteriorRegex3.test(componente)) {
         return componente.replace('INT', '');
+    }
+    // 
+    const numeroExteriorRegex4 = /^INT.\s?\d+$/;
+    if (numeroExteriorRegex4.test(componente)) {
+        return componente.replace('INT.', '');
+    }
+    // Sin numero
+    if (componente === "S/N") {
+        return "No se ha especificado un número exterior";
     }
     return null;
 }

@@ -90,70 +90,31 @@ async function sinColoniaCP(direccionParsed) {
         // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
         query = `
             SELECT *,
-            ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
-                                                            WHEN $4 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
-                                                                CASE 
-                                                                    WHEN l_nrefaddr::float - l_refaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
-                                                                    ELSE 0.5
-                                                                END
-                                                            WHEN $4 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
-                                                                CASE 
-                                                                    WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
-                                                                    ELSE 0.5
-                                                                END
-                                                            WHEN $4 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
-                                                                CASE 
-                                                                    WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
-                                                                    ELSE 0.5
-                                                                END
-                                                            WHEN $4 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
-                                                                CASE 
-                                                                    WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
-                                                                    ELSE 0.5
-                                                                END
-                                                         END)) AS y_centro,
-            ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
-                                                            WHEN $4 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
-                                                                CASE 
-                                                                    WHEN l_nrefaddr::float - l_refaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
-                                                                    ELSE 0.5
-                                                                END
-                                                            WHEN $4 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
-                                                                CASE 
-                                                                    WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
-                                                                    ELSE 0.5
-                                                                END
-                                                            WHEN $4 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
-                                                                CASE 
-                                                                    WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
-                                                                    ELSE 0.5
-                                                                END
-                                                            WHEN $4 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
-                                                                CASE 
-                                                                    WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
-                                                                    ELSE 0.5
-                                                                END
-                                                         END)) AS x_centro
+            CASE
+                WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                ELSE lat_y
+            END AS y_centro,
+            CASE
+                WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                ELSE lon_x
+            END AS x_centro
             FROM carto_geolocalizador
             WHERE unaccent(tipo_vialidad) = $1
             AND unaccent(nombre_vialidad) like '%' || $2 || '%'
-            AND unaccent(estado) = $3
-            AND (((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
-            OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4)) 
-            OR ((CAST(l_refaddr AS INTEGER) >= $4 AND CAST(l_nrefaddr AS INTEGER) <= $4)
-            OR (CAST(r_refaddr AS INTEGER) >= $4 AND CAST(r_nrefaddr AS INTEGER) <= $4)))
+            AND unaccent(municipio) = $3
+            AND unaccent(estado) = $4
             ;
         `;
-        values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1];
+        values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
         const result = await pgClient.query(query, values);
         for (let i = 0; i < result.rows.length; i++) {
             result.rows[i].scoring = {
-                fiability: 40,
+                fiability: 30,
                 tipo_vialidad: 100,
                 nombre_vialidad: 0,
-                municipio: 0,
+                municipio: 100,
                 estado: 100,
-                numero_exterior: 100
+                numero_exterior: 0
             };
             const nombreVialidadSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
             const matchNombreVialidad = nombreVialidadSinAcentos.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
@@ -217,22 +178,22 @@ async function sinColoniaCP(direccionParsed) {
                 FROM carto_geolocalizador
                 WHERE unaccent(tipo_vialidad) = $1
                 AND unaccent(nombre_vialidad) like '%' || $2 || '%'
-                AND unaccent(municipio) = $3
+                AND unaccent(estado) = $3
                 AND (((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
                 OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4)) 
                 OR ((CAST(l_refaddr AS INTEGER) >= $4 AND CAST(l_nrefaddr AS INTEGER) <= $4)
                 OR (CAST(r_refaddr AS INTEGER) >= $4 AND CAST(r_nrefaddr AS INTEGER) <= $4)))
                 ;
             `;
-            values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1];
+            values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1];
             const result = await pgClient.query(query, values);
             for (let i = 0; i < result.rows.length; i++) {
                 result.rows[i].scoring = {
                     fiability: 40,
                     tipo_vialidad: 100,
                     nombre_vialidad: 0,
-                    municipio: 100,
-                    estado: 0,
+                    municipio: 0,
+                    estado: 100,
                     numero_exterior: 100
                 };
                 const nombreVialidadSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
@@ -251,69 +212,69 @@ async function sinColoniaCP(direccionParsed) {
                 query = `
                     SELECT *,
                     ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
-                                                                    WHEN $3 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
+                                                                    WHEN $4 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
                                                                         CASE 
-                                                                            WHEN l_nrefaddr::float - l_refaddr::float != 0 THEN ($3 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                            WHEN l_nrefaddr::float - l_refaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                             ELSE 0.5
                                                                         END
-                                                                    WHEN $3 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
+                                                                    WHEN $4 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
                                                                         CASE 
-                                                                            WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($3 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                            WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                             ELSE 0.5
                                                                         END
-                                                                    WHEN $3 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                                    WHEN $4 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                         CASE 
-                                                                            WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($3 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                            WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                             ELSE 0.5
                                                                         END
-                                                                    WHEN $3 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                                    WHEN $4 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
                                                                         CASE 
-                                                                            WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($3 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                            WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                             ELSE 0.5
                                                                         END
                                                                  END)) AS y_centro,
                     ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
-                                                                    WHEN $3 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
+                                                                    WHEN $4 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
                                                                         CASE 
-                                                                            WHEN l_nrefaddr::float - l_refaddr::float != 0 THEN ($3 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                            WHEN l_nrefaddr::float - l_refaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                             ELSE 0.5
                                                                         END
-                                                                    WHEN $3 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
+                                                                    WHEN $4 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
                                                                         CASE 
-                                                                            WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($3 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                            WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                             ELSE 0.5
                                                                         END
-                                                                    WHEN $3 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                                    WHEN $4 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                         CASE 
-                                                                            WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($3 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                            WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                             ELSE 0.5
                                                                         END
-                                                                    WHEN $3 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                                    WHEN $4 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
                                                                         CASE 
-                                                                            WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($3 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                            WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                             ELSE 0.5
                                                                         END
                                                                  END)) AS x_centro
                     FROM carto_geolocalizador
                     WHERE unaccent(tipo_vialidad) = $1
                     AND unaccent(nombre_vialidad) like '%' || $2 || '%'
-                    AND (((CAST(l_refaddr AS INTEGER) <= $3 AND CAST(l_nrefaddr AS INTEGER) >= $3)
-                    OR (CAST(r_refaddr AS INTEGER) <= $3 AND CAST(r_nrefaddr AS INTEGER) >= $3)) 
-                    OR ((CAST(l_refaddr AS INTEGER) >= $3 AND CAST(l_nrefaddr AS INTEGER) <= $3)
-                    OR (CAST(r_refaddr AS INTEGER) >= $3 AND CAST(r_nrefaddr AS INTEGER) <= $3)))
+                    AND unaccent(municipio) = $3
+                    AND (((CAST(l_refaddr AS INTEGER) <= $4 AND CAST(l_nrefaddr AS INTEGER) >= $4)
+                    OR (CAST(r_refaddr AS INTEGER) <= $4 AND CAST(r_nrefaddr AS INTEGER) >= $4)) 
+                    OR ((CAST(l_refaddr AS INTEGER) >= $4 AND CAST(l_nrefaddr AS INTEGER) <= $4)
+                    OR (CAST(r_refaddr AS INTEGER) >= $4 AND CAST(r_nrefaddr AS INTEGER) <= $4)))
                     ;
                 `;
-                values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.NUMEXTNUM1];
+                values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1];
                 const result = await pgClient.query(query, values);
-
                 for (let i = 0; i < result.rows.length; i++) {
                     result.rows[i].scoring = {
-                        fiability: 30,
+                        fiability: 40,
                         tipo_vialidad: 100,
                         nombre_vialidad: 0,
-                        municipio: 0,
+                        municipio: 100,
                         estado: 0,
-                        numero_exterior: 100,
+                        numero_exterior: 100
                     };
                     const nombreVialidadSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
                     const matchNombreVialidad = nombreVialidadSinAcentos.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
@@ -330,31 +291,70 @@ async function sinColoniaCP(direccionParsed) {
                     // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                     query = `
                         SELECT *,
-                        CASE
-                            WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
-                            ELSE lat_y
-                        END AS y_centro,
-                        CASE
-                            WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
-                            ELSE lon_x
-                        END AS x_centro
+                        ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
+                                                                        WHEN $3 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
+                                                                            CASE 
+                                                                                WHEN l_nrefaddr::float - l_refaddr::float != 0 THEN ($3 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                                ELSE 0.5
+                                                                            END
+                                                                        WHEN $3 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
+                                                                            CASE 
+                                                                                WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($3 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                                ELSE 0.5
+                                                                            END
+                                                                        WHEN $3 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                                            CASE 
+                                                                                WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($3 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                                ELSE 0.5
+                                                                            END
+                                                                        WHEN $3 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                                            CASE 
+                                                                                WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($3 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                                ELSE 0.5
+                                                                            END
+                                                                     END)) AS y_centro,
+                        ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
+                                                                        WHEN $3 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
+                                                                            CASE 
+                                                                                WHEN l_nrefaddr::float - l_refaddr::float != 0 THEN ($3 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                                ELSE 0.5
+                                                                            END
+                                                                        WHEN $3 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
+                                                                            CASE 
+                                                                                WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($3 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                                ELSE 0.5
+                                                                            END
+                                                                        WHEN $3 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                                            CASE 
+                                                                                WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($3 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                                ELSE 0.5
+                                                                            END
+                                                                        WHEN $3 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                                            CASE 
+                                                                                WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($3 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                                ELSE 0.5
+                                                                            END
+                                                                     END)) AS x_centro
                         FROM carto_geolocalizador
                         WHERE unaccent(tipo_vialidad) = $1
                         AND unaccent(nombre_vialidad) like '%' || $2 || '%'
-                        AND unaccent(municipio) = $3
-                        AND unaccent(estado) = $4
+                        AND (((CAST(l_refaddr AS INTEGER) <= $3 AND CAST(l_nrefaddr AS INTEGER) >= $3)
+                        OR (CAST(r_refaddr AS INTEGER) <= $3 AND CAST(r_nrefaddr AS INTEGER) >= $3)) 
+                        OR ((CAST(l_refaddr AS INTEGER) >= $3 AND CAST(l_nrefaddr AS INTEGER) <= $3)
+                        OR (CAST(r_refaddr AS INTEGER) >= $3 AND CAST(r_nrefaddr AS INTEGER) <= $3)))
                         ;
                     `;
-                    values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
+                    values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.NUMEXTNUM1];
                     const result = await pgClient.query(query, values);
+
                     for (let i = 0; i < result.rows.length; i++) {
                         result.rows[i].scoring = {
                             fiability: 30,
                             tipo_vialidad: 100,
                             nombre_vialidad: 0,
-                            municipio: 100,
-                            estado: 100,
-                            numero_exterior: 0
+                            municipio: 0,
+                            estado: 0,
+                            numero_exterior: 100,
                         };
                         const nombreVialidadSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
                         const matchNombreVialidad = nombreVialidadSinAcentos.match(new RegExp(direccionParsed.NOMVIAL, 'i'));

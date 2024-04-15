@@ -124,7 +124,7 @@ async function alone(direccionParsed) {
                         ELSE lon_x
                     END AS x_centro
                     FROM carto_geolocalizador
-                    AND unaccent(nombre_asentamiento) like '%' || $1 || '%'
+                    WHERE unaccent(nombre_asentamiento) like '%' || $1 || '%'
                     ;
                 `;
                 values = ["_"];

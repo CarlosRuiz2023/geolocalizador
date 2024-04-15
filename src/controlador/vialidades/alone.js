@@ -8,20 +8,20 @@ async function alone(direccionParsed) {
     let rows = [];
     // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
     query = `
-        SELECT *,
-        CASE
-            WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
-            lat_y
-        END AS y_centro,
-        CASE
-            WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
-            lon_x
-        END AS x_centro
-        FROM carto_geolocalizador
-        WHERE unaccent(tipo_vialidad) = $1
-        AND unaccent(nombre_vialidad) like '%' || $2 || '%'
-        ;
-    `;
+            SELECT *,
+            CASE
+                WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                ELSE lat_y
+            END AS y_centro,
+            CASE
+                WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                ELSE lon_x
+            END AS x_centro
+            FROM carto_geolocalizador
+            WHERE unaccent(tipo_vialidad) = $1
+            AND unaccent(nombre_vialidad) like '%' || $2 || '%'
+            ;
+        `;
     values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL];
     const result = await pgClient.query(query, values);
     for (let i = 0; i < result.rows.length; i++) {
@@ -44,19 +44,19 @@ async function alone(direccionParsed) {
     if (result.rows.length === 0) {
         // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
         query = `
-            SELECT *,
-            CASE
-                WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
-                lat_y
-            END AS y_centro,
-            CASE
-                WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
-                lon_x
-            END AS x_centro
-            FROM carto_geolocalizador
-            WHERE unaccent(tipo_vialidad) = $1
-            ;
-        `;
+                SELECT *,
+                CASE
+                    WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                    lat_y
+                END AS y_centro,
+                CASE
+                    WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                    lon_x
+                END AS x_centro
+                FROM carto_geolocalizador
+                WHERE unaccent(tipo_vialidad) = $1
+                ;
+            `;
         values = [direccionParsed.TIPOVIAL];
         const result = await pgClient.query(query, values);
         for (let i = 0; i < result.rows.length; i++) {
@@ -79,19 +79,19 @@ async function alone(direccionParsed) {
         if (result.rows.length === 0) {
             // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
             query = `
-                SELECT *,
-                CASE
-                    WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
-                    lat_y
-                END AS y_centro,
-                CASE
-                    WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
-                    lon_x
-                END AS x_centro
-                FROM carto_geolocalizador
-                AND unaccent(nombre_vialidad) like '%' || $1 || '%'
-                ;
-            `;
+                    SELECT *,
+                    CASE
+                        WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                        lat_y
+                    END AS y_centro,
+                    CASE
+                        WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                        lon_x
+                    END AS x_centro
+                    FROM carto_geolocalizador
+                    AND unaccent(nombre_vialidad) like '%' || $1 || '%'
+                    ;
+                `;
             values = [direccionParsed.NOMVIAL];
             const result = await pgClient.query(query, values);
             for (let i = 0; i < result.rows.length; i++) {
@@ -114,19 +114,19 @@ async function alone(direccionParsed) {
             if (result.rows.length === 0) {
                 // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                 query = `
-                    SELECT *,
-                    CASE
-                        WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
-                        lat_y
-                    END AS y_centro,
-                    CASE
-                        WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
-                        lon_x
-                    END AS x_centro
-                    FROM carto_geolocalizador
-                    AND unaccent(nombre_vialidad) like '%' || $1 || '%'
-                    ;
-                `;
+                        SELECT *,
+                        CASE
+                            WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                            lat_y
+                        END AS y_centro,
+                        CASE
+                            WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                            lon_x
+                        END AS x_centro
+                        FROM carto_geolocalizador
+                        AND unaccent(nombre_vialidad) like '%' || $1 || '%'
+                        ;
+                    `;
                 values = ["_"];
                 const result = await pgClient.query(query, values);
                 for (let i = 0; i < result.rows.length; i++) {
