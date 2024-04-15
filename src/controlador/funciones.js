@@ -32,7 +32,6 @@ function parseDireccion(direccion) {
     direccionExpandida = direccionExpandida.replace("   ", " ");
     direccionExpandida = direccionExpandida.replace("  ", " ");
     direccionExpandida = direccionExpandida.trim();
-    console.log(direccionExpandida);
     const componentesDireccion = direccionExpandida.split(' ');
     const direccionParsed = {};
     let estado = '';
@@ -127,7 +126,7 @@ function parseDireccion(direccion) {
                 activo = false;
             }
         }
-        if (activo && !direccionParsed.MUNICIPIO && !obtenerCodigoPostal(componente) && !obtenerMunicipio(estado, componentesDireccion, i) && i!==componentesDireccion.length - (estado ? estado.split(" ").length : 0)) {
+        if (activo && !direccionParsed.MUNICIPIO && (!obtenerNumeroExterior(componentesDireccion[i]) || i === 1) && !obtenerCodigoPostal(componente) && !obtenerMunicipio(estado, componentesDireccion, i) && i!==componentesDireccion.length - (estado ? estado.split(" ").length : 0)) {
             if (!direccionParsed.COLONIA) {
                 cont2 = i;
                 if (componente !== 'COLONIA' && componente !== 'A' && componente !== 'B' && componente !== 'C' && componente !== 'D' && componente !== 'E' && componente !== 'F') {
@@ -166,7 +165,6 @@ function obtenerTipoVialidad(componente) {
 }
 // Función auxiliar para obtener el número exterior
 function obtenerNumeroExterior(componente) {
-    console.log(componente);
     // Expresión regular para detectar números exteriores como "123A"
     const numeroExteriorRegex = /\b(?!(\d{5})$)(\d+)\s*([A-Z])?\b/;
     componente=componente.replace("-","");

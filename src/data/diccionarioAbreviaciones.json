@@ -48,6 +48,7 @@
     "OTE":"ORIENTE ",
     "STA":"SANTA ",
     "BARR":"BARRIO ",
-    "SN":"SAN",
-    "PROLG":"PROLONGACION"
+    "SN":"SAN ",
+    "PROLG":"PROLONGACION ",
+    "FCO":"FRANCISCO "
 }
