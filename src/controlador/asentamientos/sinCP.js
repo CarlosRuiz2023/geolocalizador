@@ -1118,6 +1118,55 @@ async function sinCP(direccionParsed) {
                                                             }
                                                         }
                                                         rows = rows.concat(result.rows);
+                                                        /* if (result.rows.length === 0) {
+                                                            // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+                                                            query = `
+                                                                SELECT *,
+                                                                CASE
+                                                                    WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                                                                    ELSE lat_y
+                                                                END AS y_centro,
+                                                                CASE
+                                                                    WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", 0.5))
+                                                                    ELSE lon_x
+                                                                END AS x_centro
+                                                                FROM carto_geolocalizador
+                                                                WHERE unaccent(estado) = $1
+                                                                AND unaccent(municipio) = $2
+                                                                ;
+                                                            `;
+                                                            values = [direccionParsed.ESTADO, direccionParsed.MUNICIPIO];
+                                                            const result = await pgClient.query(query, values);
+                                                            for (let i = 0; i < result.rows.length; i++) {
+                                                                result.rows[i].scoring = {
+                                                                    fiability: 10,
+                                                                    tipo_asentamiento: 0,
+                                                                    nombre_asentamiento: 0,
+                                                                    municipio: 100,
+                                                                    estado: 100,
+                                                                    numero_exterior: 0,
+                                                                    colonia: 0
+                                                                };
+                                                                // Calcular la distancia de Levenshtein
+                                                                const distance = levenshteinDistance(result.rows[i].nombre_asentamiento, direccionParsed.NOMASEN);
+                                                                // Calcular la similitud como el inverso de la distancia de Levenshtein
+                                                                const maxLength = Math.max(result.rows[i].nombre_asentamiento.length, direccionParsed.NOMASEN.length);
+                                                                const similarity = ((maxLength - distance) / maxLength) * 100;
+                                                                if (similarity) {
+                                                                    result.rows[i].scoring.nombre_asentamiento += similarity;
+                                                                    result.rows[i].scoring.fiability += (similarity * 0.3);
+                                                                }
+                                                                // Calcular la distancia de Levenshtein
+                                                                const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
+                                                                // Calcular la similitud como el inverso de la distancia de Levenshtein
+                                                                const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
+                                                                const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
+                                                                if (similarityColonia) {
+                                                                    result.rows[i].scoring.colonia += similarityColonia;
+                                                                    result.rows[i].scoring.fiability += (similarityColonia * 0.3);
+                                                                }
+                                                            }
+                                                            rows = rows.concat(result.rows); */
                                                         if (result.rows.length === 0) {
                                                             // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                                                             query = `
@@ -1314,6 +1363,7 @@ async function sinCP(direccionParsed) {
                                                         }
                                                     }
                                                 }
+                                                //}
                                             }
                                         }
                                     }

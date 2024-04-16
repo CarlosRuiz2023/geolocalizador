@@ -51,7 +51,7 @@ function parseDireccion(direccion) {
         const componente = componentesDireccion[i].trim();
         // Buscar el tipo de vialidad
         const tipoVialidad = obtenerTipoVialidad(componente);
-        if (tipoVialidad && !direccionParsed.CALLE && !direccionParsed.TIPOVIAL && !direccionParsed.COLONIA) {
+        if (tipoVialidad && !direccionParsed.CALLE && !direccionParsed.TIPOVIAL && !direccionParsed.COLONIA && !direccionParsed.TIPOASEN ) {
             direccionParsed.TIPOVIAL = tipoVialidad;
             calle = componente.replace(tipoVialidad, '').trim();
             i++;
@@ -126,7 +126,7 @@ function parseDireccion(direccion) {
                 activo = false;
             }
         }
-        if (activo && !direccionParsed.MUNICIPIO && (!obtenerNumeroExterior(componentesDireccion[i]) || i === 1) && !obtenerCodigoPostal(componente) && !obtenerMunicipio(estado, componentesDireccion, i) && i!==componentesDireccion.length - (estado ? estado.split(" ").length : 0)) {
+        if (activo && !direccionParsed.MUNICIPIO && (!obtenerNumeroExterior(componentesDireccion[i]) || i === 1 || componentesDireccion[i+1]==='DE') && !obtenerCodigoPostal(componente) && !obtenerMunicipio(estado, componentesDireccion, i) && i!==componentesDireccion.length - (estado ? estado.split(" ").length : 0)) {
             if (!direccionParsed.COLONIA) {
                 cont2 = i;
                 if (componente !== 'COLONIA' && componente !== 'A' && componente !== 'B' && componente !== 'C' && componente !== 'D' && componente !== 'E' && componente !== 'F') {

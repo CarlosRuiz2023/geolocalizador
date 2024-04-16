@@ -807,7 +807,7 @@ async function sinColonia(direccionParsed) {
                                                         OR (CAST(r_refaddr AS INTEGER) >= $4 AND CAST(r_nrefaddr AS INTEGER) <= $4)))
                                                         ;
                                                     `;
-                                                    values = [direccionParsed.TIPOVIAL, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
+                                                    values = [direccionParsed.TIPOVIAL, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1];
                                                     const result = await pgClient.query(query, values);
                                                     for (let i = 0; i < result.rows.length; i++) {
                                                         result.rows[i].scoring = {
