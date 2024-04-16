@@ -84,7 +84,7 @@ async function all(direccionParsed) {
             let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
             if (igualdad > 100) igualdad = 100;
             result.rows[i].scoring.calle += Math.round(igualdad);
-            result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
+            result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
         }
         const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
         const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -93,7 +93,7 @@ async function all(direccionParsed) {
             let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
             if (igualdad > 100) igualdad = 100;
             result.rows[i].scoring.colonia += Math.round(igualdad);
-            result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
+            result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
         }
     }
     rows = rows.concat(result.rows);
@@ -175,7 +175,7 @@ async function all(direccionParsed) {
                 let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                 if (igualdad > 100) igualdad = 100;
                 result.rows[i].scoring.calle += Math.round(igualdad);
-                result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
+                result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
             }
             const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
             const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -184,7 +184,7 @@ async function all(direccionParsed) {
                 let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                 if (igualdad > 100) igualdad = 100;
                 result.rows[i].scoring.colonia += Math.round(igualdad);
-                result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
+                result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
             }
         }
         rows = rows.concat(result.rows);
@@ -266,7 +266,7 @@ async function all(direccionParsed) {
                     let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                     if (igualdad > 100) igualdad = 100;
                     result.rows[i].scoring.calle += Math.round(igualdad);
-                    result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
+                    result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                 }
                 const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                 const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -275,7 +275,7 @@ async function all(direccionParsed) {
                     let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                     if (igualdad > 100) igualdad = 100;
                     result.rows[i].scoring.colonia += Math.round(igualdad);
-                    result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
+                    result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                 }
             }
             rows = rows.concat(result.rows);
@@ -357,7 +357,7 @@ async function all(direccionParsed) {
                         let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                         if (igualdad > 100) igualdad = 100;
                         result.rows[i].scoring.calle += Math.round(igualdad);
-                        result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
+                        result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                     }
                     const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                     const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -366,7 +366,7 @@ async function all(direccionParsed) {
                         let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                         if (igualdad > 100) igualdad = 100;
                         result.rows[i].scoring.colonia += Math.round(igualdad);
-                        result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
+                        result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                     }
                 }
                 rows = rows.concat(result.rows);
@@ -448,7 +448,7 @@ async function all(direccionParsed) {
                             let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                             if (igualdad > 100) igualdad = 100;
                             result.rows[i].scoring.calle += Math.round(igualdad);
-                            result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
+                            result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                         }
                         // Calcular la distancia de Levenshtein
                         const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
@@ -457,7 +457,7 @@ async function all(direccionParsed) {
                         const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                         if (similarityColonia) {
                             result.rows[i].scoring.colonia += similarityColonia;
-                            result.rows[i].scoring.fiability += (similarityColonia * 0.1);
+                            result.rows[i].scoring.fiability += (similarityColonia * 0.3);
                         }
                     }
                     rows = rows.concat(result.rows);
@@ -500,7 +500,7 @@ async function all(direccionParsed) {
                                 let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                                 if (igualdad > 100) igualdad = 100;
                                 result.rows[i].scoring.calle += Math.round(igualdad);
-                                result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
+                                result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                             }
                             const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                             const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -509,7 +509,7 @@ async function all(direccionParsed) {
                                 let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                 if (igualdad > 100) igualdad = 100;
                                 result.rows[i].scoring.colonia += Math.round(igualdad);
-                                result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
+                                result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                             }
                         }
                         rows = rows.concat(result.rows);
@@ -551,7 +551,7 @@ async function all(direccionParsed) {
                                     let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                                     if (igualdad > 100) igualdad = 100;
                                     result.rows[i].scoring.calle += Math.round(igualdad);
-                                    result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
+                                    result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                                 }
                                 const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                                 const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -560,7 +560,7 @@ async function all(direccionParsed) {
                                     let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                     if (igualdad > 100) igualdad = 100;
                                     result.rows[i].scoring.colonia += Math.round(igualdad);
-                                    result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
+                                    result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                                 }
                             }
                             rows = rows.concat(result.rows);
@@ -641,7 +641,7 @@ async function all(direccionParsed) {
                                         let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                                         if (igualdad > 100) igualdad = 100;
                                         result.rows[i].scoring.calle += Math.round(igualdad);
-                                        result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
+                                        result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                                     }
                                     // Calcular la distancia de Levenshtein
                                     const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
@@ -650,7 +650,7 @@ async function all(direccionParsed) {
                                     const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                                     if (similarityColonia) {
                                         result.rows[i].scoring.colonia += similarityColonia;
-                                        result.rows[i].scoring.fiability += (similarityColonia * 0.1);
+                                        result.rows[i].scoring.fiability += (similarityColonia * 0.3);
                                     }
                                 }
                                 rows = rows.concat(result.rows);
@@ -732,7 +732,7 @@ async function all(direccionParsed) {
                                             let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                                             if (igualdad > 100) igualdad = 100;
                                             result.rows[i].scoring.calle += Math.round(igualdad);
-                                            result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
+                                            result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                                         }
                                         // Calcular la distancia de Levenshtein
                                         const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
@@ -741,7 +741,7 @@ async function all(direccionParsed) {
                                         const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                                         if (similarityColonia) {
                                             result.rows[i].scoring.colonia += similarityColonia;
-                                            result.rows[i].scoring.fiability += (similarityColonia * 0.1);
+                                            result.rows[i].scoring.fiability += (similarityColonia * 0.3);
                                         }
                                     }
                                     rows = rows.concat(result.rows);
@@ -823,7 +823,7 @@ async function all(direccionParsed) {
                                                 let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                                                 if (igualdad > 100) igualdad = 100;
                                                 result.rows[i].scoring.calle += Math.round(igualdad);
-                                                result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
+                                                result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                                             }
                                             const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                                             const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -832,7 +832,7 @@ async function all(direccionParsed) {
                                                 let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                                 if (igualdad > 100) igualdad = 100;
                                                 result.rows[i].scoring.colonia += Math.round(igualdad);
-                                                result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
+                                                result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                                             }
                                         }
                                         rows = rows.concat(result.rows);
@@ -914,7 +914,7 @@ async function all(direccionParsed) {
                                                     let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                                                     if (igualdad > 100) igualdad = 100;
                                                     result.rows[i].scoring.calle += Math.round(igualdad);
-                                                    result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
+                                                    result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                                                 }
                                                 const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                                                 const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -923,7 +923,7 @@ async function all(direccionParsed) {
                                                     let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                                     if (igualdad > 100) igualdad = 100;
                                                     result.rows[i].scoring.colonia += Math.round(igualdad);
-                                                    result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
+                                                    result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                                                 }
                                             }
                                             rows = rows.concat(result.rows);
@@ -966,7 +966,7 @@ async function all(direccionParsed) {
                                                         let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                                                         if (igualdad > 100) igualdad = 100;
                                                         result.rows[i].scoring.calle += Math.round(igualdad);
-                                                        result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
+                                                        result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                                                     }
                                                     const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                                                     const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -975,7 +975,7 @@ async function all(direccionParsed) {
                                                         let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                                         if (igualdad > 100) igualdad = 100;
                                                         result.rows[i].scoring.colonia += Math.round(igualdad);
-                                                        result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
+                                                        result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                                                     }
                                                 }
                                                 rows = rows.concat(result.rows);
@@ -1056,7 +1056,7 @@ async function all(direccionParsed) {
                                                             let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                                                             if (igualdad > 100) igualdad = 100;
                                                             result.rows[i].scoring.calle += Math.round(igualdad);
-                                                            result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
+                                                            result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                                                         }
                                                         // Calcular la distancia de Levenshtein
                                                         const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
@@ -1065,7 +1065,7 @@ async function all(direccionParsed) {
                                                         const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                                                         if (similarityColonia) {
                                                             result.rows[i].scoring.colonia += similarityColonia;
-                                                            result.rows[i].scoring.fiability += (similarityColonia * 0.1);
+                                                            result.rows[i].scoring.fiability += (similarityColonia * 0.3);
                                                         }
                                                     }
                                                     rows = rows.concat(result.rows);
@@ -1107,7 +1107,7 @@ async function all(direccionParsed) {
                                                                 let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                                                                 if (igualdad > 100) igualdad = 100;
                                                                 result.rows[i].scoring.calle += Math.round(igualdad);
-                                                                result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
+                                                                result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                                                             }
                                                             const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                                                             const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -1116,7 +1116,7 @@ async function all(direccionParsed) {
                                                                 let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                                                 if (igualdad > 100) igualdad = 100;
                                                                 result.rows[i].scoring.colonia += Math.round(igualdad);
-                                                                result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
+                                                                result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                                                             }
                                                         }
                                                         rows = rows.concat(result.rows);
@@ -1158,7 +1158,7 @@ async function all(direccionParsed) {
                                                                     let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                                                                     if (igualdad > 100) igualdad = 100;
                                                                     result.rows[i].scoring.calle += Math.round(igualdad);
-                                                                    result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
+                                                                    result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                                                                 }
                                                                 const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                                                                 const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -1167,7 +1167,7 @@ async function all(direccionParsed) {
                                                                     let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                                                     if (igualdad > 100) igualdad = 100;
                                                                     result.rows[i].scoring.colonia += Math.round(igualdad);
-                                                                    result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
+                                                                    result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                                                                 }
                                                             }
                                                             rows = rows.concat(result.rows);
@@ -1209,7 +1209,7 @@ async function all(direccionParsed) {
                                                                         let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                                                                         if (igualdad > 100) igualdad = 100;
                                                                         result.rows[i].scoring.calle += Math.round(igualdad);
-                                                                        result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
+                                                                        result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                                                                     }
                                                                     const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                                                                     const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -1218,7 +1218,7 @@ async function all(direccionParsed) {
                                                                         let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                                                         if (igualdad > 100) igualdad = 100;
                                                                         result.rows[i].scoring.colonia += Math.round(igualdad);
-                                                                        result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
+                                                                        result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                                                                     }
                                                                 }
                                                                 rows = rows.concat(result.rows);
@@ -1259,7 +1259,7 @@ async function all(direccionParsed) {
                                                                             let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                                                                             if (igualdad > 100) igualdad = 100;
                                                                             result.rows[i].scoring.calle += Math.round(igualdad);
-                                                                            result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
+                                                                            result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                                                                         }
                                                                         // Calcular la distancia de Levenshtein
                                                                         const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
@@ -1268,7 +1268,7 @@ async function all(direccionParsed) {
                                                                         const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                                                                         if (similarityColonia) {
                                                                             result.rows[i].scoring.colonia += similarityColonia;
-                                                                            result.rows[i].scoring.fiability += (similarityColonia * 0.1);
+                                                                            result.rows[i].scoring.fiability += (similarityColonia * 0.3);
                                                                         }
                                                                     }
                                                                     rows = rows.concat(result.rows);
@@ -1310,7 +1310,7 @@ async function all(direccionParsed) {
                                                                                 let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                                                                                 if (igualdad > 100) igualdad = 100;
                                                                                 result.rows[i].scoring.calle += Math.round(igualdad);
-                                                                                result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
+                                                                                result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                                                                             }
                                                                             // Calcular la distancia de Levenshtein
                                                                             const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
@@ -1319,7 +1319,7 @@ async function all(direccionParsed) {
                                                                             const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                                                                             if (similarityColonia) {
                                                                                 result.rows[i].scoring.colonia += similarityColonia;
-                                                                                result.rows[i].scoring.fiability += (similarityColonia * 0.1);
+                                                                                result.rows[i].scoring.fiability += (similarityColonia * 0.3);
                                                                             }
                                                                         }
                                                                         rows = rows.concat(result.rows);
@@ -1401,7 +1401,7 @@ async function all(direccionParsed) {
                                                                                 const similarity = ((maxLength - distance) / maxLength) * 100;
                                                                                 if (similarity) {
                                                                                     result.rows[i].scoring.calle += similarity;
-                                                                                    result.rows[i].scoring.fiability += (similarity * 0.5);
+                                                                                    result.rows[i].scoring.fiability += (similarity * 0.3);
                                                                                 }
                                                                                 const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                                                                                 const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -1410,7 +1410,7 @@ async function all(direccionParsed) {
                                                                                     let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                                                                     if (igualdad > 100) igualdad = 100;
                                                                                     result.rows[i].scoring.colonia += Math.round(igualdad);
-                                                                                    result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
+                                                                                    result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                                                                                 }
                                                                             }
                                                                             rows = rows.concat(result.rows);
@@ -1491,7 +1491,7 @@ async function all(direccionParsed) {
                                                                                     const similarity = ((maxLength - distance) / maxLength) * 100;
                                                                                     if (similarity) {
                                                                                         result.rows[i].scoring.calle += similarity;
-                                                                                        result.rows[i].scoring.fiability += (similarity * 0.5);
+                                                                                        result.rows[i].scoring.fiability += (similarity * 0.3);
                                                                                     }
                                                                                     const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                                                                                     const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -1500,7 +1500,7 @@ async function all(direccionParsed) {
                                                                                         let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                                                                         if (igualdad > 100) igualdad = 100;
                                                                                         result.rows[i].scoring.colonia += Math.round(igualdad);
-                                                                                        result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
+                                                                                        result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                                                                                     }
                                                                                 }
                                                                                 rows = rows.concat(result.rows);
@@ -1541,7 +1541,7 @@ async function all(direccionParsed) {
                                                                                         const similarity = ((maxLength - distance) / maxLength) * 100;
                                                                                         if (similarity) {
                                                                                             result.rows[i].scoring.calle += similarity;
-                                                                                            result.rows[i].scoring.fiability += (similarity * 0.5);
+                                                                                            result.rows[i].scoring.fiability += (similarity * 0.3);
                                                                                         }
                                                                                         const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                                                                                         const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -1550,7 +1550,7 @@ async function all(direccionParsed) {
                                                                                             let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                                                                             if (igualdad > 100) igualdad = 100;
                                                                                             result.rows[i].scoring.colonia += Math.round(igualdad);
-                                                                                            result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
+                                                                                            result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                                                                                         }
                                                                                     }
                                                                                     rows = rows.concat(result.rows);
@@ -1632,7 +1632,7 @@ async function all(direccionParsed) {
                                                                                             const similarity = ((maxLength - distance) / maxLength) * 100;
                                                                                             if (similarity) {
                                                                                                 result.rows[i].scoring.calle += similarity;
-                                                                                                result.rows[i].scoring.fiability += (similarity * 0.5);
+                                                                                                result.rows[i].scoring.fiability += (similarity * 0.3);
                                                                                             }
                                                                                             const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                                                                                             const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -1641,7 +1641,7 @@ async function all(direccionParsed) {
                                                                                                 let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                                                                                 if (igualdad > 100) igualdad = 100;
                                                                                                 result.rows[i].scoring.colonia += Math.round(igualdad);
-                                                                                                result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
+                                                                                                result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                                                                                             }
                                                                                         }
                                                                                         rows = rows.concat(result.rows);
@@ -1722,7 +1722,7 @@ async function all(direccionParsed) {
                                                                                                 const similarity = ((maxLength - distance) / maxLength) * 100;
                                                                                                 if (similarity) {
                                                                                                     result.rows[i].scoring.calle += similarity;
-                                                                                                    result.rows[i].scoring.fiability += (similarity * 0.5);
+                                                                                                    result.rows[i].scoring.fiability += (similarity * 0.3);
                                                                                                 }
                                                                                                 const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                                                                                                 const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -1731,7 +1731,7 @@ async function all(direccionParsed) {
                                                                                                     let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                                                                                     if (igualdad > 100) igualdad = 100;
                                                                                                     result.rows[i].scoring.colonia += Math.round(igualdad);
-                                                                                                    result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
+                                                                                                    result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                                                                                                 }
                                                                                             }
                                                                                             rows = rows.concat(result.rows);
@@ -1812,7 +1812,7 @@ async function all(direccionParsed) {
                                                                                                     const similarity = ((maxLength - distance) / maxLength) * 100;
                                                                                                     if (similarity) {
                                                                                                         result.rows[i].scoring.calle += similarity;
-                                                                                                        result.rows[i].scoring.fiability += (similarity * 0.5);
+                                                                                                        result.rows[i].scoring.fiability += (similarity * 0.3);
                                                                                                     }
                                                                                                     const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                                                                                                     const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -1821,7 +1821,7 @@ async function all(direccionParsed) {
                                                                                                         let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                                                                                         if (igualdad > 100) igualdad = 100;
                                                                                                         result.rows[i].scoring.colonia += Math.round(igualdad);
-                                                                                                        result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
+                                                                                                        result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                                                                                                     }
                                                                                                 }
                                                                                                 rows = rows.concat(result.rows);
@@ -1902,7 +1902,7 @@ async function all(direccionParsed) {
                                                                                                         const similarity = ((maxLength - distance) / maxLength) * 100;
                                                                                                         if (similarity) {
                                                                                                             result.rows[i].scoring.calle += similarity;
-                                                                                                            result.rows[i].scoring.fiability += (similarity * 0.5);
+                                                                                                            result.rows[i].scoring.fiability += (similarity * 0.3);
                                                                                                         }
                                                                                                         const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                                                                                                         const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -1911,7 +1911,7 @@ async function all(direccionParsed) {
                                                                                                             let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                                                                                             if (igualdad > 100) igualdad = 100;
                                                                                                             result.rows[i].scoring.colonia += Math.round(igualdad);
-                                                                                                            result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
+                                                                                                            result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                                                                                                         }
                                                                                                     }
                                                                                                     rows = rows.concat(result.rows);
@@ -1991,7 +1991,7 @@ async function all(direccionParsed) {
                                                                                                             const similarity = ((maxLength - distance) / maxLength) * 100;
                                                                                                             if (similarity) {
                                                                                                                 result.rows[i].scoring.calle += similarity;
-                                                                                                                result.rows[i].scoring.fiability += (similarity * 0.5);
+                                                                                                                result.rows[i].scoring.fiability += (similarity * 0.3);
                                                                                                             }
                                                                                                             // Calcular la distancia de Levenshtein
                                                                                                             const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
@@ -2000,7 +2000,7 @@ async function all(direccionParsed) {
                                                                                                             const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                                                                                                             if (similarityColonia) {
                                                                                                                 result.rows[i].scoring.colonia += similarityColonia;
-                                                                                                                result.rows[i].scoring.fiability += (similarityColonia * 0.1);
+                                                                                                                result.rows[i].scoring.fiability += (similarityColonia * 0.3);
                                                                                                             }
                                                                                                         }
                                                                                                         rows = rows.concat(result.rows);
@@ -2081,7 +2081,7 @@ async function all(direccionParsed) {
                                                                                                                 const similarity = ((maxLength - distance) / maxLength) * 100;
                                                                                                                 if (similarity) {
                                                                                                                     result.rows[i].scoring.calle += similarity;
-                                                                                                                    result.rows[i].scoring.fiability += (similarity * 0.5);
+                                                                                                                    result.rows[i].scoring.fiability += (similarity * 0.3);
                                                                                                                 }
                                                                                                                 // Calcular la distancia de Levenshtein
                                                                                                                 const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
@@ -2090,7 +2090,7 @@ async function all(direccionParsed) {
                                                                                                                 const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                                                                                                                 if (similarityColonia) {
                                                                                                                     result.rows[i].scoring.colonia += similarityColonia;
-                                                                                                                    result.rows[i].scoring.fiability += (similarityColonia * 0.1);
+                                                                                                                    result.rows[i].scoring.fiability += (similarityColonia * 0.3);
                                                                                                                 }
                                                                                                             }
                                                                                                             rows = rows.concat(result.rows);
@@ -2132,7 +2132,7 @@ async function all(direccionParsed) {
                                                                                                                     const similarity = ((maxLength - distance) / maxLength) * 100;
                                                                                                                     if (similarity) {
                                                                                                                         result.rows[i].scoring.calle += similarity;
-                                                                                                                        result.rows[i].scoring.fiability += (similarity * 0.5);
+                                                                                                                        result.rows[i].scoring.fiability += (similarity * 0.3);
                                                                                                                     }
                                                                                                                     const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                                                                                                                     const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -2141,7 +2141,7 @@ async function all(direccionParsed) {
                                                                                                                         let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                                                                                                         if (igualdad > 100) igualdad = 100;
                                                                                                                         result.rows[i].scoring.colonia += Math.round(igualdad);
-                                                                                                                        result.rows[i].scoring.fiability += Math.round(igualdad) / 10;
+                                                                                                                        result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
                                                                                                                     }
                                                                                                                 }
                                                                                                                 rows = rows.concat(result.rows);

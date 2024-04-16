@@ -25,14 +25,10 @@ importaciones();
 
 // Función para parsear la dirección según la Norma Técnica sobre Domicilios Geográficos
 function parseDireccion(direccion) {
-    let direccionExpandida = expandirAbreviaciones(limpiarBusqueda(direccion.toUpperCase()));
-    direccionExpandida = direccionExpandida.replace("      ", " ");
-    direccionExpandida = direccionExpandida.replace("     ", " ");
-    direccionExpandida = direccionExpandida.replace("    ", " ");
-    direccionExpandida = direccionExpandida.replace("   ", " ");
-    direccionExpandida = direccionExpandida.replace("  ", " ");
-    direccionExpandida = direccionExpandida.trim();
-    const componentesDireccion = direccionExpandida.split(' ');
+    const direccionExpandida = expandirAbreviaciones(limpiarBusqueda(direccion.toUpperCase()));
+    let componentesDireccion = direccionExpandida.split(' ');
+    // Filtrar los elementos que no están vacíos
+    componentesDireccion = componentesDireccion.filter(item => item !== '');
     const direccionParsed = {};
     let estado = '';
     let municipio = '';
@@ -51,11 +47,11 @@ function parseDireccion(direccion) {
         const componente = componentesDireccion[i].trim();
         // Buscar el tipo de vialidad
         const tipoVialidad = obtenerTipoVialidad(componente);
-        if (tipoVialidad && !direccionParsed.CALLE && !direccionParsed.TIPOVIAL && !direccionParsed.COLONIA && !direccionParsed.TIPOASEN ) {
+        if (tipoVialidad && !direccionParsed.CALLE && !direccionParsed.TIPOVIAL && !direccionParsed.COLONIA && !direccionParsed.TIPOASEN) {
             direccionParsed.TIPOVIAL = tipoVialidad;
             calle = componente.replace(tipoVialidad, '').trim();
             i++;
-            while (i < componentesDireccion.length && (!obtenerNumeroExterior(componentesDireccion[i]) || i === 0) && !obtenerCodigoPostal(componentesDireccion[i]) && !obtenerMunicipio(estado, componentesDireccion, i) && componentesDireccion[i] !== "COLONIA" && i!==componentesDireccion.length - (estado ? estado.split(" ").length : 0)) {
+            while (i < componentesDireccion.length && (!obtenerNumeroExterior(componentesDireccion[i]) || i === 0) && !obtenerCodigoPostal(componentesDireccion[i]) && !obtenerMunicipio(estado, componentesDireccion, i) && componentesDireccion[i] !== "COLONIA" && i !== componentesDireccion.length - (estado ? estado.split(" ").length : 0)) {
                 calle += ' ' + componentesDireccion[i];
                 i++;
             }
@@ -84,7 +80,7 @@ function parseDireccion(direccion) {
             direccionParsed.TIPOASEN = tipoAsentamiento;
             calle = componente.replace(tipoAsentamiento, '').trim();
             i++;
-            while (i < componentesDireccion.length && !obtenerNumeroExterior(componentesDireccion[i]) && !obtenerCodigoPostal(componentesDireccion[i]) && !obtenerMunicipio(estado, componentesDireccion, i) && componentesDireccion[i] !== "COLONIA" && i!==componentesDireccion.length - (estado ? estado.split(" ").length : 0)) {
+            while (i < componentesDireccion.length && !obtenerNumeroExterior(componentesDireccion[i]) && !obtenerCodigoPostal(componentesDireccion[i]) && !obtenerMunicipio(estado, componentesDireccion, i) && componentesDireccion[i] !== "COLONIA" && i !== componentesDireccion.length - (estado ? estado.split(" ").length : 0)) {
                 calle += ' ' + componentesDireccion[i];
                 i++;
             }
@@ -108,7 +104,7 @@ function parseDireccion(direccion) {
                     if (componente === 'C' || componente === 'C.') {
                         direccionParsed.TIPOVIAL = 'CALLE';
                         i++;
-                        while (i < componentesDireccion.length && (!obtenerNumeroExterior(componentesDireccion[i]) || i === 1) && !obtenerCodigoPostal(componentesDireccion[i]) && !obtenerMunicipio(estado, componentesDireccion, i) && componentesDireccion[i] !== "COLONIA" && i!==componentesDireccion.length - (estado ? estado.split(" ").length : 0)) {
+                        while (i < componentesDireccion.length && (!obtenerNumeroExterior(componentesDireccion[i]) || i === 1) && !obtenerCodigoPostal(componentesDireccion[i]) && !obtenerMunicipio(estado, componentesDireccion, i) && componentesDireccion[i] !== "COLONIA" && i !== componentesDireccion.length - (estado ? estado.split(" ").length : 0)) {
                             calle += ' ' + componentesDireccion[i];
                             i++;
                         }
@@ -126,7 +122,7 @@ function parseDireccion(direccion) {
                 activo = false;
             }
         }
-        if (activo && !direccionParsed.MUNICIPIO && (!obtenerNumeroExterior(componentesDireccion[i]) || i === 1 || componentesDireccion[i+1]==='DE') && !obtenerCodigoPostal(componente) && !obtenerMunicipio(estado, componentesDireccion, i) && i!==componentesDireccion.length - (estado ? estado.split(" ").length : 0)) {
+        if (activo && !direccionParsed.MUNICIPIO && (!obtenerNumeroExterior(componentesDireccion[i]) || i === 1 || componentesDireccion[i + 1] === 'DE') && !obtenerCodigoPostal(componente) && !obtenerMunicipio(estado, componentesDireccion, i) && i !== componentesDireccion.length - (estado ? estado.split(" ").length : 0)) {
             if (!direccionParsed.COLONIA) {
                 cont2 = i;
                 if (componente !== 'COLONIA' && componente !== 'A' && componente !== 'B' && componente !== 'C' && componente !== 'D' && componente !== 'E' && componente !== 'F') {
@@ -167,7 +163,7 @@ function obtenerTipoVialidad(componente) {
 function obtenerNumeroExterior(componente) {
     // Expresión regular para detectar números exteriores como "123A"
     const numeroExteriorRegex = /\b(?!(\d{5})$)(\d+)\s*([A-Z])?\b/;
-    componente=componente.replace("-","");
+    componente = componente.replace("-", "");
     const match = componente.match(numeroExteriorRegex);
     if (match) {
         const [numCompleto, , numExtNum, numExtAlf] = match;
@@ -268,6 +264,7 @@ function obtenerEstado(componentesDireccion) {
 }
 // Función auxiliar para obtener el tipo de asentamiento humano
 function obtenerMunicipio(estado, componentesDireccion, i) {
+    console.log(componentesDireccion);
     try {
         if (estado) {
             const municipios = municipiosEstado[estado];

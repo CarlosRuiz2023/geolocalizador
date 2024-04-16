@@ -67,7 +67,7 @@ async function sinNumeroExteriorCPColonia(direccionParsed) {
         const result = await pgClient.query(query, values);
         for (let i = 0; i < result.rows.length; i++) {
             result.rows[i].scoring = {
-                fiability: 35,
+                fiability: 30,
                 tipo_vialidad: 100,
                 nombre_vialidad: 0,
                 municipio: 0,
@@ -144,7 +144,7 @@ async function sinNumeroExteriorCPColonia(direccionParsed) {
                 const result = await pgClient.query(query, values);
                 for (let i = 0; i < result.rows.length; i++) {
                     result.rows[i].scoring = {
-                        fiability: 20,
+                        fiability: 15,
                         tipo_vialidad: 100,
                         nombre_vialidad: 0,
                         municipio: 0,

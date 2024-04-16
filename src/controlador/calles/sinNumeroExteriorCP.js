@@ -28,7 +28,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
     const result = await pgClient.query(query, values);
     for (let i = 0; i < result.rows.length; i++) {
         result.rows[i].scoring = {
-            fiability: 30,
+            fiability: 20,
             calle: 0,
             municipio: 100,
             estado: 100,
@@ -41,7 +41,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
             let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
             if (igualdad > 100) igualdad = 100;
             result.rows[i].scoring.calle += Math.round(igualdad);
-            result.rows[i].scoring.fiability += Math.round(igualdad * 0.5);
+            result.rows[i].scoring.fiability += Math.round(igualdad * 0.4);
         }
         const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
         const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -50,7 +50,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
             let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
             if (igualdad > 100) igualdad = 100;
             result.rows[i].scoring.colonia += Math.round(igualdad);
-            result.rows[i].scoring.fiability += Math.round(igualdad * 0.15);
+            result.rows[i].scoring.fiability += Math.round(igualdad * 0.4);
         }
     }
     rows = rows.concat(result.rows);
@@ -76,7 +76,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
         const result = await pgClient.query(query, values);
         for (let i = 0; i < result.rows.length; i++) {
             result.rows[i].scoring = {
-                fiability: 15,
+                fiability: 10,
                 calle: 0,
                 municipio: 0,
                 estado: 100,
@@ -89,7 +89,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                 let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                 if (igualdad > 100) igualdad = 100;
                 result.rows[i].scoring.calle += Math.round(igualdad);
-                result.rows[i].scoring.fiability += Math.round(igualdad * 0.5);
+                result.rows[i].scoring.fiability += Math.round(igualdad * 0.4);
             }
             const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
             const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -98,7 +98,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                 let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                 if (igualdad > 100) igualdad = 100;
                 result.rows[i].scoring.colonia += Math.round(igualdad);
-                result.rows[i].scoring.fiability += Math.round(igualdad * 0.15);
+                result.rows[i].scoring.fiability += Math.round(igualdad * 0.4);
             }
         }
         rows = rows.concat(result.rows);
@@ -124,7 +124,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
             const result = await pgClient.query(query, values);
             for (let i = 0; i < result.rows.length; i++) {
                 result.rows[i].scoring = {
-                    fiability: 15,
+                    fiability: 10,
                     calle: 0,
                     municipio: 100,
                     estado: 0,
@@ -137,7 +137,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                     let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                     if (igualdad > 100) igualdad = 100;
                     result.rows[i].scoring.calle += Math.round(igualdad);
-                    result.rows[i].scoring.fiability += Math.round(igualdad * 0.5);
+                    result.rows[i].scoring.fiability += Math.round(igualdad * 0.4);
                 }
                 const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                 const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -146,7 +146,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                     let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                     if (igualdad > 100) igualdad = 100;
                     result.rows[i].scoring.colonia += Math.round(igualdad);
-                    result.rows[i].scoring.fiability += Math.round(igualdad * 0.15);
+                    result.rows[i].scoring.fiability += Math.round(igualdad * 0.4);
                 }
             }
             rows = rows.concat(result.rows);
@@ -172,7 +172,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                 const result = await pgClient.query(query, values);
                 for (let i = 0; i < result.rows.length; i++) {
                     result.rows[i].scoring = {
-                        fiability: 30,
+                        fiability: 20,
                         calle: 0,
                         municipio: 100,
                         estado: 100,
@@ -185,7 +185,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                         let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                         if (igualdad > 100) igualdad = 100;
                         result.rows[i].scoring.calle += Math.round(igualdad);
-                        result.rows[i].scoring.fiability += Math.round(igualdad * 0.5);
+                        result.rows[i].scoring.fiability += Math.round(igualdad * 0.4);
                     }
                     // Calcular la distancia de Levenshtein
                     const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
@@ -194,7 +194,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                     const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                     if (similarityColonia) {
                         result.rows[i].scoring.colonia += similarityColonia;
-                        result.rows[i].scoring.fiability += (similarityColonia * 0.15);
+                        result.rows[i].scoring.fiability += (similarityColonia * 0.4);
                     }
                 }
                 rows = rows.concat(result.rows);
@@ -219,7 +219,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                     const result = await pgClient.query(query, values);
                     for (let i = 0; i < result.rows.length; i++) {
                         result.rows[i].scoring = {
-                            fiability: 15,
+                            fiability: 10,
                             calle: 0,
                             municipio: 0,
                             estado: 100,
@@ -232,7 +232,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                             let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                             if (igualdad > 100) igualdad = 100;
                             result.rows[i].scoring.calle += Math.round(igualdad);
-                            result.rows[i].scoring.fiability += Math.round(igualdad * 0.5);
+                            result.rows[i].scoring.fiability += Math.round(igualdad * 0.4);
                         }
                         // Calcular la distancia de Levenshtein
                         const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
@@ -241,7 +241,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                         const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                         if (similarityColonia) {
                             result.rows[i].scoring.colonia += similarityColonia;
-                            result.rows[i].scoring.fiability += (similarityColonia * 0.15);
+                            result.rows[i].scoring.fiability += (similarityColonia * 0.4);
                         }
                     }
                     rows = rows.concat(result.rows);
@@ -279,7 +279,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                                 let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                                 if (igualdad > 100) igualdad = 100;
                                 result.rows[i].scoring.calle += Math.round(igualdad);
-                                result.rows[i].scoring.fiability += Math.round(igualdad * 0.5);
+                                result.rows[i].scoring.fiability += Math.round(igualdad * 0.4);
                             }
                             const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                             const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -288,7 +288,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                                 let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                 if (igualdad > 100) igualdad = 100;
                                 result.rows[i].scoring.colonia += Math.round(igualdad);
-                                result.rows[i].scoring.fiability += Math.round(igualdad * 0.15);
+                                result.rows[i].scoring.fiability += Math.round(igualdad * 0.4);
                             }
                         }
                         rows = rows.concat(result.rows);
@@ -313,7 +313,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                             const result = await pgClient.query(query, values);
                             for (let i = 0; i < result.rows.length; i++) {
                                 result.rows[i].scoring = {
-                                    fiability: 15,
+                                    fiability: 10,
                                     calle: 0,
                                     municipio: 100,
                                     estado: 0,
@@ -326,7 +326,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                                     let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                                     if (igualdad > 100) igualdad = 100;
                                     result.rows[i].scoring.calle += Math.round(igualdad);
-                                    result.rows[i].scoring.fiability += Math.round(igualdad * 0.5);
+                                    result.rows[i].scoring.fiability += Math.round(igualdad * 0.4);
                                 }
                                 // Calcular la distancia de Levenshtein
                                 const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
@@ -335,7 +335,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                                 const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                                 if (similarityColonia) {
                                     result.rows[i].scoring.colonia += similarityColonia;
-                                    result.rows[i].scoring.fiability += (similarityColonia * 0.15);
+                                    result.rows[i].scoring.fiability += (similarityColonia * 0.4);
                                 }
                             }
                             rows = rows.concat(result.rows);
@@ -361,7 +361,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                                 const result = await pgClient.query(query, values);
                                 for (let i = 0; i < result.rows.length; i++) {
                                     result.rows[i].scoring = {
-                                        fiability: 30,
+                                        fiability: 20,
                                         calle: 0,
                                         municipio: 100,
                                         estado: 100,
@@ -374,7 +374,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                                     const similarity = ((maxLength - distance) / maxLength) * 100;
                                     if (similarity) {
                                         result.rows[i].scoring.calle += similarity;
-                                        result.rows[i].scoring.fiability += (similarity * 0.5);
+                                        result.rows[i].scoring.fiability += (similarity * 0.4);
                                     }
                                     const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                                     const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -383,7 +383,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                                         let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                         if (igualdad > 100) igualdad = 100;
                                         result.rows[i].scoring.colonia += Math.round(igualdad);
-                                        result.rows[i].scoring.fiability += Math.round(igualdad * 0.15);
+                                        result.rows[i].scoring.fiability += Math.round(igualdad * 0.4);
                                     }
                                 }
                                 rows = rows.concat(result.rows);
@@ -409,7 +409,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                                     const result = await pgClient.query(query, values);
                                     for (let i = 0; i < result.rows.length; i++) {
                                         result.rows[i].scoring = {
-                                            fiability: 30,
+                                            fiability: 20,
                                             calle: 0,
                                             municipio: 100,
                                             estado: 100,
@@ -422,7 +422,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                                         const similarity = ((maxLength - distance) / maxLength) * 100;
                                         if (similarity) {
                                             result.rows[i].scoring.calle += similarity;
-                                            result.rows[i].scoring.fiability += (similarity * 0.5);
+                                            result.rows[i].scoring.fiability += (similarity * 0.4);
                                         }
                                         const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                                         const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -431,7 +431,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                                             let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                             if (igualdad > 100) igualdad = 100;
                                             result.rows[i].scoring.colonia += Math.round(igualdad);
-                                            result.rows[i].scoring.fiability += Math.round(igualdad * 0.15);
+                                            result.rows[i].scoring.fiability += Math.round(igualdad * 0.4);
                                         }
                                     }
                                     rows = rows.concat(result.rows);
@@ -456,7 +456,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                                         const result = await pgClient.query(query, values);
                                         for (let i = 0; i < result.rows.length; i++) {
                                             result.rows[i].scoring = {
-                                                fiability: 15,
+                                                fiability: 10,
                                                 calle: 0,
                                                 municipio: 100,
                                                 estado: 0,
@@ -469,7 +469,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                                             const similarity = ((maxLength - distance) / maxLength) * 100;
                                             if (similarity) {
                                                 result.rows[i].scoring.calle += similarity;
-                                                result.rows[i].scoring.fiability += (similarity * 0.5);
+                                                result.rows[i].scoring.fiability += (similarity * 0.4);
                                             }
                                             const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                                             const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -478,7 +478,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                                                 let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                                 if (igualdad > 100) igualdad = 100;
                                                 result.rows[i].scoring.colonia += Math.round(igualdad);
-                                                result.rows[i].scoring.fiability += Math.round(igualdad*0.15);
+                                                result.rows[i].scoring.fiability += Math.round(igualdad*0.4);
                                             }
                                         }
                                         rows = rows.concat(result.rows);
@@ -503,7 +503,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                                             const result = await pgClient.query(query, values);
                                             for (let i = 0; i < result.rows.length; i++) {
                                                 result.rows[i].scoring = {
-                                                    fiability: 15,
+                                                    fiability: 10,
                                                     calle: 0,
                                                     municipio: 0,
                                                     estado: 100,
@@ -516,7 +516,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                                                 const similarity = ((maxLength - distance) / maxLength) * 100;
                                                 if (similarity) {
                                                     result.rows[i].scoring.calle += similarity;
-                                                    result.rows[i].scoring.fiability += (similarity * 0.5);
+                                                    result.rows[i].scoring.fiability += (similarity * 0.4);
                                                 }
                                                 const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                                                 const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -525,7 +525,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                                                     let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                                     if (igualdad > 100) igualdad = 100;
                                                     result.rows[i].scoring.colonia += Math.round(igualdad);
-                                                    result.rows[i].scoring.fiability += Math.round(igualdad*0.15);
+                                                    result.rows[i].scoring.fiability += Math.round(igualdad*0.4);
                                                 }
                                             }
                                             rows = rows.concat(result.rows);
@@ -550,7 +550,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                                                 const result = await pgClient.query(query, values);
                                                 for (let i = 0; i < result.rows.length; i++) {
                                                     result.rows[i].scoring = {
-                                                        fiability: 30,
+                                                        fiability: 20,
                                                         calle: 0,
                                                         municipio: 100,
                                                         estado: 100,
@@ -563,7 +563,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                                                     const similarity = ((maxLength - distance) / maxLength) * 100;
                                                     if (similarity) {
                                                         result.rows[i].scoring.calle += similarity;
-                                                        result.rows[i].scoring.fiability += (similarity * 0.5);
+                                                        result.rows[i].scoring.fiability += (similarity * 0.4);
                                                     }
                                                     // Calcular la distancia de Levenshtein
                                                     const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
@@ -572,7 +572,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                                                     const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                                                     if (similarityColonia) {
                                                         result.rows[i].scoring.colonia += similarityColonia;
-                                                        result.rows[i].scoring.fiability += (similarityColonia * 0.15);
+                                                        result.rows[i].scoring.fiability += (similarityColonia * 0.4);
                                                     }
                                                 }
                                                 rows = rows.concat(result.rows);
