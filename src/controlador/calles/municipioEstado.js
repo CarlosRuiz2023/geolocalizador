@@ -23,7 +23,7 @@ async function municipioEstado(direccionParsed) {
         AND unaccent(estado) = $3
         ;
     `;
-    values = [direccionParsed.NOMVIAL, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
+    values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
     const result = await pgClient.query(query, values);
     for (let i = 0; i < result.rows.length; i++) {
         result.rows[i].scoring = {
@@ -33,7 +33,7 @@ async function municipioEstado(direccionParsed) {
             estado: 100
         };
         const nombreCalleSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
-        const matchNombreCalle = nombreCalleSinAcentos.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
+        const matchNombreCalle = nombreCalleSinAcentos.match(new RegExp(direccionParsed.CALLE, 'i'));
         if (matchNombreCalle) {
             const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
             let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
@@ -60,7 +60,7 @@ async function municipioEstado(direccionParsed) {
             AND unaccent(municipio) = $2
             ;
         `;
-        values = [direccionParsed.NOMVIAL, direccionParsed.MUNICIPIO];
+        values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO];
         const result = await pgClient.query(query, values);
         for (let i = 0; i < result.rows.length; i++) {
             result.rows[i].scoring = {
@@ -70,7 +70,7 @@ async function municipioEstado(direccionParsed) {
                 estado: 0
             };
             const nombreCalleSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
-            const matchNombreCalle = nombreCalleSinAcentos.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
+            const matchNombreCalle = nombreCalleSinAcentos.match(new RegExp(direccionParsed.CALLE, 'i'));
             if (matchNombreCalle) {
                 const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
                 let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
@@ -97,7 +97,7 @@ async function municipioEstado(direccionParsed) {
                 AND unaccent(estado) = $2
                 ;
             `;
-            values = [direccionParsed.NOMVIAL, direccionParsed.ESTADO];
+            values = [direccionParsed.CALLE, direccionParsed.ESTADO];
             const result = await pgClient.query(query, values);
             for (let i = 0; i < result.rows.length; i++) {
                 result.rows[i].scoring = {
@@ -107,7 +107,7 @@ async function municipioEstado(direccionParsed) {
                     estado: 100
                 };
                 const nombreCalleSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
-                const matchNombreCalle = nombreCalleSinAcentos.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
+                const matchNombreCalle = nombreCalleSinAcentos.match(new RegExp(direccionParsed.CALLE, 'i'));
                 if (matchNombreCalle) {
                     const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
                     let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
@@ -144,9 +144,9 @@ async function municipioEstado(direccionParsed) {
                         estado: 100
                     };
                     // Calcular la distancia de Levenshtein
-                    const distance = levenshteinDistance(result.rows[i].nombre_vialidad, direccionParsed.NOMVIAL);
+                    const distance = levenshteinDistance(result.rows[i].nombre_vialidad, direccionParsed.CALLE);
                     // Calcular la similitud como el inverso de la distancia de Levenshtein
-                    const maxLength = Math.max(result.rows[i].nombre_vialidad.length, direccionParsed.NOMVIAL.length);
+                    const maxLength = Math.max(result.rows[i].nombre_vialidad.length, direccionParsed.CALLE.length);
                     const similarity = ((maxLength - distance) / maxLength) * 100;
                     if (similarity) {
                         result.rows[i].scoring.nombre_vialidad += similarity;
@@ -180,9 +180,9 @@ async function municipioEstado(direccionParsed) {
                             estado: 0
                         };
                         // Calcular la distancia de Levenshtein
-                        const distance = levenshteinDistance(result.rows[i].nombre_vialidad, direccionParsed.NOMVIAL);
+                        const distance = levenshteinDistance(result.rows[i].nombre_vialidad, direccionParsed.CALLE);
                         // Calcular la similitud como el inverso de la distancia de Levenshtein
-                        const maxLength = Math.max(result.rows[i].nombre_vialidad.length, direccionParsed.NOMVIAL.length);
+                        const maxLength = Math.max(result.rows[i].nombre_vialidad.length, direccionParsed.CALLE.length);
                         const similarity = ((maxLength - distance) / maxLength) * 100;
                         if (similarity) {
                             result.rows[i].scoring.nombre_vialidad += similarity;
@@ -216,9 +216,9 @@ async function municipioEstado(direccionParsed) {
                                 estado: 100
                             };
                             // Calcular la distancia de Levenshtein
-                            const distance = levenshteinDistance(result.rows[i].nombre_vialidad, direccionParsed.NOMVIAL);
+                            const distance = levenshteinDistance(result.rows[i].nombre_vialidad, direccionParsed.CALLE);
                             // Calcular la similitud como el inverso de la distancia de Levenshtein
-                            const maxLength = Math.max(result.rows[i].nombre_vialidad.length, direccionParsed.NOMVIAL.length);
+                            const maxLength = Math.max(result.rows[i].nombre_vialidad.length, direccionParsed.CALLE.length);
                             const similarity = ((maxLength - distance) / maxLength) * 100;
                             if (similarity) {
                                 result.rows[i].scoring.nombre_vialidad += similarity;
@@ -242,7 +242,7 @@ async function municipioEstado(direccionParsed) {
                                 WHERE unaccent(nombre_vialidad) LIKE '%' || $1 || '%'
                                 ;
                             `;
-                            values = [direccionParsed.NOMVIAL];
+                            values = [direccionParsed.CALLE];
                             const result = await pgClient.query(query, values);
                             for (let i = 0; i < result.rows.length; i++) {
                                 result.rows[i].scoring = {
@@ -252,7 +252,7 @@ async function municipioEstado(direccionParsed) {
                                     estado: 0
                                 };
                                 const nombreCalleSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
-                                const matchNombreCalle = nombreCalleSinAcentos.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
+                                const matchNombreCalle = nombreCalleSinAcentos.match(new RegExp(direccionParsed.CALLE, 'i'));
                                 if (matchNombreCalle) {
                                     const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
                                     let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;

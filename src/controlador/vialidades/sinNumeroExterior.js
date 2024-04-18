@@ -794,19 +794,18 @@ async function sinNumeroExterior(direccionParsed) {
                                                                     END AS x_centro
                                                                     FROM carto_geolocalizador
                                                                     WHERE unaccent(tipo_vialidad) = $1
-                                                                    AND codigo_postal = $2 
-                                                                    AND unaccent(estado) = $3
-                                                                    AND unaccent(municipio) = $4
+                                                                    AND unaccent(estado) = $2
+                                                                    AND unaccent(municipio) = $3
                                                                     ;
                                                                 `;
-                                                                values = [direccionParsed.TIPOVIAL, direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.MUNICIPIO];
+                                                                values = [direccionParsed.TIPOVIAL, direccionParsed.ESTADO, direccionParsed.MUNICIPIO];
                                                                 const result = await pgClient.query(query, values);
-                                                                for (let i = 0; i < result.rows.length; i++) {
+                                                                /* for (let i = 0; i < result.rows.length; i++) {
                                                                     result.rows[i].scoring = {
-                                                                        fiability: 40,
+                                                                        fiability: 25,
                                                                         tipo_vialidad: 100,
                                                                         nombre_vialidad: 0,
-                                                                        codigo_postal: 100,
+                                                                        codigo_postal: 0,
                                                                         municipio: 100,
                                                                         estado: 100,
                                                                         colonia: 0
@@ -829,7 +828,11 @@ async function sinNumeroExterior(direccionParsed) {
                                                                         result.rows[i].scoring.colonia += similarityColonia;
                                                                         result.rows[i].scoring.fiability += (similarityColonia * 0.3);
                                                                     }
-                                                                }
+                                                                    if (result.rows[i].codigo_postal === direccionParsed.CP && (similarityColonia > 80 || similarity > 80)) {
+                                                                        result.rows[i].scoring.codigo_postal += 100;
+                                                                        result.rows[i].scoring.fiability += 15;
+                                                                    }
+                                                                } */
                                                                 rows = rows.concat(result.rows);
                                                             }
                                                         }

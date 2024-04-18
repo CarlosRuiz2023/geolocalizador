@@ -203,7 +203,7 @@ async function sinColoniaNumeroExterior(direccionParsed) {
                             }
                         }
                         rows = rows.concat(result.rows);
-                        if (result.rows.length === 0) {
+                        /* if (result.rows.length === 0) {
                             // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                             query = `
                                 SELECT *,
@@ -233,142 +233,13 @@ async function sinColoniaNumeroExterior(direccionParsed) {
                                     result.rows[i].scoring.poi += similarity;
                                     result.rows[i].scoring.fiability += (similarity * 0.5);
                                 }
+                                if (result.rows[i].codigo_postal === direccionParsed.CP && similarity > 80) {
+                                    result.rows[i].scoring.codigo_postal += 100;
+                                    result.rows[i].scoring.fiability += 20;
+                                }
                             }
                             rows = rows.concat(result.rows);
-                            if (result.rows.length === 0) {
-                                // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
-                                query = `
-                                    SELECT *,
-                                    lat_y AS y_centro,
-                                    lon_x AS x_centro
-                                    FROM carto_geolocalizador
-                                    WHERE codigo_postal = $1 
-                                    AND unaccent(municipio) = $2
-                                    AND unaccent(estado) = $3
-                                    ;
-                                `;
-                                values = [direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
-                                const result = await pgClient.query(query, values);
-                                for (let i = 0; i < result.rows.length; i++) {
-                                    result.rows[i].scoring = {
-                                        fiability: 50,
-                                        poi: 0,
-                                        codigo_postal: 100,
-                                        municipio: 100,
-                                        estado: 100
-                                    };
-                                    // Calcular la distancia de Levenshtein
-                                    const distance = levenshteinDistance(result.rows[i].poi, direccionParsed.CALLE);
-                                    // Calcular la similitud como el inverso de la distancia de Levenshtein
-                                    const maxLength = Math.max(result.rows[i].poi.length, direccionParsed.CALLE.length);
-                                    const similarity = ((maxLength - distance) / maxLength) * 100;
-                                    if (similarity) {
-                                        result.rows[i].scoring.poi += similarity;
-                                        result.rows[i].scoring.fiability += (similarity * 0.5);
-                                    }
-                                }
-                                rows = rows.concat(result.rows);
-                                if (result.rows.length === 0) {
-                                    // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
-                                    query = `
-                                        SELECT *,
-                                        lat_y AS y_centro,
-                                        lon_x AS x_centro
-                                        FROM carto_geolocalizador
-                                        WHERE unaccent(municipio) = $1
-                                        AND unaccent(estado) = $2
-                                        ;
-                                    `;
-                                    values = [direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
-                                    const result = await pgClient.query(query, values);
-                                    for (let i = 0; i < result.rows.length; i++) {
-                                        result.rows[i].scoring = {
-                                            fiability: 30,
-                                            poi: 0,
-                                            codigo_postal: 0,
-                                            municipio: 100,
-                                            estado: 100
-                                        };
-                                        // Calcular la distancia de Levenshtein
-                                        const distance = levenshteinDistance(result.rows[i].poi, direccionParsed.CALLE);
-                                        // Calcular la similitud como el inverso de la distancia de Levenshtein
-                                        const maxLength = Math.max(result.rows[i].poi.length, direccionParsed.CALLE.length);
-                                        const similarity = ((maxLength - distance) / maxLength) * 100;
-                                        if (similarity) {
-                                            result.rows[i].scoring.poi += similarity;
-                                            result.rows[i].scoring.fiability += (similarity * 0.5);
-                                        }
-                                    }
-                                    rows = rows.concat(result.rows);
-                                    if (result.rows.length === 0) {
-                                        // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
-                                        query = `
-                                            SELECT *,
-                                            lat_y AS y_centro,
-                                            lon_x AS x_centro
-                                            FROM carto_geolocalizador
-                                            WHERE codigo_postal = $1 
-                                            AND unaccent(municipio) = $2
-                                            ;
-                                        `;
-                                        values = [direccionParsed.CP, direccionParsed.MUNICIPIO];
-                                        const result = await pgClient.query(query, values);
-                                        for (let i = 0; i < result.rows.length; i++) {
-                                            result.rows[i].scoring = {
-                                                fiability: 40,
-                                                poi: 0,
-                                                codigo_postal: 100,
-                                                municipio: 100,
-                                                estado: 0
-                                            };
-                                            // Calcular la distancia de Levenshtein
-                                            const distance = levenshteinDistance(result.rows[i].poi, direccionParsed.CALLE);
-                                            // Calcular la similitud como el inverso de la distancia de Levenshtein
-                                            const maxLength = Math.max(result.rows[i].poi.length, direccionParsed.CALLE.length);
-                                            const similarity = ((maxLength - distance) / maxLength) * 100;
-                                            if (similarity) {
-                                                result.rows[i].scoring.poi += similarity;
-                                                result.rows[i].scoring.fiability += (similarity * 0.5);
-                                            }
-                                        }
-                                        rows = rows.concat(result.rows);
-                                        if (result.rows.length === 0) {
-                                            // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
-                                            query = `
-                                                SELECT *,
-                                                lat_y AS y_centro,
-                                                lon_x AS x_centro
-                                                FROM carto_geolocalizador
-                                                WHERE codigo_postal = $1 
-                                                AND unaccent(estado) = $2
-                                                ;
-                                            `;
-                                            values = [direccionParsed.CP, direccionParsed.ESTADO];
-                                            const result = await pgClient.query(query, values);
-                                            for (let i = 0; i < result.rows.length; i++) {
-                                                result.rows[i].scoring = {
-                                                    fiability: 30,
-                                                    poi: 0,
-                                                    codigo_postal: 100,
-                                                    municipio: 0,
-                                                    estado: 100
-                                                };
-                                                // Calcular la distancia de Levenshtein
-                                                const distance = levenshteinDistance(result.rows[i].poi, direccionParsed.CALLE);
-                                                // Calcular la similitud como el inverso de la distancia de Levenshtein
-                                                const maxLength = Math.max(result.rows[i].poi.length, direccionParsed.CALLE.length);
-                                                const similarity = ((maxLength - distance) / maxLength) * 100;
-                                                if (similarity) {
-                                                    result.rows[i].scoring.poi += similarity;
-                                                    result.rows[i].scoring.fiability += (similarity * 0.5);
-                                                }
-                                            }
-                                            rows = rows.concat(result.rows);
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        } */
                     }
                 }
             }

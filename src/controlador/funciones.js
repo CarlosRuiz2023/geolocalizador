@@ -264,7 +264,6 @@ function obtenerEstado(componentesDireccion) {
 }
 // Función auxiliar para obtener el tipo de asentamiento humano
 function obtenerMunicipio(estado, componentesDireccion, i) {
-    console.log(componentesDireccion);
     try {
         if (estado) {
             const municipios = municipiosEstado[estado];

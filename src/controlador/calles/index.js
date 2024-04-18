@@ -12,7 +12,6 @@ const sinEstado = require('./sinEstado');
 const sinMunicipio = require('./sinMunicipio');
 const sinNumeroExterior = require('./sinNumeroExterior');
 const sinNumeroExteriorCP = require('./sinNumeroExteriorCP');
-const sinNumeroExteriorCPColonia = require('./sinNumeroExteriorCPColonia');
 
 module.exports = {
     all,
@@ -23,7 +22,6 @@ module.exports = {
     sinMunicipio,
     sinNumeroExterior,
     sinNumeroExteriorCP,
-    sinNumeroExteriorCPColonia,
     sinColoniaCP,
     sinColoniaNumeroExterior,
     municipioNumeroExterior,

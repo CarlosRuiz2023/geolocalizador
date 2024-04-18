@@ -234,27 +234,26 @@ async function sinColoniaCP(direccionParsed) {
                                 }
                             }
                             rows = rows.concat(result.rows);
-                            if (result.rows.length === 0) {
+                            /* if (result.rows.length === 0) {
                                 // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                                 query = `
                                     SELECT *,
                                     lat_y AS y_centro,
                                     lon_x AS x_centro
                                     FROM carto_geolocalizador
-                                    WHERE unaccent(municipio) = $1
+                                    AND unaccent(municipio) = $1
                                     AND unaccent(estado) = $2
-                                    AND numero = $3
                                     ;
                                 `;
-                                values = [direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1];
+                                values = [direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
                                 const result = await pgClient.query(query, values);
                                 for (let i = 0; i < result.rows.length; i++) {
                                     result.rows[i].scoring = {
-                                        fiability: 50,
+                                        fiability: 30,
                                         poi: 0,
                                         municipio: 100,
                                         estado: 100,
-                                        numero_exterior: 100
+                                        numero_exterior: 0
                                     };
                                     // Calcular la distancia de Levenshtein
                                     const distance = levenshteinDistance(result.rows[i].poi, direccionParsed.CALLE);
@@ -265,108 +264,13 @@ async function sinColoniaCP(direccionParsed) {
                                         result.rows[i].scoring.poi += similarity;
                                         result.rows[i].scoring.fiability += (similarity * 0.5);
                                     }
+                                    if (result.rows[i].numero === direccionParsed.NUMEXTNUM1 && similarity > 80) {
+                                        result.rows[i].scoring.numero_exterior += 100;
+                                        result.rows[i].scoring.fiability += 20;
+                                    }
                                 }
                                 rows = rows.concat(result.rows);
-                                if (result.rows.length === 0) {
-                                    // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
-                                    query = `
-                                        SELECT *,
-                                        lat_y AS y_centro,
-                                        lon_x AS x_centro
-                                        FROM carto_geolocalizador
-                                        WHERE unaccent(municipio) = $1
-                                        AND numero = $2
-                                        ;
-                                    `;
-                                    values = [direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1];
-                                    const result = await pgClient.query(query, values);
-                                    for (let i = 0; i < result.rows.length; i++) {
-                                        result.rows[i].scoring = {
-                                            fiability: 35,
-                                            poi: 0,
-                                            municipio: 100,
-                                            estado: 0,
-                                            numero_exterior: 100
-                                        };
-                                        // Calcular la distancia de Levenshtein
-                                        const distance = levenshteinDistance(result.rows[i].poi, direccionParsed.CALLE);
-                                        // Calcular la similitud como el inverso de la distancia de Levenshtein
-                                        const maxLength = Math.max(result.rows[i].poi.length, direccionParsed.CALLE.length);
-                                        const similarity = ((maxLength - distance) / maxLength) * 100;
-                                        if (similarity) {
-                                            result.rows[i].scoring.poi += similarity;
-                                            result.rows[i].scoring.fiability += (similarity * 0.5);
-                                        }
-                                    }
-                                    rows = rows.concat(result.rows);
-                                    if (result.rows.length === 0) {
-                                        // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
-                                        query = `
-                                            SELECT *,
-                                            lat_y AS y_centro,
-                                            lon_x AS x_centro
-                                            FROM carto_geolocalizador
-                                            WHERE unaccent(estado) = $1
-                                            AND numero = $2
-                                            ;
-                                        `;
-                                        values = [direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1];
-                                        const result = await pgClient.query(query, values);
-                                        for (let i = 0; i < result.rows.length; i++) {
-                                            result.rows[i].scoring = {
-                                                fiability: 35,
-                                                poi: 0,
-                                                municipio: 0,
-                                                estado: 100,
-                                                numero_exterior: 100
-                                            };
-                                            // Calcular la distancia de Levenshtein
-                                            const distance = levenshteinDistance(result.rows[i].poi, direccionParsed.CALLE);
-                                            // Calcular la similitud como el inverso de la distancia de Levenshtein
-                                            const maxLength = Math.max(result.rows[i].poi.length, direccionParsed.CALLE.length);
-                                            const similarity = ((maxLength - distance) / maxLength) * 100;
-                                            if (similarity) {
-                                                result.rows[i].scoring.poi += similarity;
-                                                result.rows[i].scoring.fiability += (similarity * 0.5);
-                                            }
-                                        }
-                                        rows = rows.concat(result.rows);
-                                        if (result.rows.length === 0) {
-                                            // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
-                                            query = `
-                                                SELECT *,
-                                                lat_y AS y_centro,
-                                                lon_x AS x_centro
-                                                FROM carto_geolocalizador
-                                                AND unaccent(municipio) = $1
-                                                AND unaccent(estado) = $2
-                                                ;
-                                            `;
-                                            values = [direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
-                                            const result = await pgClient.query(query, values);
-                                            for (let i = 0; i < result.rows.length; i++) {
-                                                result.rows[i].scoring = {
-                                                    fiability: 30,
-                                                    poi: 0,
-                                                    municipio: 100,
-                                                    estado: 100,
-                                                    numero_exterior: 0
-                                                };
-                                                // Calcular la distancia de Levenshtein
-                                                const distance = levenshteinDistance(result.rows[i].poi, direccionParsed.CALLE);
-                                                // Calcular la similitud como el inverso de la distancia de Levenshtein
-                                                const maxLength = Math.max(result.rows[i].poi.length, direccionParsed.CALLE.length);
-                                                const similarity = ((maxLength - distance) / maxLength) * 100;
-                                                if (similarity) {
-                                                    result.rows[i].scoring.poi += similarity;
-                                                    result.rows[i].scoring.fiability += (similarity * 0.5);
-                                                }
-                                            }
-                                            rows = rows.concat(result.rows);
-                                        }
-                                    }
-                                }
-                            }
+                            } */
                         }
                     }
                 }
