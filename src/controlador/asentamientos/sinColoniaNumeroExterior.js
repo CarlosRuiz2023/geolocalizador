@@ -190,7 +190,6 @@ async function sinColoniaNumeroExterior(direccionParsed) {
                     `;
                     values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.MUNICIPIO];
                     const result = await pgClient.query(query, values);
-
                     for (let i = 0; i < result.rows.length; i++) {
                         result.rows[i].scoring = {
                             fiability: 20,
@@ -231,7 +230,6 @@ async function sinColoniaNumeroExterior(direccionParsed) {
                         `;
                         values = [direccionParsed.TIPOASEN, direccionParsed.NOMASEN, direccionParsed.CP];
                         const result = await pgClient.query(query, values);
-
                         for (let i = 0; i < result.rows.length; i++) {
                             result.rows[i].scoring = {
                                 fiability: 30,

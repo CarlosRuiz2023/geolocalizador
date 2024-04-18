@@ -120,7 +120,7 @@ async function municipioEstado(direccionParsed) {
                         estado: 100
                     };
                     // Calcular la distancia de Levenshtein
-                    const distance = levenshteinDistance(result.rows[i].poi, direccionParsed.CALLE);
+                    const distance = levenshteinDistance(quitarAcentos(result.rows[i].poi), direccionParsed.CALLE);
                     // Calcular la similitud como el inverso de la distancia de Levenshtein
                     const maxLength = Math.max(result.rows[i].poi.length, direccionParsed.CALLE.length);
                     const similarity = ((maxLength - distance) / maxLength) * 100;
@@ -150,7 +150,7 @@ async function municipioEstado(direccionParsed) {
                             estado: 0
                         };
                         // Calcular la distancia de Levenshtein
-                        const distance = levenshteinDistance(result.rows[i].poi, direccionParsed.CALLE);
+                        const distance = levenshteinDistance(quitarAcentos(result.rows[i].poi), direccionParsed.CALLE);
                         // Calcular la similitud como el inverso de la distancia de Levenshtein
                         const maxLength = Math.max(result.rows[i].poi.length, direccionParsed.CALLE.length);
                         const similarity = ((maxLength - distance) / maxLength) * 100;
@@ -180,7 +180,7 @@ async function municipioEstado(direccionParsed) {
                                 estado: 100
                             };
                             // Calcular la distancia de Levenshtein
-                            const distance = levenshteinDistance(result.rows[i].poi, direccionParsed.CALLE);
+                            const distance = levenshteinDistance(quitarAcentos(result.rows[i].poi), direccionParsed.CALLE);
                             // Calcular la similitud como el inverso de la distancia de Levenshtein
                             const maxLength = Math.max(result.rows[i].poi.length, direccionParsed.CALLE.length);
                             const similarity = ((maxLength - distance) / maxLength) * 100;

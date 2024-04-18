@@ -352,7 +352,7 @@ async function sinColonia(direccionParsed) {
                                             }
                                         }
                                         rows = rows.concat(result.rows);
-                                        /* if (result.rows.length === 0) {
+                                        if (result.rows.length === 0) {
                                             // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                                             query = `
                                                 SELECT *,
@@ -375,7 +375,7 @@ async function sinColonia(direccionParsed) {
                                                     numero_exterior: 0
                                                 };
                                                 // Calcular la distancia de Levenshtein
-                                                const distance = levenshteinDistance(result.rows[i].poi, direccionParsed.CALLE);
+                                                const distance = levenshteinDistance(quitarAcentos(result.rows[i].poi), direccionParsed.CALLE);
                                                 // Calcular la similitud como el inverso de la distancia de Levenshtein
                                                 const maxLength = Math.max(result.rows[i].poi.length, direccionParsed.CALLE.length);
                                                 const similarity = ((maxLength - distance) / maxLength) * 100;
@@ -393,7 +393,7 @@ async function sinColonia(direccionParsed) {
                                                 }
                                             }
                                             rows = rows.concat(result.rows);
-                                        } */
+                                        }
                                     }
                                 }
                             }

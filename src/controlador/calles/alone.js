@@ -63,7 +63,7 @@ async function alone(direccionParsed) {
                 calle: 0
             };
             // Calcular la distancia de Levenshtein
-            const distance = levenshteinDistance(result.rows[i].nombre_vialidad, direccionParsed.CALLE);
+            const distance = levenshteinDistance(quitarAcentos(result.rows[i].nombre_vialidad), direccionParsed.CALLE);
             // Calcular la similitud como el inverso de la distancia de Levenshtein
             const maxLength = Math.max(result.rows[i].nombre_vialidad.length, direccionParsed.CALLE.length);
             const similarity = ((maxLength - distance) / maxLength) * 100;

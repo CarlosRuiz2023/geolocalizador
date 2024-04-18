@@ -108,6 +108,7 @@ function parseDireccion(direccion) {
                             calle += ' ' + componentesDireccion[i];
                             i++;
                         }
+                        i--;
                         direccionParsed.NOMVIAL = calle.trim();
                         activo = false;
                     } else {
@@ -167,7 +168,7 @@ function obtenerNumeroExterior(componente) {
     const match = componente.match(numeroExteriorRegex);
     if (match) {
         const [numCompleto, , numExtNum, numExtAlf] = match;
-        if (numExtNum.length >= 5) return null;
+        if (numExtNum.length > 4) return null;
         return `${numExtNum} ${numExtAlf || ''}`.trim();
     }
     // Expresión regular para detectar números exteriores como "M14"
@@ -187,12 +188,12 @@ function obtenerNumeroExterior(componente) {
         if (numExterior.length >= 5) return null;
         return numExterior;
     }
-    // 
+    // Numero Interior
     const numeroExteriorRegex3 = /^INT\s?\d+$/;
     if (numeroExteriorRegex3.test(componente)) {
         return componente.replace('INT', '');
     }
-    // 
+    // Numero Interior.
     const numeroExteriorRegex4 = /^INT.\s?\d+$/;
     if (numeroExteriorRegex4.test(componente)) {
         return componente.replace('INT.', '');
@@ -338,6 +339,10 @@ function limpiarBusqueda(texto) {
     texto = texto.replace(/Í/g, 'I');
     texto = texto.replace(/Ó/g, 'O');
     texto = texto.replace(/Ú/g, 'U');
+    // Eliminar paréntesis izquierdos "("
+    texto = texto.replace(/\(/g, '');
+    // Eliminar paréntesis derechos ")"
+    texto = texto.replace(/\)/g, '');
     return texto.trim();
 }
 // Función para expandir abreviaciones de tipos de vialidad en una dirección
@@ -381,7 +386,12 @@ function levenshteinDistance(str1, str2) {
     return distances[len1][len2];
 }
 function quitarAcentos(texto) {
+    // Eliminar Ñs
     texto = texto.replace(/Ñ/g, 'N');
+    // Eliminar paréntesis izquierdos "("
+    texto = texto.replace(/\(/g, '');
+    // Eliminar paréntesis derechos ")"
+    texto = texto.replace(/\)/g, '');
     return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 module.exports = { parseDireccion, levenshteinDistance, quitarAcentos };

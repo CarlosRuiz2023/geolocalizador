@@ -226,7 +226,7 @@ async function all(direccionParsed) {
                             result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                         }
                         // Calcular la distancia de Levenshtein
-                        const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
+                        const distanceColonia = levenshteinDistance(quitarAcentos(result.rows[i].colonia), direccionParsed.COLONIA);
                         // Calcular la similitud como el inverso de la distancia de Levenshtein
                         const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
                         const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
@@ -271,7 +271,7 @@ async function all(direccionParsed) {
                                 result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                             }
                             // Calcular la distancia de Levenshtein
-                            const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
+                            const distanceColonia = levenshteinDistance(quitarAcentos(result.rows[i].colonia), direccionParsed.COLONIA);
                             // Calcular la similitud como el inverso de la distancia de Levenshtein
                             const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
                             const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
@@ -316,7 +316,7 @@ async function all(direccionParsed) {
                                     result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                 }
                                 // Calcular la distancia de Levenshtein
-                                const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
+                                const distanceColonia = levenshteinDistance(quitarAcentos(result.rows[i].colonia), direccionParsed.COLONIA);
                                 // Calcular la similitud como el inverso de la distancia de Levenshtein
                                 const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
                                 const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
@@ -497,7 +497,7 @@ async function all(direccionParsed) {
                                                     result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                                 }
                                                 // Calcular la distancia de Levenshtein
-                                                const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
+                                                const distanceColonia = levenshteinDistance(quitarAcentos(result.rows[i].colonia), direccionParsed.COLONIA);
                                                 // Calcular la similitud como el inverso de la distancia de Levenshtein
                                                 const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
                                                 const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
@@ -677,7 +677,7 @@ async function all(direccionParsed) {
                                                                     result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                                                 }
                                                                 // Calcular la distancia de Levenshtein
-                                                                const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
+                                                                const distanceColonia = levenshteinDistance(quitarAcentos(result.rows[i].colonia), direccionParsed.COLONIA);
                                                                 // Calcular la similitud como el inverso de la distancia de Levenshtein
                                                                 const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
                                                                 const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
@@ -712,7 +712,7 @@ async function all(direccionParsed) {
                                                                         colonia: 0
                                                                     };
                                                                     // Calcular la distancia de Levenshtein
-                                                                    const distance = levenshteinDistance(result.rows[i].poi, direccionParsed.CALLE);
+                                                                    const distance = levenshteinDistance(quitarAcentos(result.rows[i].poi), direccionParsed.CALLE);
                                                                     // Calcular la similitud como el inverso de la distancia de Levenshtein
                                                                     const maxLength = Math.max(result.rows[i].poi.length, direccionParsed.CALLE.length);
                                                                     const similarity = ((maxLength - distance) / maxLength) * 100;
@@ -765,7 +765,7 @@ async function all(direccionParsed) {
                                                                             result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                                                         }
                                                                         // Calcular la distancia de Levenshtein
-                                                                        const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
+                                                                        const distanceColonia = levenshteinDistance(quitarAcentos(result.rows[i].colonia), direccionParsed.COLONIA);
                                                                         // Calcular la similitud como el inverso de la distancia de Levenshtein
                                                                         const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
                                                                         const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
@@ -800,7 +800,7 @@ async function all(direccionParsed) {
                                                                                 colonia: 0
                                                                             };
                                                                             // Calcular la distancia de Levenshtein
-                                                                            const distance = levenshteinDistance(result.rows[i].poi, direccionParsed.CALLE);
+                                                                            const distance = levenshteinDistance(quitarAcentos(result.rows[i].poi), direccionParsed.CALLE);
                                                                             // Calcular la similitud como el inverso de la distancia de Levenshtein
                                                                             const maxLength = Math.max(result.rows[i].poi.length, direccionParsed.CALLE.length);
                                                                             const similarity = ((maxLength - distance) / maxLength) * 100;
@@ -845,7 +845,7 @@ async function all(direccionParsed) {
                                                                                     colonia: 0
                                                                                 };
                                                                                 // Calcular la distancia de Levenshtein
-                                                                                const distance = levenshteinDistance(result.rows[i].poi, direccionParsed.CALLE);
+                                                                                const distance = levenshteinDistance(quitarAcentos(result.rows[i].poi), direccionParsed.CALLE);
                                                                                 // Calcular la similitud como el inverso de la distancia de Levenshtein
                                                                                 const maxLength = Math.max(result.rows[i].poi.length, direccionParsed.CALLE.length);
                                                                                 const similarity = ((maxLength - distance) / maxLength) * 100;
@@ -891,7 +891,7 @@ async function all(direccionParsed) {
                                                                                         colonia: 0
                                                                                     };
                                                                                     // Calcular la distancia de Levenshtein
-                                                                                    const distance = levenshteinDistance(result.rows[i].poi, direccionParsed.CALLE);
+                                                                                    const distance = levenshteinDistance(quitarAcentos(result.rows[i].poi), direccionParsed.CALLE);
                                                                                     // Calcular la similitud como el inverso de la distancia de Levenshtein
                                                                                     const maxLength = Math.max(result.rows[i].poi.length, direccionParsed.CALLE.length);
                                                                                     const similarity = ((maxLength - distance) / maxLength) * 100;
@@ -936,7 +936,7 @@ async function all(direccionParsed) {
                                                                                             colonia: 0
                                                                                         };
                                                                                         // Calcular la distancia de Levenshtein
-                                                                                        const distance = levenshteinDistance(result.rows[i].poi, direccionParsed.CALLE);
+                                                                                        const distance = levenshteinDistance(quitarAcentos(result.rows[i].poi), direccionParsed.CALLE);
                                                                                         // Calcular la similitud como el inverso de la distancia de Levenshtein
                                                                                         const maxLength = Math.max(result.rows[i].poi.length, direccionParsed.CALLE.length);
                                                                                         const similarity = ((maxLength - distance) / maxLength) * 100;
@@ -981,7 +981,7 @@ async function all(direccionParsed) {
                                                                                                 colonia: 0
                                                                                             };
                                                                                             // Calcular la distancia de Levenshtein
-                                                                                            const distance = levenshteinDistance(result.rows[i].poi, direccionParsed.CALLE);
+                                                                                            const distance = levenshteinDistance(quitarAcentos(result.rows[i].poi), direccionParsed.CALLE);
                                                                                             // Calcular la similitud como el inverso de la distancia de Levenshtein
                                                                                             const maxLength = Math.max(result.rows[i].poi.length, direccionParsed.CALLE.length);
                                                                                             const similarity = ((maxLength - distance) / maxLength) * 100;
@@ -1026,7 +1026,7 @@ async function all(direccionParsed) {
                                                                                                     colonia: 0
                                                                                                 };
                                                                                                 // Calcular la distancia de Levenshtein
-                                                                                                const distance = levenshteinDistance(result.rows[i].poi, direccionParsed.CALLE);
+                                                                                                const distance = levenshteinDistance(quitarAcentos(result.rows[i].poi), direccionParsed.CALLE);
                                                                                                 // Calcular la similitud como el inverso de la distancia de Levenshtein
                                                                                                 const maxLength = Math.max(result.rows[i].poi.length, direccionParsed.CALLE.length);
                                                                                                 const similarity = ((maxLength - distance) / maxLength) * 100;
@@ -1071,7 +1071,7 @@ async function all(direccionParsed) {
                                                                                                         colonia: 0
                                                                                                     };
                                                                                                     // Calcular la distancia de Levenshtein
-                                                                                                    const distance = levenshteinDistance(result.rows[i].poi, direccionParsed.CALLE);
+                                                                                                    const distance = levenshteinDistance(quitarAcentos(result.rows[i].poi), direccionParsed.CALLE);
                                                                                                     // Calcular la similitud como el inverso de la distancia de Levenshtein
                                                                                                     const maxLength = Math.max(result.rows[i].poi.length, direccionParsed.CALLE.length);
                                                                                                     const similarity = ((maxLength - distance) / maxLength) * 100;
@@ -1090,7 +1090,7 @@ async function all(direccionParsed) {
                                                                                                     }
                                                                                                 }
                                                                                                 rows = rows.concat(result.rows);
-                                                                                                /* if (result.rows.length === 0) {
+                                                                                                if (result.rows.length === 0) {
                                                                                                     // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                                                                                                     query = `
                                                                                                         SELECT *,
@@ -1113,7 +1113,7 @@ async function all(direccionParsed) {
                                                                                                             colonia: 0
                                                                                                         };
                                                                                                         // Calcular la distancia de Levenshtein
-                                                                                                        const distance = levenshteinDistance(result.rows[i].poi, direccionParsed.CALLE);
+                                                                                                        const distance = levenshteinDistance(quitarAcentos(result.rows[i].poi), direccionParsed.CALLE);
                                                                                                         // Calcular la similitud como el inverso de la distancia de Levenshtein
                                                                                                         const maxLength = Math.max(result.rows[i].poi.length, direccionParsed.CALLE.length);
                                                                                                         const similarity = ((maxLength - distance) / maxLength) * 100;
@@ -1122,7 +1122,7 @@ async function all(direccionParsed) {
                                                                                                             result.rows[i].scoring.fiability += (similarity * 0.3);
                                                                                                         }
                                                                                                         // Calcular la distancia de Levenshtein
-                                                                                                        const distanceColonia = levenshteinDistance(result.rows[i].colonia, direccionParsed.COLONIA);
+                                                                                                        const distanceColonia = levenshteinDistance(quitarAcentos(result.rows[i].colonia), direccionParsed.COLONIA);
                                                                                                         // Calcular la similitud como el inverso de la distancia de Levenshtein
                                                                                                         const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
                                                                                                         const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
@@ -1152,7 +1152,7 @@ async function all(direccionParsed) {
                                                                                                         }
                                                                                                     }
                                                                                                     rows = rows.concat(result.rows);
-                                                                                                } */
+                                                                                                }
                                                                                             }
                                                                                         }
                                                                                     }
