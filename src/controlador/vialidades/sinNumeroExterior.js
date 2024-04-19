@@ -287,7 +287,6 @@ async function sinNumeroExterior(direccionParsed) {
                         `;
                         values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
                         const result = await pgClient.query(query, values);
-
                         for (let i = 0; i < result.rows.length; i++) {
                             result.rows[i].scoring = {
                                 fiability: 25,
@@ -339,7 +338,6 @@ async function sinNumeroExterior(direccionParsed) {
                             `;
                             values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.ESTADO];
                             const result = await pgClient.query(query, values);
-
                             for (let i = 0; i < result.rows.length; i++) {
                                 result.rows[i].scoring = {
                                     fiability: 30,
@@ -780,7 +778,7 @@ async function sinNumeroExterior(direccionParsed) {
                                                                 }
                                                             }
                                                             rows = rows.concat(result.rows);
-                                                            if (result.rows.length === 0) {
+                                                            /* if (result.rows.length === 0) {
                                                                 // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                                                                 query = `
                                                                     SELECT *,
@@ -800,7 +798,7 @@ async function sinNumeroExterior(direccionParsed) {
                                                                 `;
                                                                 values = [direccionParsed.TIPOVIAL, direccionParsed.ESTADO, direccionParsed.MUNICIPIO];
                                                                 const result = await pgClient.query(query, values);
-                                                                /* for (let i = 0; i < result.rows.length; i++) {
+                                                                for (let i = 0; i < result.rows.length; i++) {
                                                                     result.rows[i].scoring = {
                                                                         fiability: 25,
                                                                         tipo_vialidad: 100,
@@ -832,9 +830,9 @@ async function sinNumeroExterior(direccionParsed) {
                                                                         result.rows[i].scoring.codigo_postal += 100;
                                                                         result.rows[i].scoring.fiability += 15;
                                                                     }
-                                                                } */
+                                                                }
                                                                 rows = rows.concat(result.rows);
-                                                            }
+                                                            } */
                                                         }
                                                     }
                                                 }

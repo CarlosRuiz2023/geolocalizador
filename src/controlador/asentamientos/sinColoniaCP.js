@@ -9,50 +9,62 @@ async function sinColoniaCP(direccionParsed) {
     // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
     query = `
         SELECT *,
-        ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
-                                                        WHEN $5 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
-                                                            CASE 
-                                                                WHEN l_nrefaddr::float - l_refaddr::float != 0 THEN ($5 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
-                                                                ELSE 0.5
-                                                            END
-                                                        WHEN $5 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
-                                                            CASE 
-                                                                WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($5 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
-                                                                ELSE 0.5
-                                                            END
-                                                        WHEN $5 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
-                                                            CASE 
-                                                                WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($5 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
-                                                                ELSE 0.5
-                                                            END
-                                                        WHEN $5 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
-                                                            CASE 
-                                                                WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($5 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
-                                                                ELSE 0.5
-                                                            END
-                                                     END)) AS y_centro,
-        ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
-                                                        WHEN $5 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
-                                                            CASE 
-                                                                WHEN l_nrefaddr::float - l_refaddr::float != 0 THEN ($5 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
-                                                                ELSE 0.5
-                                                            END
-                                                        WHEN $5 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
-                                                            CASE 
-                                                                WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($5 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
-                                                                ELSE 0.5
-                                                            END
-                                                        WHEN $5 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
-                                                            CASE 
-                                                                WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($5 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
-                                                                ELSE 0.5
-                                                            END
-                                                        WHEN $5 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
-                                                            CASE 
-                                                                WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($5 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
-                                                                ELSE 0.5
-                                                            END
-                                                     END)) AS x_centro
+        CASE
+            -- Si es una línea, calcula la interpolación
+            WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN
+                ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
+                                                              WHEN $5 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
+                                                                  CASE 
+                                                                      WHEN l_nrefaddr::float - l_refaddr::float != 0 THEN ($5 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                      ELSE 0.5
+                                                                  END
+                                                              WHEN $5 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
+                                                                  CASE 
+                                                                      WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($5 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                      ELSE 0.5
+                                                                  END
+                                                              WHEN $5 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                                  CASE 
+                                                                      WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($5 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                      ELSE 0.5
+                                                                  END
+                                                              WHEN $5 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                                  CASE 
+                                                                      WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($5 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                      ELSE 0.5
+                                                                  END
+                                                           END))
+            -- Si es un punto, extrae directamente las coordenadas
+            ELSE ST_Y("SP_GEOMETRY")
+        END AS y_centro,
+        CASE
+            -- Si es una línea, calcula la interpolación
+            WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN
+                ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
+                                                              WHEN $5 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
+                                                                  CASE 
+                                                                      WHEN l_nrefaddr::float - l_refaddr::float != 0 THEN ($5 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                      ELSE 0.5
+                                                                  END
+                                                              WHEN $5 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
+                                                                  CASE 
+                                                                      WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($5 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                      ELSE 0.5
+                                                                  END
+                                                              WHEN $5 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                                  CASE 
+                                                                      WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($5 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                      ELSE 0.5
+                                                                  END
+                                                              WHEN $5 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                                  CASE 
+                                                                      WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($5 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                      ELSE 0.5
+                                                                  END
+                                                           END))
+            -- Si es un punto, extrae directamente las coordenadas
+            ELSE ST_X("SP_GEOMETRY")
+        END AS x_centro
         FROM carto_geolocalizador
         WHERE unaccent(tipo_asentamiento) = $1
         AND unaccent(nombre_asentamiento) like '%' || $2 || '%'
@@ -131,50 +143,62 @@ async function sinColoniaCP(direccionParsed) {
             // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
             query = `
                 SELECT *,
-                ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
-                                                                WHEN $4 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
-                                                                    CASE 
-                                                                        WHEN l_nrefaddr::float - l_refaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
-                                                                        ELSE 0.5
-                                                                    END
-                                                                WHEN $4 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
-                                                                    CASE 
-                                                                        WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
-                                                                        ELSE 0.5
-                                                                    END
-                                                                WHEN $4 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
-                                                                    CASE 
-                                                                        WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
-                                                                        ELSE 0.5
-                                                                    END
-                                                                WHEN $4 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
-                                                                    CASE 
-                                                                        WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
-                                                                        ELSE 0.5
-                                                                    END
-                                                             END)) AS y_centro,
-                ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
-                                                                WHEN $4 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
-                                                                    CASE 
-                                                                        WHEN l_nrefaddr::float - l_refaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
-                                                                        ELSE 0.5
-                                                                    END
-                                                                WHEN $4 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
-                                                                    CASE 
-                                                                        WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
-                                                                        ELSE 0.5
-                                                                    END
-                                                                WHEN $4 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
-                                                                    CASE 
-                                                                        WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
-                                                                        ELSE 0.5
-                                                                    END
-                                                                WHEN $4 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
-                                                                    CASE 
-                                                                        WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
-                                                                        ELSE 0.5
-                                                                    END
-                                                             END)) AS x_centro
+                CASE
+                    -- Si es una línea, calcula la interpolación
+                    WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN
+                        ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
+                                                                      WHEN $4 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
+                                                                          CASE 
+                                                                              WHEN l_nrefaddr::float - l_refaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                              ELSE 0.5
+                                                                          END
+                                                                      WHEN $4 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
+                                                                          CASE 
+                                                                              WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                              ELSE 0.5
+                                                                          END
+                                                                      WHEN $4 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                                          CASE 
+                                                                              WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                              ELSE 0.5
+                                                                          END
+                                                                      WHEN $4 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                                          CASE 
+                                                                              WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                              ELSE 0.5
+                                                                          END
+                                                                   END))
+                    -- Si es un punto, extrae directamente las coordenadas
+                    ELSE ST_Y("SP_GEOMETRY")
+                END AS y_centro,
+                CASE
+                    -- Si es una línea, calcula la interpolación
+                    WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN
+                        ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
+                                                                      WHEN $4 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
+                                                                          CASE 
+                                                                              WHEN l_nrefaddr::float - l_refaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                              ELSE 0.5
+                                                                          END
+                                                                      WHEN $4 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
+                                                                          CASE 
+                                                                              WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                              ELSE 0.5
+                                                                          END
+                                                                      WHEN $4 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                                          CASE 
+                                                                              WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                              ELSE 0.5
+                                                                          END
+                                                                      WHEN $4 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                                          CASE 
+                                                                              WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                              ELSE 0.5
+                                                                          END
+                                                                   END))
+                    -- Si es un punto, extrae directamente las coordenadas
+                    ELSE ST_X("SP_GEOMETRY")
+                END AS x_centro
                 FROM carto_geolocalizador
                 WHERE unaccent(tipo_asentamiento) = $1
                 AND unaccent(nombre_asentamiento) like '%' || $2 || '%'
@@ -211,50 +235,62 @@ async function sinColoniaCP(direccionParsed) {
                 // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                 query = `
                     SELECT *,
-                    ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
-                                                                    WHEN $4 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
-                                                                        CASE 
-                                                                            WHEN l_nrefaddr::float - l_refaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
-                                                                            ELSE 0.5
-                                                                        END
-                                                                    WHEN $4 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
-                                                                        CASE 
-                                                                            WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
-                                                                            ELSE 0.5
-                                                                        END
-                                                                    WHEN $4 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
-                                                                        CASE 
-                                                                            WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
-                                                                            ELSE 0.5
-                                                                        END
-                                                                    WHEN $4 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
-                                                                        CASE 
-                                                                            WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
-                                                                            ELSE 0.5
-                                                                        END
-                                                                 END)) AS y_centro,
-                    ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
-                                                                    WHEN $4 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
-                                                                        CASE 
-                                                                            WHEN l_nrefaddr::float - l_refaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
-                                                                            ELSE 0.5
-                                                                        END
-                                                                    WHEN $4 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
-                                                                        CASE 
-                                                                            WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
-                                                                            ELSE 0.5
-                                                                        END
-                                                                    WHEN $4 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
-                                                                        CASE 
-                                                                            WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
-                                                                            ELSE 0.5
-                                                                        END
-                                                                    WHEN $4 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
-                                                                        CASE 
-                                                                            WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
-                                                                            ELSE 0.5
-                                                                        END
-                                                                 END)) AS x_centro
+                    CASE
+                        -- Si es una línea, calcula la interpolación
+                        WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN
+                            ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
+                                                                          WHEN $4 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
+                                                                              CASE 
+                                                                                  WHEN l_nrefaddr::float - l_refaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                                  ELSE 0.5
+                                                                              END
+                                                                          WHEN $4 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
+                                                                              CASE 
+                                                                                  WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                                  ELSE 0.5
+                                                                              END
+                                                                          WHEN $4 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                                              CASE 
+                                                                                  WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                                  ELSE 0.5
+                                                                              END
+                                                                          WHEN $4 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                                              CASE 
+                                                                                  WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                                  ELSE 0.5
+                                                                              END
+                                                                       END))
+                        -- Si es un punto, extrae directamente las coordenadas
+                        ELSE ST_Y("SP_GEOMETRY")
+                    END AS y_centro,
+                    CASE
+                        -- Si es una línea, calcula la interpolación
+                        WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN
+                            ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
+                                                                          WHEN $4 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
+                                                                              CASE 
+                                                                                  WHEN l_nrefaddr::float - l_refaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                                  ELSE 0.5
+                                                                              END
+                                                                          WHEN $4 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
+                                                                              CASE 
+                                                                                  WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                                  ELSE 0.5
+                                                                              END
+                                                                          WHEN $4 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                                              CASE 
+                                                                                  WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                                  ELSE 0.5
+                                                                              END
+                                                                          WHEN $4 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                                              CASE 
+                                                                                  WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                                  ELSE 0.5
+                                                                              END
+                                                                       END))
+                        -- Si es un punto, extrae directamente las coordenadas
+                        ELSE ST_X("SP_GEOMETRY")
+                    END AS x_centro
                     FROM carto_geolocalizador
                     WHERE unaccent(tipo_asentamiento) = $1
                     AND unaccent(nombre_asentamiento) like '%' || $2 || '%'
@@ -291,50 +327,62 @@ async function sinColoniaCP(direccionParsed) {
                     // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                     query = `
                         SELECT *,
-                        ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
-                                                                        WHEN $3 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
-                                                                            CASE 
-                                                                                WHEN l_nrefaddr::float - l_refaddr::float != 0 THEN ($3 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
-                                                                                ELSE 0.5
-                                                                            END
-                                                                        WHEN $3 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
-                                                                            CASE 
-                                                                                WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($3 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
-                                                                                ELSE 0.5
-                                                                            END
-                                                                        WHEN $3 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
-                                                                            CASE 
-                                                                                WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($3 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
-                                                                                ELSE 0.5
-                                                                            END
-                                                                        WHEN $3 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
-                                                                            CASE 
-                                                                                WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($3 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
-                                                                                ELSE 0.5
-                                                                            END
-                                                                     END)) AS y_centro,
-                        ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
-                                                                        WHEN $3 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
-                                                                            CASE 
-                                                                                WHEN l_nrefaddr::float - l_refaddr::float != 0 THEN ($3 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
-                                                                                ELSE 0.5
-                                                                            END
-                                                                        WHEN $3 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
-                                                                            CASE 
-                                                                                WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($3 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
-                                                                                ELSE 0.5
-                                                                            END
-                                                                        WHEN $3 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
-                                                                            CASE 
-                                                                                WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($3 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
-                                                                                ELSE 0.5
-                                                                            END
-                                                                        WHEN $3 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
-                                                                            CASE 
-                                                                                WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($3 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
-                                                                                ELSE 0.5
-                                                                            END
-                                                                     END)) AS x_centro
+                        CASE
+                            -- Si es una línea, calcula la interpolación
+                            WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN
+                                ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
+                                                                              WHEN $3 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
+                                                                                  CASE 
+                                                                                      WHEN l_nrefaddr::float - l_refaddr::float != 0 THEN ($3 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                                      ELSE 0.5
+                                                                                  END
+                                                                              WHEN $3 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
+                                                                                  CASE 
+                                                                                      WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($3 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                                      ELSE 0.5
+                                                                                  END
+                                                                              WHEN $3 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                                                  CASE 
+                                                                                      WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($3 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                                      ELSE 0.5
+                                                                                  END
+                                                                              WHEN $3 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                                                  CASE 
+                                                                                      WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($3 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                                      ELSE 0.5
+                                                                                  END
+                                                                           END))
+                            -- Si es un punto, extrae directamente las coordenadas
+                            ELSE ST_Y("SP_GEOMETRY")
+                        END AS y_centro,
+                        CASE
+                            -- Si es una línea, calcula la interpolación
+                            WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN
+                                ST_X(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
+                                                                              WHEN $3 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
+                                                                                  CASE 
+                                                                                      WHEN l_nrefaddr::float - l_refaddr::float != 0 THEN ($3 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                                      ELSE 0.5
+                                                                                  END
+                                                                              WHEN $3 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
+                                                                                  CASE 
+                                                                                      WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($3 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                                      ELSE 0.5
+                                                                                  END
+                                                                              WHEN $3 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                                                  CASE 
+                                                                                      WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($3 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                                      ELSE 0.5
+                                                                                  END
+                                                                              WHEN $3 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                                                  CASE 
+                                                                                      WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($3 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                                      ELSE 0.5
+                                                                                  END
+                                                                           END))
+                            -- Si es un punto, extrae directamente las coordenadas
+                            ELSE ST_X("SP_GEOMETRY")
+                        END AS x_centro
                         FROM carto_geolocalizador
                         WHERE unaccent(tipo_asentamiento) = $1
                         AND unaccent(nombre_asentamiento) like '%' || $2 || '%'
