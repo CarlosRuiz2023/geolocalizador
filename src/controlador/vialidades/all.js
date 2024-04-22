@@ -747,24 +747,24 @@ async function all(direccionParsed) {
                                         -- Si es una línea, calcula la interpolación
                                         WHEN ST_GeometryType("SP_GEOMETRY") = 'ST_LineString' THEN
                                             ST_Y(ST_LineInterpolatePoint("SP_GEOMETRY", CASE 
-                                                                                          WHEN $5 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
+                                                                                          WHEN $4 BETWEEN l_refaddr::float AND l_nrefaddr::float THEN 
                                                                                               CASE 
-                                                                                                  WHEN l_nrefaddr::float - l_refaddr::float != 0 THEN ($5 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
+                                                                                                  WHEN l_nrefaddr::float - l_refaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                                                   ELSE 0.5
                                                                                               END
-                                                                                          WHEN $5 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
+                                                                                          WHEN $4 BETWEEN r_refaddr::float AND r_nrefaddr::float THEN 
                                                                                               CASE 
-                                                                                                  WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($5 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
+                                                                                                  WHEN r_nrefaddr::float - r_refaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                                                   ELSE 0.5
                                                                                               END
-                                                                                          WHEN $5 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
+                                                                                          WHEN $4 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                                               CASE 
-                                                                                                  WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($5 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                                                  WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
                                                                                                   ELSE 0.5
                                                                                               END
-                                                                                          WHEN $5 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
+                                                                                          WHEN $4 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
                                                                                               CASE 
-                                                                                                  WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($5 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                                                  WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
                                                                                                   ELSE 0.5
                                                                                               END
                                                                                        END))
