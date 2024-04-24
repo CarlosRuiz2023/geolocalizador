@@ -28,11 +28,14 @@ async function sinEstado(direccionParsed) {
 
         // Asignar el resultado al campo "resultado"
         result.rows[i].resultado = resultado.trim();
-        result.rows[i].tipo = `Codigo_postal`;
+        result.rows[i].tipo = `Codigo Postal`;
         result.rows[i].id = result.rows[i].id_codigo_postal;
-        result.rows[i].campo = `Id`;
+        result.rows[i].campo = `id_codigo_postal`;
         result.rows[i].imagen = 'poligono';
         result.rows[i].tabla = 'carto_codigo_postal';
+        result.rows[i].id_estado = 0;
+        result.rows[i].id_municipio = 0;
+        result.rows[i].id_region = 0;
         result.rows[i].scoring = {
             fiability: 100,
             codigo_postal: 100,
@@ -63,11 +66,14 @@ async function sinEstado(direccionParsed) {
 
             // Asignar el resultado al campo "resultado"
             result.rows[i].resultado = resultado.trim();
-            result.rows[i].tipo = `Codigo_postal`;
+            result.rows[i].tipo = `Codigo Postal`;
             result.rows[i].id = result.rows[i].id_codigo_postal;
-            result.rows[i].campo = `Id`;
+            result.rows[i].campo = `id_codigo_postal`;
             result.rows[i].imagen = 'poligono';
-            result.rows[i].tabla = 'carto_codigo_postal'; result.rows[i].scoring = {
+            result.rows[i].tabla = 'carto_codigo_postal';
+            result.rows[i].id_estado = 0;
+            result.rows[i].id_municipio = 0;
+            result.rows[i].id_region = 0; result.rows[i].scoring = {
                 fiability: 50,
                 codigo_postal: 100,
                 municipio: 0

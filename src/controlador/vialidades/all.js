@@ -84,11 +84,11 @@ async function all(direccionParsed) {
         // Inicializar la cadena de resultado
         let resultado = '';
         let tabla = '';
-        let imagen = '';
 
         // Concatenar cada campo si tiene un valor
         if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
         if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+        resultado += `${direccionParsed.NUMEXTNUM1} `;
         if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
         if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
         if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
@@ -96,22 +96,19 @@ async function all(direccionParsed) {
 
         if (result.rows[i].tipo == 'CALLE') {
             tabla = `carto_calle`;
-            imagen = `linea`;
         }
         else if (result.rows[i].tipo == 'CARRETERA') {
             tabla = `carto_carreteras123`;
-            imagen = `linea`;
         }
         else if (result.rows[i].tipo == 'POI') {
             tabla = `carto_poi`;
-            imagen = `punto`;
         }
         // Asignar el resultado al campo "resultado"
         result.rows[i].resultado = resultado.trim();
         result.rows[i].tipo = `Calle`;
         result.rows[i].id = result.rows[i].id_calle;
         result.rows[i].campo = `Id`;
-        result.rows[i].imagen = imagen;
+        result.rows[i].imagen = 'punto';
         result.rows[i].tabla = tabla;
         result.rows[i].scoring = {
             fiability: 40,
@@ -221,11 +218,11 @@ async function all(direccionParsed) {
             // Inicializar la cadena de resultado
             let resultado = '';
             let tabla = '';
-            let imagen = '';
 
             // Concatenar cada campo si tiene un valor
             if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
             if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+            resultado += `${direccionParsed.NUMEXTNUM1} `;
             if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
             if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
             if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
@@ -233,22 +230,19 @@ async function all(direccionParsed) {
 
             if (result.rows[i].tipo == 'CALLE') {
                 tabla = `carto_calle`;
-                imagen = `linea`;
             }
             else if (result.rows[i].tipo == 'CARRETERA') {
                 tabla = `carto_carreteras123`;
-                imagen = `linea`;
             }
             else if (result.rows[i].tipo == 'POI') {
                 tabla = `carto_poi`;
-                imagen = `punto`;
             }
             // Asignar el resultado al campo "resultado"
             result.rows[i].resultado = resultado.trim();
             result.rows[i].tipo = `Calle`;
             result.rows[i].id = result.rows[i].id_calle;
             result.rows[i].campo = `Id`;
-            result.rows[i].imagen = imagen;
+            result.rows[i].imagen = 'punto';
             result.rows[i].tabla = tabla;
             result.rows[i].scoring = {
                 fiability: 30,
@@ -358,11 +352,11 @@ async function all(direccionParsed) {
                 // Inicializar la cadena de resultado
                 let resultado = '';
                 let tabla = '';
-                let imagen = '';
 
                 // Concatenar cada campo si tiene un valor
                 if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
                 if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                resultado += `${direccionParsed.NUMEXTNUM1} `;
                 if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
                 if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
                 if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
@@ -370,22 +364,19 @@ async function all(direccionParsed) {
 
                 if (result.rows[i].tipo == 'CALLE') {
                     tabla = `carto_calle`;
-                    imagen = `linea`;
                 }
                 else if (result.rows[i].tipo == 'CARRETERA') {
                     tabla = `carto_carreteras123`;
-                    imagen = `linea`;
                 }
                 else if (result.rows[i].tipo == 'POI') {
                     tabla = `carto_poi`;
-                    imagen = `punto`;
                 }
                 // Asignar el resultado al campo "resultado"
                 result.rows[i].resultado = resultado.trim();
                 result.rows[i].tipo = `Calle`;
                 result.rows[i].id = result.rows[i].id_calle;
                 result.rows[i].campo = `Id`;
-                result.rows[i].imagen = imagen;
+                result.rows[i].imagen = 'punto';
                 result.rows[i].tabla = tabla;
                 result.rows[i].scoring = {
                     fiability: 35,
@@ -495,11 +486,11 @@ async function all(direccionParsed) {
                     // Inicializar la cadena de resultado
                     let resultado = '';
                     let tabla = '';
-                    let imagen = '';
 
                     // Concatenar cada campo si tiene un valor
                     if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
                     if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                    resultado += `${direccionParsed.NUMEXTNUM1} `;
                     if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
                     if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
                     if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
@@ -507,22 +498,19 @@ async function all(direccionParsed) {
 
                     if (result.rows[i].tipo == 'CALLE') {
                         tabla = `carto_calle`;
-                        imagen = `linea`;
                     }
                     else if (result.rows[i].tipo == 'CARRETERA') {
                         tabla = `carto_carreteras123`;
-                        imagen = `linea`;
                     }
                     else if (result.rows[i].tipo == 'POI') {
                         tabla = `carto_poi`;
-                        imagen = `punto`;
                     }
                     // Asignar el resultado al campo "resultado"
                     result.rows[i].resultado = resultado.trim();
                     result.rows[i].tipo = `Calle`;
                     result.rows[i].id = result.rows[i].id_calle;
                     result.rows[i].campo = `Id`;
-                    result.rows[i].imagen = imagen;
+                    result.rows[i].imagen = 'punto';
                     result.rows[i].tabla = tabla;
                     result.rows[i].scoring = {
                         fiability: 35,
@@ -632,11 +620,11 @@ async function all(direccionParsed) {
                         // Inicializar la cadena de resultado
                         let resultado = '';
                         let tabla = '';
-                        let imagen = '';
 
                         // Concatenar cada campo si tiene un valor
                         if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
                         if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                        resultado += `${direccionParsed.NUMEXTNUM1} `;
                         if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
                         if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
                         if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
@@ -644,22 +632,19 @@ async function all(direccionParsed) {
 
                         if (result.rows[i].tipo == 'CALLE') {
                             tabla = `carto_calle`;
-                            imagen = `linea`;
                         }
                         else if (result.rows[i].tipo == 'CARRETERA') {
                             tabla = `carto_carreteras123`;
-                            imagen = `linea`;
                         }
                         else if (result.rows[i].tipo == 'POI') {
                             tabla = `carto_poi`;
-                            imagen = `punto`;
                         }
                         // Asignar el resultado al campo "resultado"
                         result.rows[i].resultado = resultado.trim();
                         result.rows[i].tipo = `Calle`;
                         result.rows[i].id = result.rows[i].id_calle;
                         result.rows[i].campo = `Id`;
-                        result.rows[i].imagen = imagen;
+                        result.rows[i].imagen = 'punto';
                         result.rows[i].tabla = tabla;
                         result.rows[i].scoring = {
                             fiability: 40,
@@ -773,6 +758,7 @@ async function all(direccionParsed) {
                             // Concatenar cada campo si tiene un valor
                             if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
                             if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                            resultado += `${direccionParsed.NUMEXTNUM1} `;
                             if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
                             if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
                             if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
@@ -780,22 +766,19 @@ async function all(direccionParsed) {
 
                             if (result.rows[i].tipo == 'CALLE') {
                                 tabla = `carto_calle`;
-                                imagen = `linea`;
                             }
                             else if (result.rows[i].tipo == 'CARRETERA') {
                                 tabla = `carto_carreteras123`;
-                                imagen = `linea`;
                             }
                             else if (result.rows[i].tipo == 'POI') {
                                 tabla = `carto_poi`;
-                                imagen = `punto`;
                             }
                             // Asignar el resultado al campo "resultado"
                             result.rows[i].resultado = resultado.trim();
                             result.rows[i].tipo = `Calle`;
                             result.rows[i].id = result.rows[i].id_calle;
                             result.rows[i].campo = `Id`;
-                            result.rows[i].imagen = imagen;
+                            result.rows[i].imagen = 'punto';
                             result.rows[i].tabla = tabla;
                             result.rows[i].scoring = {
                                 fiability: 30,
@@ -904,11 +887,11 @@ async function all(direccionParsed) {
                                 // Inicializar la cadena de resultado
                                 let resultado = '';
                                 let tabla = '';
-                                let imagen = '';
 
                                 // Concatenar cada campo si tiene un valor
                                 if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
                                 if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                resultado += `${direccionParsed.NUMEXTNUM1} `;
                                 if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
                                 if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
                                 if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
@@ -916,22 +899,19 @@ async function all(direccionParsed) {
 
                                 if (result.rows[i].tipo == 'CALLE') {
                                     tabla = `carto_calle`;
-                                    imagen = `linea`;
                                 }
                                 else if (result.rows[i].tipo == 'CARRETERA') {
                                     tabla = `carto_carreteras123`;
-                                    imagen = `linea`;
                                 }
                                 else if (result.rows[i].tipo == 'POI') {
                                     tabla = `carto_poi`;
-                                    imagen = `punto`;
                                 }
                                 // Asignar el resultado al campo "resultado"
                                 result.rows[i].resultado = resultado.trim();
                                 result.rows[i].tipo = `Calle`;
                                 result.rows[i].id = result.rows[i].id_calle;
                                 result.rows[i].campo = `Id`;
-                                result.rows[i].imagen = imagen;
+                                result.rows[i].imagen = 'punto';
                                 result.rows[i].tabla = tabla;
                                 result.rows[i].scoring = {
                                     fiability: 35,
@@ -1040,11 +1020,11 @@ async function all(direccionParsed) {
                                     // Inicializar la cadena de resultado
                                     let resultado = '';
                                     let tabla = '';
-                                    let imagen = '';
 
                                     // Concatenar cada campo si tiene un valor
                                     if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
                                     if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                    resultado += `${direccionParsed.NUMEXTNUM1} `;
                                     if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
                                     if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
                                     if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
@@ -1052,22 +1032,19 @@ async function all(direccionParsed) {
 
                                     if (result.rows[i].tipo == 'CALLE') {
                                         tabla = `carto_calle`;
-                                        imagen = `linea`;
                                     }
                                     else if (result.rows[i].tipo == 'CARRETERA') {
                                         tabla = `carto_carreteras123`;
-                                        imagen = `linea`;
                                     }
                                     else if (result.rows[i].tipo == 'POI') {
                                         tabla = `carto_poi`;
-                                        imagen = `punto`;
                                     }
                                     // Asignar el resultado al campo "resultado"
                                     result.rows[i].resultado = resultado.trim();
                                     result.rows[i].tipo = `Calle`;
                                     result.rows[i].id = result.rows[i].id_calle;
                                     result.rows[i].campo = `Id`;
-                                    result.rows[i].imagen = imagen;
+                                    result.rows[i].imagen = 'punto';
                                     result.rows[i].tabla = tabla;
                                     result.rows[i].scoring = {
                                         fiability: 25,
@@ -1176,11 +1153,11 @@ async function all(direccionParsed) {
                                         // Inicializar la cadena de resultado
                                         let resultado = '';
                                         let tabla = '';
-                                        let imagen = '';
 
                                         // Concatenar cada campo si tiene un valor
                                         if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
                                         if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                        resultado += `${direccionParsed.NUMEXTNUM1} `;
                                         if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
                                         if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
                                         if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
@@ -1188,22 +1165,19 @@ async function all(direccionParsed) {
 
                                         if (result.rows[i].tipo == 'CALLE') {
                                             tabla = `carto_calle`;
-                                            imagen = `linea`;
                                         }
                                         else if (result.rows[i].tipo == 'CARRETERA') {
                                             tabla = `carto_carreteras123`;
-                                            imagen = `linea`;
                                         }
                                         else if (result.rows[i].tipo == 'POI') {
                                             tabla = `carto_poi`;
-                                            imagen = `punto`;
                                         }
                                         // Asignar el resultado al campo "resultado"
                                         result.rows[i].resultado = resultado.trim();
                                         result.rows[i].tipo = `Calle`;
                                         result.rows[i].id = result.rows[i].id_calle;
                                         result.rows[i].campo = `Id`;
-                                        result.rows[i].imagen = imagen;
+                                        result.rows[i].imagen = 'punto';
                                         result.rows[i].tabla = tabla;
                                         result.rows[i].scoring = {
                                             fiability: 30,
@@ -1398,11 +1372,11 @@ async function all(direccionParsed) {
                                                 // Inicializar la cadena de resultado
                                                 let resultado = '';
                                                 let tabla = '';
-                                                let imagen = '';
 
                                                 // Concatenar cada campo si tiene un valor
                                                 if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
                                                 if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                                resultado += `${direccionParsed.NUMEXTNUM1} `;
                                                 if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
                                                 if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
                                                 if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
@@ -1410,22 +1384,19 @@ async function all(direccionParsed) {
 
                                                 if (result.rows[i].tipo == 'CALLE') {
                                                     tabla = `carto_calle`;
-                                                    imagen = `linea`;
                                                 }
                                                 else if (result.rows[i].tipo == 'CARRETERA') {
                                                     tabla = `carto_carreteras123`;
-                                                    imagen = `linea`;
                                                 }
                                                 else if (result.rows[i].tipo == 'POI') {
                                                     tabla = `carto_poi`;
-                                                    imagen = `punto`;
                                                 }
                                                 // Asignar el resultado al campo "resultado"
                                                 result.rows[i].resultado = resultado.trim();
                                                 result.rows[i].tipo = `Calle`;
                                                 result.rows[i].id = result.rows[i].id_calle;
                                                 result.rows[i].campo = `Id`;
-                                                result.rows[i].imagen = imagen;
+                                                result.rows[i].imagen = 'punto';
                                                 result.rows[i].tabla = tabla;
                                                 result.rows[i].scoring = {
                                                     fiability: 35,
@@ -2126,11 +2097,11 @@ async function all(direccionParsed) {
                                                                                 // Inicializar la cadena de resultado
                                                                                 let resultado = '';
                                                                                 let tabla = '';
-                                                                                let imagen = '';
 
                                                                                 // Concatenar cada campo si tiene un valor
                                                                                 if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
                                                                                 if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                                                                resultado += `${direccionParsed.NUMEXTNUM1} `;
                                                                                 if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
                                                                                 if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
                                                                                 if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
@@ -2138,22 +2109,19 @@ async function all(direccionParsed) {
 
                                                                                 if (result.rows[i].tipo == 'CALLE') {
                                                                                     tabla = `carto_calle`;
-                                                                                    imagen = `linea`;
                                                                                 }
                                                                                 else if (result.rows[i].tipo == 'CARRETERA') {
                                                                                     tabla = `carto_carreteras123`;
-                                                                                    imagen = `linea`;
                                                                                 }
                                                                                 else if (result.rows[i].tipo == 'POI') {
                                                                                     tabla = `carto_poi`;
-                                                                                    imagen = `punto`;
                                                                                 }
                                                                                 // Asignar el resultado al campo "resultado"
                                                                                 result.rows[i].resultado = resultado.trim();
                                                                                 result.rows[i].tipo = `Calle`;
                                                                                 result.rows[i].id = result.rows[i].id_calle;
                                                                                 result.rows[i].campo = `Id`;
-                                                                                result.rows[i].imagen = imagen;
+                                                                                result.rows[i].imagen = 'punto';
                                                                                 result.rows[i].tabla = tabla;
                                                                                 result.rows[i].scoring = {
                                                                                     fiability: 30,
@@ -2263,11 +2231,11 @@ async function all(direccionParsed) {
                                                                                     // Inicializar la cadena de resultado
                                                                                     let resultado = '';
                                                                                     let tabla = '';
-                                                                                    let imagen = '';
 
                                                                                     // Concatenar cada campo si tiene un valor
                                                                                     if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
                                                                                     if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                                                                    resultado += `${direccionParsed.NUMEXTNUM1} `;
                                                                                     if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
                                                                                     if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
                                                                                     if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
@@ -2275,22 +2243,19 @@ async function all(direccionParsed) {
 
                                                                                     if (result.rows[i].tipo == 'CALLE') {
                                                                                         tabla = `carto_calle`;
-                                                                                        imagen = `linea`;
                                                                                     }
                                                                                     else if (result.rows[i].tipo == 'CARRETERA') {
                                                                                         tabla = `carto_carreteras123`;
-                                                                                        imagen = `linea`;
                                                                                     }
                                                                                     else if (result.rows[i].tipo == 'POI') {
                                                                                         tabla = `carto_poi`;
-                                                                                        imagen = `punto`;
                                                                                     }
                                                                                     // Asignar el resultado al campo "resultado"
                                                                                     result.rows[i].resultado = resultado.trim();
                                                                                     result.rows[i].tipo = `Calle`;
                                                                                     result.rows[i].id = result.rows[i].id_calle;
                                                                                     result.rows[i].campo = `Id`;
-                                                                                    result.rows[i].imagen = imagen;
+                                                                                    result.rows[i].imagen = 'punto';
                                                                                     result.rows[i].tabla = tabla;
                                                                                     result.rows[i].scoring = {
                                                                                         fiability: 40,
@@ -2399,11 +2364,11 @@ async function all(direccionParsed) {
                                                                                         // Inicializar la cadena de resultado
                                                                                         let resultado = '';
                                                                                         let tabla = '';
-                                                                                        let imagen = '';
 
                                                                                         // Concatenar cada campo si tiene un valor
                                                                                         if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
                                                                                         if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                                                                        resultado += `${direccionParsed.NUMEXTNUM1} `;
                                                                                         if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
                                                                                         if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
                                                                                         if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
@@ -2411,22 +2376,19 @@ async function all(direccionParsed) {
 
                                                                                         if (result.rows[i].tipo == 'CALLE') {
                                                                                             tabla = `carto_calle`;
-                                                                                            imagen = `linea`;
                                                                                         }
                                                                                         else if (result.rows[i].tipo == 'CARRETERA') {
                                                                                             tabla = `carto_carreteras123`;
-                                                                                            imagen = `linea`;
                                                                                         }
                                                                                         else if (result.rows[i].tipo == 'POI') {
                                                                                             tabla = `carto_poi`;
-                                                                                            imagen = `punto`;
                                                                                         }
                                                                                         // Asignar el resultado al campo "resultado"
                                                                                         result.rows[i].resultado = resultado.trim();
                                                                                         result.rows[i].tipo = `Calle`;
                                                                                         result.rows[i].id = result.rows[i].id_calle;
                                                                                         result.rows[i].campo = `Id`;
-                                                                                        result.rows[i].imagen = imagen;
+                                                                                        result.rows[i].imagen = 'punto';
                                                                                         result.rows[i].tabla = tabla;
                                                                                         result.rows[i].scoring = {
                                                                                             fiability: 30,
@@ -2535,11 +2497,11 @@ async function all(direccionParsed) {
                                                                                             // Inicializar la cadena de resultado
                                                                                             let resultado = '';
                                                                                             let tabla = '';
-                                                                                            let imagen = '';
 
                                                                                             // Concatenar cada campo si tiene un valor
                                                                                             if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
                                                                                             if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                                                                            resultado += `${direccionParsed.NUMEXTNUM1} `;
                                                                                             if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
                                                                                             if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
                                                                                             if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
@@ -2547,22 +2509,19 @@ async function all(direccionParsed) {
 
                                                                                             if (result.rows[i].tipo == 'CALLE') {
                                                                                                 tabla = `carto_calle`;
-                                                                                                imagen = `linea`;
                                                                                             }
                                                                                             else if (result.rows[i].tipo == 'CARRETERA') {
                                                                                                 tabla = `carto_carreteras123`;
-                                                                                                imagen = `linea`;
                                                                                             }
                                                                                             else if (result.rows[i].tipo == 'POI') {
                                                                                                 tabla = `carto_poi`;
-                                                                                                imagen = `punto`;
                                                                                             }
                                                                                             // Asignar el resultado al campo "resultado"
                                                                                             result.rows[i].resultado = resultado.trim();
                                                                                             result.rows[i].tipo = `Calle`;
                                                                                             result.rows[i].id = result.rows[i].id_calle;
                                                                                             result.rows[i].campo = `Id`;
-                                                                                            result.rows[i].imagen = imagen;
+                                                                                            result.rows[i].imagen = 'punto';
                                                                                             result.rows[i].tabla = tabla;
                                                                                             result.rows[i].scoring = {
                                                                                                 fiability: 35,
@@ -2671,11 +2630,11 @@ async function all(direccionParsed) {
                                                                                                 // Inicializar la cadena de resultado
                                                                                                 let resultado = '';
                                                                                                 let tabla = '';
-                                                                                                let imagen = '';
 
                                                                                                 // Concatenar cada campo si tiene un valor
                                                                                                 if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
                                                                                                 if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                                                                                resultado += `${direccionParsed.NUMEXTNUM1} `;
                                                                                                 if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
                                                                                                 if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
                                                                                                 if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
@@ -2683,22 +2642,19 @@ async function all(direccionParsed) {
 
                                                                                                 if (result.rows[i].tipo == 'CALLE') {
                                                                                                     tabla = `carto_calle`;
-                                                                                                    imagen = `linea`;
                                                                                                 }
                                                                                                 else if (result.rows[i].tipo == 'CARRETERA') {
                                                                                                     tabla = `carto_carreteras123`;
-                                                                                                    imagen = `linea`;
                                                                                                 }
                                                                                                 else if (result.rows[i].tipo == 'POI') {
                                                                                                     tabla = `carto_poi`;
-                                                                                                    imagen = `punto`;
                                                                                                 }
                                                                                                 // Asignar el resultado al campo "resultado"
                                                                                                 result.rows[i].resultado = resultado.trim();
                                                                                                 result.rows[i].tipo = `Calle`;
                                                                                                 result.rows[i].id = result.rows[i].id_calle;
                                                                                                 result.rows[i].campo = `Id`;
-                                                                                                result.rows[i].imagen = imagen;
+                                                                                                result.rows[i].imagen = 'punto';
                                                                                                 result.rows[i].tabla = tabla;
                                                                                                 result.rows[i].scoring = {
                                                                                                     fiability: 35,

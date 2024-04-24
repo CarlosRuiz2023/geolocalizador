@@ -34,11 +34,14 @@ async function sinNumeroExterior(direccionParsed) {
 
         // Asignar el resultado al campo "resultado"
         result.rows[i].resultado = resultado.trim();
-        result.rows[i].tipo = `Poi`;
+        result.rows[i].tipo = `POI`;
         result.rows[i].id = result.rows[i].id_calle;
         result.rows[i].campo = `Id`;
         result.rows[i].imagen = 'punto';
         result.rows[i].tabla = 'carto_poi';
+        result.rows[i].id_estado = 0;
+        result.rows[i].id_municipio = 0;
+        result.rows[i].id_region = 0;
         result.rows[i].scoring = {
             fiability: 40,
             poi: 0,
@@ -95,11 +98,14 @@ async function sinNumeroExterior(direccionParsed) {
 
             // Asignar el resultado al campo "resultado"
             result.rows[i].resultado = resultado.trim();
-            result.rows[i].tipo = `Poi`;
+            result.rows[i].tipo = `POI`;
             result.rows[i].id = result.rows[i].id_calle;
             result.rows[i].campo = `Id`;
             result.rows[i].imagen = 'punto';
             result.rows[i].tabla = 'carto_poi';
+            result.rows[i].id_estado = 0;
+            result.rows[i].id_municipio = 0;
+            result.rows[i].id_region = 0;
             result.rows[i].scoring = {
                 fiability: 20,
                 poi: 0,
@@ -156,11 +162,14 @@ async function sinNumeroExterior(direccionParsed) {
 
                 // Asignar el resultado al campo "resultado"
                 result.rows[i].resultado = resultado.trim();
-                result.rows[i].tipo = `Poi`;
+                result.rows[i].tipo = `POI`;
                 result.rows[i].id = result.rows[i].id_calle;
                 result.rows[i].campo = `Id`;
                 result.rows[i].imagen = 'punto';
                 result.rows[i].tabla = 'carto_poi';
+                result.rows[i].id_estado = 0;
+                result.rows[i].id_municipio = 0;
+                result.rows[i].id_region = 0;
                 result.rows[i].scoring = {
                     fiability: 30,
                     poi: 0,
@@ -217,11 +226,14 @@ async function sinNumeroExterior(direccionParsed) {
 
                     // Asignar el resultado al campo "resultado"
                     result.rows[i].resultado = resultado.trim();
-                    result.rows[i].tipo = `Poi`;
+                    result.rows[i].tipo = `POI`;
                     result.rows[i].id = result.rows[i].id_calle;
                     result.rows[i].campo = `Id`;
                     result.rows[i].imagen = 'punto';
                     result.rows[i].tabla = 'carto_poi';
+                    result.rows[i].id_estado = 0;
+                    result.rows[i].id_municipio = 0;
+                    result.rows[i].id_region = 0;
                     result.rows[i].scoring = {
                         fiability: 30,
                         poi: 0,
@@ -278,11 +290,14 @@ async function sinNumeroExterior(direccionParsed) {
 
                         // Asignar el resultado al campo "resultado"
                         result.rows[i].resultado = resultado.trim();
-                        result.rows[i].tipo = `Poi`;
+                        result.rows[i].tipo = `POI`;
                         result.rows[i].id = result.rows[i].id_calle;
                         result.rows[i].campo = `Id`;
                         result.rows[i].imagen = 'punto';
                         result.rows[i].tabla = 'carto_poi';
+                        result.rows[i].id_estado = 0;
+                        result.rows[i].id_municipio = 0;
+                        result.rows[i].id_region = 0;
                         result.rows[i].scoring = {
                             fiability: 40,
                             poi: 0,
@@ -338,11 +353,14 @@ async function sinNumeroExterior(direccionParsed) {
 
                             // Asignar el resultado al campo "resultado"
                             result.rows[i].resultado = resultado.trim();
-                            result.rows[i].tipo = `Poi`;
+                            result.rows[i].tipo = `POI`;
                             result.rows[i].id = result.rows[i].id_calle;
                             result.rows[i].campo = `Id`;
                             result.rows[i].imagen = 'punto';
                             result.rows[i].tabla = 'carto_poi';
+                            result.rows[i].id_estado = 0;
+                            result.rows[i].id_municipio = 0;
+                            result.rows[i].id_region = 0;
                             result.rows[i].scoring = {
                                 fiability: 20,
                                 poi: 0,
@@ -398,11 +416,14 @@ async function sinNumeroExterior(direccionParsed) {
 
                                 // Asignar el resultado al campo "resultado"
                                 result.rows[i].resultado = resultado.trim();
-                                result.rows[i].tipo = `Poi`;
+                                result.rows[i].tipo = `POI`;
                                 result.rows[i].id = result.rows[i].id_calle;
                                 result.rows[i].campo = `Id`;
                                 result.rows[i].imagen = 'punto';
                                 result.rows[i].tabla = 'carto_poi';
+                                result.rows[i].id_estado = 0;
+                                result.rows[i].id_municipio = 0;
+                                result.rows[i].id_region = 0;
                                 result.rows[i].scoring = {
                                     fiability: 30,
                                     poi: 0,
@@ -458,11 +479,14 @@ async function sinNumeroExterior(direccionParsed) {
 
                                     // Asignar el resultado al campo "resultado"
                                     result.rows[i].resultado = resultado.trim();
-                                    result.rows[i].tipo = `Poi`;
+                                    result.rows[i].tipo = `POI`;
                                     result.rows[i].id = result.rows[i].id_calle;
                                     result.rows[i].campo = `Id`;
                                     result.rows[i].imagen = 'punto';
                                     result.rows[i].tabla = 'carto_poi';
+                                    result.rows[i].id_estado = 0;
+                                    result.rows[i].id_municipio = 0;
+                                    result.rows[i].id_region = 0;
                                     result.rows[i].scoring = {
                                         fiability: 10,
                                         poi: 0,
@@ -518,11 +542,14 @@ async function sinNumeroExterior(direccionParsed) {
 
                                         // Asignar el resultado al campo "resultado"
                                         result.rows[i].resultado = resultado.trim();
-                                        result.rows[i].tipo = `Poi`;
+                                        result.rows[i].tipo = `POI`;
                                         result.rows[i].id = result.rows[i].id_calle;
                                         result.rows[i].campo = `Id`;
                                         result.rows[i].imagen = 'punto';
                                         result.rows[i].tabla = 'carto_poi';
+                                        result.rows[i].id_estado = 0;
+                                        result.rows[i].id_municipio = 0;
+                                        result.rows[i].id_region = 0;
                                         result.rows[i].scoring = {
                                             fiability: 20,
                                             poi: 0,
@@ -578,11 +605,14 @@ async function sinNumeroExterior(direccionParsed) {
 
                                             // Asignar el resultado al campo "resultado"
                                             result.rows[i].resultado = resultado.trim();
-                                            result.rows[i].tipo = `Poi`;
+                                            result.rows[i].tipo = `POI`;
                                             result.rows[i].id = result.rows[i].id_calle;
                                             result.rows[i].campo = `Id`;
                                             result.rows[i].imagen = 'punto';
                                             result.rows[i].tabla = 'carto_poi';
+                                            result.rows[i].id_estado = 0;
+                                            result.rows[i].id_municipio = 0;
+                                            result.rows[i].id_region = 0;
                                             result.rows[i].scoring = {
                                                 fiability: 20,
                                                 poi: 0,
@@ -639,11 +669,14 @@ async function sinNumeroExterior(direccionParsed) {
 
                                                 // Asignar el resultado al campo "resultado"
                                                 result.rows[i].resultado = resultado.trim();
-                                                result.rows[i].tipo = `Poi`;
+                                                result.rows[i].tipo = `POI`;
                                                 result.rows[i].id = result.rows[i].id_calle;
                                                 result.rows[i].campo = `Id`;
                                                 result.rows[i].imagen = 'punto';
                                                 result.rows[i].tabla = 'carto_poi';
+                                                result.rows[i].id_estado = 0;
+                                                result.rows[i].id_municipio = 0;
+                                                result.rows[i].id_region = 0;
                                                 result.rows[i].scoring = {
                                                     fiability: 40,
                                                     poi: 0,
@@ -699,11 +732,14 @@ async function sinNumeroExterior(direccionParsed) {
 
                                                     // Asignar el resultado al campo "resultado"
                                                     result.rows[i].resultado = resultado.trim();
-                                                    result.rows[i].tipo = `Poi`;
+                                                    result.rows[i].tipo = `POI`;
                                                     result.rows[i].id = result.rows[i].id_calle;
                                                     result.rows[i].campo = `Id`;
                                                     result.rows[i].imagen = 'punto';
                                                     result.rows[i].tabla = 'carto_poi';
+                                                    result.rows[i].id_estado = 0;
+                                                    result.rows[i].id_municipio = 0;
+                                                    result.rows[i].id_region = 0;
                                                     result.rows[i].scoring = {
                                                         fiability: 20,
                                                         poi: 0,
@@ -759,11 +795,14 @@ async function sinNumeroExterior(direccionParsed) {
 
                                                         // Asignar el resultado al campo "resultado"
                                                         result.rows[i].resultado = resultado.trim();
-                                                        result.rows[i].tipo = `Poi`;
+                                                        result.rows[i].tipo = `POI`;
                                                         result.rows[i].id = result.rows[i].id_calle;
                                                         result.rows[i].campo = `Id`;
                                                         result.rows[i].imagen = 'punto';
                                                         result.rows[i].tabla = 'carto_poi';
+                                                        result.rows[i].id_estado = 0;
+                                                        result.rows[i].id_municipio = 0;
+                                                        result.rows[i].id_region = 0;
                                                         result.rows[i].scoring = {
                                                             fiability: 30,
                                                             poi: 0,
@@ -819,11 +858,14 @@ async function sinNumeroExterior(direccionParsed) {
 
                                                             // Asignar el resultado al campo "resultado"
                                                             result.rows[i].resultado = resultado.trim();
-                                                            result.rows[i].tipo = `Poi`;
+                                                            result.rows[i].tipo = `POI`;
                                                             result.rows[i].id = result.rows[i].id_calle;
                                                             result.rows[i].campo = `Id`;
                                                             result.rows[i].imagen = 'punto';
                                                             result.rows[i].tabla = 'carto_poi';
+                                                            result.rows[i].id_estado = 0;
+                                                            result.rows[i].id_municipio = 0;
+                                                            result.rows[i].id_region = 0;
                                                             result.rows[i].scoring = {
                                                                 fiability: 30,
                                                                 poi: 0,
@@ -878,11 +920,14 @@ async function sinNumeroExterior(direccionParsed) {
 
                                                                 // Asignar el resultado al campo "resultado"
                                                                 result.rows[i].resultado = resultado.trim();
-                                                                result.rows[i].tipo = `Poi`;
+                                                                result.rows[i].tipo = `POI`;
                                                                 result.rows[i].id = result.rows[i].id_calle;
                                                                 result.rows[i].campo = `Id`;
                                                                 result.rows[i].imagen = 'punto';
                                                                 result.rows[i].tabla = 'carto_poi';
+                                                                result.rows[i].id_estado = 0;
+                                                                result.rows[i].id_municipio = 0;
+                                                                result.rows[i].id_region = 0;
                                                                 result.rows[i].scoring = {
                                                                     fiability: 20,
                                                                     poi: 0,

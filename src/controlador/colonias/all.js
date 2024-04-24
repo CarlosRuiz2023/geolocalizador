@@ -34,9 +34,12 @@ async function all(direccionParsed) {
         result.rows[i].resultado = resultado.trim();
         result.rows[i].tipo = `Colonia`;
         result.rows[i].id = result.rows[i].id_colonia;
-        result.rows[i].campo = `Id`;
+        result.rows[i].campo = `id_colonia`;
         result.rows[i].imagen = 'poligono';
         result.rows[i].tabla = 'carto_colonia';
+        result.rows[i].id_estado = 0;
+        result.rows[i].id_municipio = 0;
+        result.rows[i].id_region = 0;
         result.rows[i].scoring = {
             fiability: 50,
             colonia: 0,
@@ -83,9 +86,12 @@ async function all(direccionParsed) {
             result.rows[i].resultado = resultado.trim();
             result.rows[i].tipo = `Colonia`;
             result.rows[i].id = result.rows[i].id_colonia;
-            result.rows[i].campo = `Id`;
+            result.rows[i].campo = `id_colonia`;
             result.rows[i].imagen = 'poligono';
             result.rows[i].tabla = 'carto_colonia';
+            result.rows[i].id_estado = 0;
+            result.rows[i].id_municipio = 0;
+            result.rows[i].id_region = 0;
             result.rows[i].scoring = {
                 fiability: 30,
                 colonia: 0,
@@ -132,9 +138,12 @@ async function all(direccionParsed) {
                 result.rows[i].resultado = resultado.trim();
                 result.rows[i].tipo = `Colonia`;
                 result.rows[i].id = result.rows[i].id_colonia;
-                result.rows[i].campo = `Id`;
+                result.rows[i].campo = `id_colonia`;
                 result.rows[i].imagen = 'poligono';
                 result.rows[i].tabla = 'carto_colonia';
+                result.rows[i].id_estado = 0;
+                result.rows[i].id_municipio = 0;
+                result.rows[i].id_region = 0;
                 result.rows[i].scoring = {
                     fiability: 30,
                     colonia: 0,
@@ -181,9 +190,12 @@ async function all(direccionParsed) {
                     result.rows[i].resultado = resultado.trim();
                     result.rows[i].tipo = `Colonia`;
                     result.rows[i].id = result.rows[i].id_colonia;
-                    result.rows[i].campo = `Id`;
+                    result.rows[i].campo = `id_colonia`;
                     result.rows[i].imagen = 'poligono';
                     result.rows[i].tabla = 'carto_colonia';
+                    result.rows[i].id_estado = 0;
+                    result.rows[i].id_municipio = 0;
+                    result.rows[i].id_region = 0;
                     result.rows[i].scoring = {
                         fiability: 40,
                         colonia: 0,
@@ -229,9 +241,12 @@ async function all(direccionParsed) {
                         result.rows[i].resultado = resultado.trim();
                         result.rows[i].tipo = `Colonia`;
                         result.rows[i].id = result.rows[i].id_colonia;
-                        result.rows[i].campo = `Id`;
+                        result.rows[i].campo = `id_colonia`;
                         result.rows[i].imagen = 'poligono';
                         result.rows[i].tabla = 'carto_colonia';
+                        result.rows[i].id_estado = 0;
+                        result.rows[i].id_municipio = 0;
+                        result.rows[i].id_region = 0;
                         result.rows[i].scoring = {
                             fiability: 20,
                             colonia: 0,
@@ -277,9 +292,12 @@ async function all(direccionParsed) {
                             result.rows[i].resultado = resultado.trim();
                             result.rows[i].tipo = `Colonia`;
                             result.rows[i].id = result.rows[i].id_colonia;
-                            result.rows[i].campo = `Id`;
+                            result.rows[i].campo = `id_colonia`;
                             result.rows[i].imagen = 'poligono';
                             result.rows[i].tabla = 'carto_colonia';
+                            result.rows[i].id_estado = 0;
+                            result.rows[i].id_municipio = 0;
+                            result.rows[i].id_region = 0;
                             result.rows[i].scoring = {
                                 fiability: 20,
                                 colonia: 0,
@@ -325,9 +343,12 @@ async function all(direccionParsed) {
                                 result.rows[i].resultado = resultado.trim();
                                 result.rows[i].tipo = `Colonia`;
                                 result.rows[i].id = result.rows[i].id_colonia;
-                                result.rows[i].campo = `Id`;
+                                result.rows[i].campo = `id_colonia`;
                                 result.rows[i].imagen = 'poligono';
                                 result.rows[i].tabla = 'carto_colonia';
+                                result.rows[i].id_estado = 0;
+                                result.rows[i].id_municipio = 0;
+                                result.rows[i].id_region = 0;
                                 result.rows[i].scoring = {
                                     fiability: 10,
                                     colonia: 0,
@@ -374,9 +395,12 @@ async function all(direccionParsed) {
                                     result.rows[i].resultado = resultado.trim();
                                     result.rows[i].tipo = `Colonia`;
                                     result.rows[i].id = result.rows[i].id_colonia;
-                                    result.rows[i].campo = `Id`;
+                                    result.rows[i].campo = `id_colonia`;
                                     result.rows[i].imagen = 'poligono';
                                     result.rows[i].tabla = 'carto_colonia';
+                                    result.rows[i].id_estado = 0;
+                                    result.rows[i].id_municipio = 0;
+                                    result.rows[i].id_region = 0;
                                     result.rows[i].scoring = {
                                         fiability: 50,
                                         colonia: 0,
@@ -422,9 +446,12 @@ async function all(direccionParsed) {
                                         result.rows[i].resultado = resultado.trim();
                                         result.rows[i].tipo = `Colonia`;
                                         result.rows[i].id = result.rows[i].id_colonia;
-                                        result.rows[i].campo = `Id`;
+                                        result.rows[i].campo = `id_colonia`;
                                         result.rows[i].imagen = 'poligono';
                                         result.rows[i].tabla = 'carto_colonia';
+                                        result.rows[i].id_estado = 0;
+                                        result.rows[i].id_municipio = 0;
+                                        result.rows[i].id_region = 0;
                                         result.rows[i].scoring = {
                                             fiability: 30,
                                             colonia: 0,
@@ -470,9 +497,12 @@ async function all(direccionParsed) {
                                             result.rows[i].resultado = resultado.trim();
                                             result.rows[i].tipo = `Colonia`;
                                             result.rows[i].id = result.rows[i].id_colonia;
-                                            result.rows[i].campo = `Id`;
+                                            result.rows[i].campo = `id_colonia`;
                                             result.rows[i].imagen = 'poligono';
                                             result.rows[i].tabla = 'carto_colonia';
+                                            result.rows[i].id_estado = 0;
+                                            result.rows[i].id_municipio = 0;
+                                            result.rows[i].id_region = 0;
                                             result.rows[i].scoring = {
                                                 fiability: 30,
                                                 colonia: 0,
@@ -518,9 +548,12 @@ async function all(direccionParsed) {
                                                 result.rows[i].resultado = resultado.trim();
                                                 result.rows[i].tipo = `Colonia`;
                                                 result.rows[i].id = result.rows[i].id_colonia;
-                                                result.rows[i].campo = `Id`;
+                                                result.rows[i].campo = `id_colonia`;
                                                 result.rows[i].imagen = 'poligono';
                                                 result.rows[i].tabla = 'carto_colonia';
+                                                result.rows[i].id_estado = 0;
+                                                result.rows[i].id_municipio = 0;
+                                                result.rows[i].id_region = 0;
                                                 result.rows[i].scoring = {
                                                     fiability: 40,
                                                     colonia: 0,

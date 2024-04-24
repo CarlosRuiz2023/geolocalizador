@@ -25,6 +25,7 @@ async function municipioNumeroExterior(direccionParsed) {
 
         // Concatenar cada campo si tiene un valor
         if (result.rows[i].poi) resultado += `${result.rows[i].poi} `;
+        resultado += `${direccionParsed.NUMEXTNUM1} `;
         if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
         if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
         if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
@@ -32,11 +33,14 @@ async function municipioNumeroExterior(direccionParsed) {
 
         // Asignar el resultado al campo "resultado"
         result.rows[i].resultado = resultado.trim();
-        result.rows[i].tipo = `Poi`;
+        result.rows[i].tipo = `POI`;
         result.rows[i].id = result.rows[i].id_calle;
         result.rows[i].campo = `Id`;
         result.rows[i].imagen = 'punto';
         result.rows[i].tabla = 'carto_poi';
+        result.rows[i].id_estado = 0;
+        result.rows[i].id_municipio = 0;
+        result.rows[i].id_region = 0;
         result.rows[i].scoring = {
             fiability: 50,
             poi: 0,
@@ -80,11 +84,14 @@ async function municipioNumeroExterior(direccionParsed) {
 
             // Asignar el resultado al campo "resultado"
             result.rows[i].resultado = resultado.trim();
-            result.rows[i].tipo = `Poi`;
+            result.rows[i].tipo = `POI`;
             result.rows[i].id = result.rows[i].id_calle;
             result.rows[i].campo = `Id`;
             result.rows[i].imagen = 'punto';
             result.rows[i].tabla = 'carto_poi';
+            result.rows[i].id_estado = 0;
+            result.rows[i].id_municipio = 0;
+            result.rows[i].id_region = 0;
             result.rows[i].scoring = {
                 fiability: 25,
                 poi: 0,
@@ -121,6 +128,7 @@ async function municipioNumeroExterior(direccionParsed) {
 
                 // Concatenar cada campo si tiene un valor
                 if (result.rows[i].poi) resultado += `${result.rows[i].poi} `;
+                resultado += `${direccionParsed.NUMEXTNUM1} `;
                 if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
                 if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
                 if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
@@ -128,11 +136,14 @@ async function municipioNumeroExterior(direccionParsed) {
 
                 // Asignar el resultado al campo "resultado"
                 result.rows[i].resultado = resultado.trim();
-                result.rows[i].tipo = `Poi`;
+                result.rows[i].tipo = `POI`;
                 result.rows[i].id = result.rows[i].id_calle;
                 result.rows[i].campo = `Id`;
                 result.rows[i].imagen = 'punto';
                 result.rows[i].tabla = 'carto_poi';
+                result.rows[i].id_estado = 0;
+                result.rows[i].id_municipio = 0;
+                result.rows[i].id_region = 0;
                 result.rows[i].scoring = {
                     fiability: 25,
                     poi: 0,
@@ -169,6 +180,7 @@ async function municipioNumeroExterior(direccionParsed) {
 
                     // Concatenar cada campo si tiene un valor
                     if (result.rows[i].poi) resultado += `${result.rows[i].poi} `;
+                    resultado += `${direccionParsed.NUMEXTNUM1} `;
                     if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
                     if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
                     if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
@@ -176,11 +188,14 @@ async function municipioNumeroExterior(direccionParsed) {
 
                     // Asignar el resultado al campo "resultado"
                     result.rows[i].resultado = resultado.trim();
-                    result.rows[i].tipo = `Poi`;
+                    result.rows[i].tipo = `POI`;
                     result.rows[i].id = result.rows[i].id_calle;
                     result.rows[i].campo = `Id`;
                     result.rows[i].imagen = 'punto';
                     result.rows[i].tabla = 'carto_poi';
+                    result.rows[i].id_estado = 0;
+                    result.rows[i].id_municipio = 0;
+                    result.rows[i].id_region = 0;
                     result.rows[i].scoring = {
                         fiability: 50,
                         poi: 0,
@@ -223,11 +238,14 @@ async function municipioNumeroExterior(direccionParsed) {
 
                         // Asignar el resultado al campo "resultado"
                         result.rows[i].resultado = resultado.trim();
-                        result.rows[i].tipo = `Poi`;
+                        result.rows[i].tipo = `POI`;
                         result.rows[i].id = result.rows[i].id_calle;
                         result.rows[i].campo = `Id`;
                         result.rows[i].imagen = 'punto';
                         result.rows[i].tabla = 'carto_poi';
+                        result.rows[i].id_estado = 0;
+                        result.rows[i].id_municipio = 0;
+                        result.rows[i].id_region = 0;
                         result.rows[i].scoring = {
                             fiability: 25,
                             poi: 0,
@@ -263,6 +281,7 @@ async function municipioNumeroExterior(direccionParsed) {
 
                             // Concatenar cada campo si tiene un valor
                             if (result.rows[i].poi) resultado += `${result.rows[i].poi} `;
+                            resultado += `${direccionParsed.NUMEXTNUM1} `;
                             if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
                             if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
                             if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
@@ -270,11 +289,14 @@ async function municipioNumeroExterior(direccionParsed) {
 
                             // Asignar el resultado al campo "resultado"
                             result.rows[i].resultado = resultado.trim();
-                            result.rows[i].tipo = `Poi`;
+                            result.rows[i].tipo = `POI`;
                             result.rows[i].id = result.rows[i].id_calle;
                             result.rows[i].campo = `Id`;
                             result.rows[i].imagen = 'punto';
                             result.rows[i].tabla = 'carto_poi';
+                            result.rows[i].id_estado = 0;
+                            result.rows[i].id_municipio = 0;
+                            result.rows[i].id_region = 0;
                             result.rows[i].scoring = {
                                 fiability: 25,
                                 poi: 0,
@@ -317,11 +339,14 @@ async function municipioNumeroExterior(direccionParsed) {
 
                                 // Asignar el resultado al campo "resultado"
                                 result.rows[i].resultado = resultado.trim();
-                                result.rows[i].tipo = `Poi`;
+                                result.rows[i].tipo = `POI`;
                                 result.rows[i].id = result.rows[i].id_calle;
                                 result.rows[i].campo = `Id`;
                                 result.rows[i].imagen = 'punto';
                                 result.rows[i].tabla = 'carto_poi';
+                                result.rows[i].id_estado = 0;
+                                result.rows[i].id_municipio = 0;
+                                result.rows[i].id_region = 0;
                                 result.rows[i].scoring = {
                                     fiability: 0,
                                     poi: 0,

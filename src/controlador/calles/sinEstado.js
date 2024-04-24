@@ -82,10 +82,10 @@ async function sinEstado(direccionParsed) {
         // Inicializar la cadena de resultado
         let resultado = '';
         let tabla = '';
-        let imagen = '';
 
         // Concatenar cada campo si tiene un valor
         if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+        resultado += `${direccionParsed.NUMEXTNUM1} `;
         if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
         if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
         if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
@@ -93,22 +93,19 @@ async function sinEstado(direccionParsed) {
 
         if (result.rows[i].tipo == 'CALLE') {
             tabla = `carto_calle`;
-            imagen = `linea`;
         }
-        else if (result.rows[i].tipo == 'CARRETERA'){
+        else if (result.rows[i].tipo == 'CARRETERA') {
             tabla = `carto_carreteras123`;
-            imagen = `linea`;
         }
-        else if (result.rows[i].tipo == 'POI'){
+        else if (result.rows[i].tipo == 'POI') {
             tabla = `carto_poi`;
-            imagen = `punto`;
-        } 
+        }
         // Asignar el resultado al campo "resultado"
         result.rows[i].resultado = resultado.trim();
         result.rows[i].tipo = `Calle`;
         result.rows[i].id = result.rows[i].id_calle;
         result.rows[i].campo = `Id`;
-        result.rows[i].imagen = imagen;
+        result.rows[i].imagen = 'punto';
         result.rows[i].tabla = tabla;
         result.rows[i].scoring = {
             fiability: 40,
@@ -125,7 +122,7 @@ async function sinEstado(direccionParsed) {
             let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
             if (igualdad > 100) igualdad = 100;
             result.rows[i].scoring.calle += Math.round(igualdad);
-            result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
+            result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
         }
         const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
         const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -134,7 +131,7 @@ async function sinEstado(direccionParsed) {
             let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
             if (igualdad > 100) igualdad = 100;
             result.rows[i].scoring.colonia += Math.round(igualdad);
-            result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
+            result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
         }
     }
     rows = rows.concat(result.rows);
@@ -211,37 +208,34 @@ async function sinEstado(direccionParsed) {
         values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1, direccionParsed.COLONIA];
         const result = await pgClient.query(query, values);
         for (let i = 0; i < result.rows.length; i++) {
-        // Inicializar la cadena de resultado
-        let resultado = '';
-        let tabla = '';
-        let imagen = '';
+            // Inicializar la cadena de resultado
+            let resultado = '';
+            let tabla = '';
 
-        // Concatenar cada campo si tiene un valor
-        if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
-        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
-        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
-        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
-        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+            // Concatenar cada campo si tiene un valor
+            if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+            resultado += `${direccionParsed.NUMEXTNUM1} `;
+            if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+            if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+            if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+            if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
-        if (result.rows[i].tipo == 'CALLE') {
-            tabla = `carto_calle`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'CARRETERA'){
-            tabla = `carto_carreteras123`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'POI'){
-            tabla = `carto_poi`;
-            imagen = `punto`;
-        } 
-        // Asignar el resultado al campo "resultado"
-        result.rows[i].resultado = resultado.trim();
-        result.rows[i].tipo = `Calle`;
-        result.rows[i].id = result.rows[i].id_calle;
-        result.rows[i].campo = `Id`;
-        result.rows[i].imagen = imagen;
-        result.rows[i].tabla = tabla;
+            if (result.rows[i].tipo == 'CALLE') {
+                tabla = `carto_calle`;
+            }
+            else if (result.rows[i].tipo == 'CARRETERA') {
+                tabla = `carto_carreteras123`;
+            }
+            else if (result.rows[i].tipo == 'POI') {
+                tabla = `carto_poi`;
+            }
+            // Asignar el resultado al campo "resultado"
+            result.rows[i].resultado = resultado.trim();
+            result.rows[i].tipo = `Calle`;
+            result.rows[i].id = result.rows[i].id_calle;
+            result.rows[i].campo = `Id`;
+            result.rows[i].imagen = 'punto';
+            result.rows[i].tabla = tabla;
             result.rows[i].scoring = {
                 fiability: 30,
                 calle: 0,
@@ -257,7 +251,7 @@ async function sinEstado(direccionParsed) {
                 let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                 if (igualdad > 100) igualdad = 100;
                 result.rows[i].scoring.calle += Math.round(igualdad);
-                result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
+                result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
             }
             const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
             const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -266,7 +260,7 @@ async function sinEstado(direccionParsed) {
                 let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                 if (igualdad > 100) igualdad = 100;
                 result.rows[i].scoring.colonia += Math.round(igualdad);
-                result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
+                result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
             }
         }
         rows = rows.concat(result.rows);
@@ -343,37 +337,34 @@ async function sinEstado(direccionParsed) {
             values = [direccionParsed.CALLE, direccionParsed.CP, direccionParsed.NUMEXTNUM1, direccionParsed.COLONIA];
             const result = await pgClient.query(query, values);
             for (let i = 0; i < result.rows.length; i++) {
-        // Inicializar la cadena de resultado
-        let resultado = '';
-        let tabla = '';
-        let imagen = '';
+                // Inicializar la cadena de resultado
+                let resultado = '';
+                let tabla = '';
 
-        // Concatenar cada campo si tiene un valor
-        if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
-        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
-        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
-        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
-        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+                // Concatenar cada campo si tiene un valor
+                if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                resultado += `${direccionParsed.NUMEXTNUM1} `;
+                if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
-        if (result.rows[i].tipo == 'CALLE') {
-            tabla = `carto_calle`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'CARRETERA'){
-            tabla = `carto_carreteras123`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'POI'){
-            tabla = `carto_poi`;
-            imagen = `punto`;
-        } 
-        // Asignar el resultado al campo "resultado"
-        result.rows[i].resultado = resultado.trim();
-        result.rows[i].tipo = `Calle`;
-        result.rows[i].id = result.rows[i].id_calle;
-        result.rows[i].campo = `Id`;
-        result.rows[i].imagen = imagen;
-        result.rows[i].tabla = tabla;
+                if (result.rows[i].tipo == 'CALLE') {
+                    tabla = `carto_calle`;
+                }
+                else if (result.rows[i].tipo == 'CARRETERA') {
+                    tabla = `carto_carreteras123`;
+                }
+                else if (result.rows[i].tipo == 'POI') {
+                    tabla = `carto_poi`;
+                }
+                // Asignar el resultado al campo "resultado"
+                result.rows[i].resultado = resultado.trim();
+                result.rows[i].tipo = `Calle`;
+                result.rows[i].id = result.rows[i].id_calle;
+                result.rows[i].campo = `Id`;
+                result.rows[i].imagen = 'punto';
+                result.rows[i].tabla = tabla;
                 result.rows[i].scoring = {
                     fiability: 30,
                     calle: 0,
@@ -389,7 +380,7 @@ async function sinEstado(direccionParsed) {
                     let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                     if (igualdad > 100) igualdad = 100;
                     result.rows[i].scoring.calle += Math.round(igualdad);
-                    result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
+                    result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                 }
                 const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                 const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -398,7 +389,7 @@ async function sinEstado(direccionParsed) {
                     let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                     if (igualdad > 100) igualdad = 100;
                     result.rows[i].scoring.colonia += Math.round(igualdad);
-                    result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
+                    result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                 }
             }
             rows = rows.concat(result.rows);
@@ -475,37 +466,33 @@ async function sinEstado(direccionParsed) {
                 values = [direccionParsed.CALLE, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1];
                 const result = await pgClient.query(query, values);
                 for (let i = 0; i < result.rows.length; i++) {
-        // Inicializar la cadena de resultado
-        let resultado = '';
-        let tabla = '';
-        let imagen = '';
+                    // Inicializar la cadena de resultado
+                    let resultado = '';
+                    let tabla = '';
+                    // Concatenar cada campo si tiene un valor
+                    if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                    resultado += `${direccionParsed.NUMEXTNUM1} `;
+                    if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                    if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                    if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                    if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
-        // Concatenar cada campo si tiene un valor
-        if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
-        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
-        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
-        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
-        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
-
-        if (result.rows[i].tipo == 'CALLE') {
-            tabla = `carto_calle`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'CARRETERA'){
-            tabla = `carto_carreteras123`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'POI'){
-            tabla = `carto_poi`;
-            imagen = `punto`;
-        } 
-        // Asignar el resultado al campo "resultado"
-        result.rows[i].resultado = resultado.trim();
-        result.rows[i].tipo = `Calle`;
-        result.rows[i].id = result.rows[i].id_calle;
-        result.rows[i].campo = `Id`;
-        result.rows[i].imagen = imagen;
-        result.rows[i].tabla = tabla;
+                    if (result.rows[i].tipo == 'CALLE') {
+                        tabla = `carto_calle`;
+                    }
+                    else if (result.rows[i].tipo == 'CARRETERA') {
+                        tabla = `carto_carreteras123`;
+                    }
+                    else if (result.rows[i].tipo == 'POI') {
+                        tabla = `carto_poi`;
+                    }
+                    // Asignar el resultado al campo "resultado"
+                    result.rows[i].resultado = resultado.trim();
+                    result.rows[i].tipo = `Calle`;
+                    result.rows[i].id = result.rows[i].id_calle;
+                    result.rows[i].campo = `Id`;
+                    result.rows[i].imagen = 'punto';
+                    result.rows[i].tabla = tabla;
                     result.rows[i].scoring = {
                         fiability: 40,
                         calle: 0,
@@ -522,7 +509,7 @@ async function sinEstado(direccionParsed) {
                         let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                         if (igualdad > 100) igualdad = 100;
                         result.rows[i].scoring.calle += Math.round(igualdad);
-                        result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
+                        result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                     }
                     // Calcular la distancia de Levenshtein
                     const distanceColonia = levenshteinDistance(quitarAcentos(result.rows[i].colonia), direccionParsed.COLONIA);
@@ -558,37 +545,37 @@ async function sinEstado(direccionParsed) {
                     const result = await pgClient.query(query, values);
 
                     for (let i = 0; i < result.rows.length; i++) {
-        // Inicializar la cadena de resultado
-        let resultado = '';
-        let tabla = '';
-        let imagen = '';
+                        // Inicializar la cadena de resultado
+                        let resultado = '';
+                        let tabla = '';
+                        let imagen = '';
 
-        // Concatenar cada campo si tiene un valor
-        if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
-        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
-        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
-        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
-        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+                        // Concatenar cada campo si tiene un valor
+                        if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
-        if (result.rows[i].tipo == 'CALLE') {
-            tabla = `carto_calle`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'CARRETERA'){
-            tabla = `carto_carreteras123`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'POI'){
-            tabla = `carto_poi`;
-            imagen = `punto`;
-        } 
-        // Asignar el resultado al campo "resultado"
-        result.rows[i].resultado = resultado.trim();
-        result.rows[i].tipo = `Calle`;
-        result.rows[i].id = result.rows[i].id_calle;
-        result.rows[i].campo = `Id`;
-        result.rows[i].imagen = imagen;
-        result.rows[i].tabla = tabla;
+                        if (result.rows[i].tipo == 'CALLE') {
+                            tabla = `carto_calle`;
+                            imagen = `linea`;
+                        }
+                        else if (result.rows[i].tipo == 'CARRETERA') {
+                            tabla = `carto_carreteras123`;
+                            imagen = `linea`;
+                        }
+                        else if (result.rows[i].tipo == 'POI') {
+                            tabla = `carto_poi`;
+                            imagen = `punto`;
+                        }
+                        // Asignar el resultado al campo "resultado"
+                        result.rows[i].resultado = resultado.trim();
+                        result.rows[i].tipo = `Calle`;
+                        result.rows[i].id = result.rows[i].id_calle;
+                        result.rows[i].campo = `Id`;
+                        result.rows[i].imagen = imagen;
+                        result.rows[i].tabla = tabla;
                         result.rows[i].scoring = {
                             fiability: 20,
                             calle: 0,
@@ -604,7 +591,7 @@ async function sinEstado(direccionParsed) {
                             let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                             if (igualdad > 100) igualdad = 100;
                             result.rows[i].scoring.calle += Math.round(igualdad);
-                            result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
+                            result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                         }
                         const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                         const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -613,7 +600,7 @@ async function sinEstado(direccionParsed) {
                             let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                             if (igualdad > 100) igualdad = 100;
                             result.rows[i].scoring.colonia += Math.round(igualdad);
-                            result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
+                            result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                         }
                     }
                     rows = rows.concat(result.rows);
@@ -638,37 +625,37 @@ async function sinEstado(direccionParsed) {
                         values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
                         const result = await pgClient.query(query, values);
                         for (let i = 0; i < result.rows.length; i++) {
-        // Inicializar la cadena de resultado
-        let resultado = '';
-        let tabla = '';
-        let imagen = '';
+                            // Inicializar la cadena de resultado
+                            let resultado = '';
+                            let tabla = '';
+                            let imagen = '';
 
-        // Concatenar cada campo si tiene un valor
-        if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
-        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
-        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
-        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
-        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+                            // Concatenar cada campo si tiene un valor
+                            if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                            if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                            if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                            if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                            if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
-        if (result.rows[i].tipo == 'CALLE') {
-            tabla = `carto_calle`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'CARRETERA'){
-            tabla = `carto_carreteras123`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'POI'){
-            tabla = `carto_poi`;
-            imagen = `punto`;
-        } 
-        // Asignar el resultado al campo "resultado"
-        result.rows[i].resultado = resultado.trim();
-        result.rows[i].tipo = `Calle`;
-        result.rows[i].id = result.rows[i].id_calle;
-        result.rows[i].campo = `Id`;
-        result.rows[i].imagen = imagen;
-        result.rows[i].tabla = tabla;
+                            if (result.rows[i].tipo == 'CALLE') {
+                                tabla = `carto_calle`;
+                                imagen = `linea`;
+                            }
+                            else if (result.rows[i].tipo == 'CARRETERA') {
+                                tabla = `carto_carreteras123`;
+                                imagen = `linea`;
+                            }
+                            else if (result.rows[i].tipo == 'POI') {
+                                tabla = `carto_poi`;
+                                imagen = `punto`;
+                            }
+                            // Asignar el resultado al campo "resultado"
+                            result.rows[i].resultado = resultado.trim();
+                            result.rows[i].tipo = `Calle`;
+                            result.rows[i].id = result.rows[i].id_calle;
+                            result.rows[i].campo = `Id`;
+                            result.rows[i].imagen = imagen;
+                            result.rows[i].tabla = tabla;
                             result.rows[i].scoring = {
                                 fiability: 10,
                                 calle: 0,
@@ -684,7 +671,7 @@ async function sinEstado(direccionParsed) {
                                 let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                                 if (igualdad > 100) igualdad = 100;
                                 result.rows[i].scoring.calle += Math.round(igualdad);
-                                result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
+                                result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                             }
                             const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                             const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -693,7 +680,7 @@ async function sinEstado(direccionParsed) {
                                 let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                 if (igualdad > 100) igualdad = 100;
                                 result.rows[i].scoring.colonia += Math.round(igualdad);
-                                result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
+                                result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                             }
                         }
                         rows = rows.concat(result.rows);
@@ -770,37 +757,34 @@ async function sinEstado(direccionParsed) {
                             const result = await pgClient.query(query, values);
 
                             for (let i = 0; i < result.rows.length; i++) {
-        // Inicializar la cadena de resultado
-        let resultado = '';
-        let tabla = '';
-        let imagen = '';
+                                // Inicializar la cadena de resultado
+                                let resultado = '';
+                                let tabla = '';
 
-        // Concatenar cada campo si tiene un valor
-        if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
-        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
-        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
-        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
-        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+                                // Concatenar cada campo si tiene un valor
+                                if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                resultado += `${direccionParsed.NUMEXTNUM1} `;
+                                if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
-        if (result.rows[i].tipo == 'CALLE') {
-            tabla = `carto_calle`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'CARRETERA'){
-            tabla = `carto_carreteras123`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'POI'){
-            tabla = `carto_poi`;
-            imagen = `punto`;
-        } 
-        // Asignar el resultado al campo "resultado"
-        result.rows[i].resultado = resultado.trim();
-        result.rows[i].tipo = `Calle`;
-        result.rows[i].id = result.rows[i].id_calle;
-        result.rows[i].campo = `Id`;
-        result.rows[i].imagen = imagen;
-        result.rows[i].tabla = tabla;
+                                if (result.rows[i].tipo == 'CALLE') {
+                                    tabla = `carto_calle`;
+                                }
+                                else if (result.rows[i].tipo == 'CARRETERA') {
+                                    tabla = `carto_carreteras123`;
+                                }
+                                else if (result.rows[i].tipo == 'POI') {
+                                    tabla = `carto_poi`;
+                                }
+                                // Asignar el resultado al campo "resultado"
+                                result.rows[i].resultado = resultado.trim();
+                                result.rows[i].tipo = `Calle`;
+                                result.rows[i].id = result.rows[i].id_calle;
+                                result.rows[i].campo = `Id`;
+                                result.rows[i].imagen = 'punto';
+                                result.rows[i].tabla = tabla;
                                 result.rows[i].scoring = {
                                     fiability: 30,
                                     calle: 0,
@@ -816,7 +800,7 @@ async function sinEstado(direccionParsed) {
                                     let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                                     if (igualdad > 100) igualdad = 100;
                                     result.rows[i].scoring.calle += Math.round(igualdad);
-                                    result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
+                                    result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                 }
                                 // Calcular la distancia de Levenshtein
                                 const distanceColonia = levenshteinDistance(quitarAcentos(result.rows[i].colonia), direccionParsed.COLONIA);
@@ -902,37 +886,34 @@ async function sinEstado(direccionParsed) {
                                 const result = await pgClient.query(query, values);
 
                                 for (let i = 0; i < result.rows.length; i++) {
-        // Inicializar la cadena de resultado
-        let resultado = '';
-        let tabla = '';
-        let imagen = '';
+                                    // Inicializar la cadena de resultado
+                                    let resultado = '';
+                                    let tabla = '';
 
-        // Concatenar cada campo si tiene un valor
-        if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
-        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
-        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
-        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
-        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+                                    // Concatenar cada campo si tiene un valor
+                                    if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                    resultado += `${direccionParsed.NUMEXTNUM1} `;
+                                    if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                    if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                    if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                    if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
-        if (result.rows[i].tipo == 'CALLE') {
-            tabla = `carto_calle`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'CARRETERA'){
-            tabla = `carto_carreteras123`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'POI'){
-            tabla = `carto_poi`;
-            imagen = `punto`;
-        } 
-        // Asignar el resultado al campo "resultado"
-        result.rows[i].resultado = resultado.trim();
-        result.rows[i].tipo = `Calle`;
-        result.rows[i].id = result.rows[i].id_calle;
-        result.rows[i].campo = `Id`;
-        result.rows[i].imagen = imagen;
-        result.rows[i].tabla = tabla;
+                                    if (result.rows[i].tipo == 'CALLE') {
+                                        tabla = `carto_calle`;
+                                    }
+                                    else if (result.rows[i].tipo == 'CARRETERA') {
+                                        tabla = `carto_carreteras123`;
+                                    }
+                                    else if (result.rows[i].tipo == 'POI') {
+                                        tabla = `carto_poi`;
+                                    }
+                                    // Asignar el resultado al campo "resultado"
+                                    result.rows[i].resultado = resultado.trim();
+                                    result.rows[i].tipo = `Calle`;
+                                    result.rows[i].id = result.rows[i].id_calle;
+                                    result.rows[i].campo = `Id`;
+                                    result.rows[i].imagen = 'punto';
+                                    result.rows[i].tabla = tabla;
                                     result.rows[i].scoring = {
                                         fiability: 30,
                                         calle: 0,
@@ -948,7 +929,7 @@ async function sinEstado(direccionParsed) {
                                         let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                                         if (igualdad > 100) igualdad = 100;
                                         result.rows[i].scoring.calle += Math.round(igualdad);
-                                        result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
+                                        result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                     }
                                     // Calcular la distancia de Levenshtein
                                     const distanceColonia = levenshteinDistance(quitarAcentos(result.rows[i].colonia), direccionParsed.COLONIA);
@@ -983,37 +964,37 @@ async function sinEstado(direccionParsed) {
                                     values = [direccionParsed.CALLE, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
                                     const result = await pgClient.query(query, values);
                                     for (let i = 0; i < result.rows.length; i++) {
-        // Inicializar la cadena de resultado
-        let resultado = '';
-        let tabla = '';
-        let imagen = '';
+                                        // Inicializar la cadena de resultado
+                                        let resultado = '';
+                                        let tabla = '';
+                                        let imagen = '';
 
-        // Concatenar cada campo si tiene un valor
-        if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
-        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
-        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
-        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
-        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+                                        // Concatenar cada campo si tiene un valor
+                                        if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
-        if (result.rows[i].tipo == 'CALLE') {
-            tabla = `carto_calle`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'CARRETERA'){
-            tabla = `carto_carreteras123`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'POI'){
-            tabla = `carto_poi`;
-            imagen = `punto`;
-        } 
-        // Asignar el resultado al campo "resultado"
-        result.rows[i].resultado = resultado.trim();
-        result.rows[i].tipo = `Calle`;
-        result.rows[i].id = result.rows[i].id_calle;
-        result.rows[i].campo = `Id`;
-        result.rows[i].imagen = imagen;
-        result.rows[i].tabla = tabla;
+                                        if (result.rows[i].tipo == 'CALLE') {
+                                            tabla = `carto_calle`;
+                                            imagen = `linea`;
+                                        }
+                                        else if (result.rows[i].tipo == 'CARRETERA') {
+                                            tabla = `carto_carreteras123`;
+                                            imagen = `linea`;
+                                        }
+                                        else if (result.rows[i].tipo == 'POI') {
+                                            tabla = `carto_poi`;
+                                            imagen = `punto`;
+                                        }
+                                        // Asignar el resultado al campo "resultado"
+                                        result.rows[i].resultado = resultado.trim();
+                                        result.rows[i].tipo = `Calle`;
+                                        result.rows[i].id = result.rows[i].id_calle;
+                                        result.rows[i].campo = `Id`;
+                                        result.rows[i].imagen = imagen;
+                                        result.rows[i].tabla = tabla;
                                         result.rows[i].scoring = {
                                             fiability: 20,
                                             calle: 0,
@@ -1029,7 +1010,7 @@ async function sinEstado(direccionParsed) {
                                             let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                                             if (igualdad > 100) igualdad = 100;
                                             result.rows[i].scoring.calle += Math.round(igualdad);
-                                            result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
+                                            result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                         }
                                         const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                                         const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -1038,7 +1019,7 @@ async function sinEstado(direccionParsed) {
                                             let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                             if (igualdad > 100) igualdad = 100;
                                             result.rows[i].scoring.colonia += Math.round(igualdad);
-                                            result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
+                                            result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                         }
                                     }
                                     rows = rows.concat(result.rows);
@@ -1063,37 +1044,37 @@ async function sinEstado(direccionParsed) {
                                         values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
                                         const result = await pgClient.query(query, values);
                                         for (let i = 0; i < result.rows.length; i++) {
-        // Inicializar la cadena de resultado
-        let resultado = '';
-        let tabla = '';
-        let imagen = '';
+                                            // Inicializar la cadena de resultado
+                                            let resultado = '';
+                                            let tabla = '';
+                                            let imagen = '';
 
-        // Concatenar cada campo si tiene un valor
-        if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
-        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
-        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
-        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
-        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+                                            // Concatenar cada campo si tiene un valor
+                                            if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                            if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                            if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                            if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                            if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
-        if (result.rows[i].tipo == 'CALLE') {
-            tabla = `carto_calle`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'CARRETERA'){
-            tabla = `carto_carreteras123`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'POI'){
-            tabla = `carto_poi`;
-            imagen = `punto`;
-        } 
-        // Asignar el resultado al campo "resultado"
-        result.rows[i].resultado = resultado.trim();
-        result.rows[i].tipo = `Calle`;
-        result.rows[i].id = result.rows[i].id_calle;
-        result.rows[i].campo = `Id`;
-        result.rows[i].imagen = imagen;
-        result.rows[i].tabla = tabla;
+                                            if (result.rows[i].tipo == 'CALLE') {
+                                                tabla = `carto_calle`;
+                                                imagen = `linea`;
+                                            }
+                                            else if (result.rows[i].tipo == 'CARRETERA') {
+                                                tabla = `carto_carreteras123`;
+                                                imagen = `linea`;
+                                            }
+                                            else if (result.rows[i].tipo == 'POI') {
+                                                tabla = `carto_poi`;
+                                                imagen = `punto`;
+                                            }
+                                            // Asignar el resultado al campo "resultado"
+                                            result.rows[i].resultado = resultado.trim();
+                                            result.rows[i].tipo = `Calle`;
+                                            result.rows[i].id = result.rows[i].id_calle;
+                                            result.rows[i].campo = `Id`;
+                                            result.rows[i].imagen = imagen;
+                                            result.rows[i].tabla = tabla;
                                             result.rows[i].scoring = {
                                                 fiability: 10,
                                                 calle: 0,
@@ -1109,7 +1090,7 @@ async function sinEstado(direccionParsed) {
                                                 let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                                                 if (igualdad > 100) igualdad = 100;
                                                 result.rows[i].scoring.calle += Math.round(igualdad);
-                                                result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
+                                                result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                             }
                                             const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                                             const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -1118,7 +1099,7 @@ async function sinEstado(direccionParsed) {
                                                 let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                                 if (igualdad > 100) igualdad = 100;
                                                 result.rows[i].scoring.colonia += Math.round(igualdad);
-                                                result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
+                                                result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                             }
                                         }
                                         rows = rows.concat(result.rows);
@@ -1143,37 +1124,37 @@ async function sinEstado(direccionParsed) {
                                             values = [direccionParsed.CALLE, direccionParsed.CP, direccionParsed.COLONIA];
                                             const result = await pgClient.query(query, values);
                                             for (let i = 0; i < result.rows.length; i++) {
-        // Inicializar la cadena de resultado
-        let resultado = '';
-        let tabla = '';
-        let imagen = '';
+                                                // Inicializar la cadena de resultado
+                                                let resultado = '';
+                                                let tabla = '';
+                                                let imagen = '';
 
-        // Concatenar cada campo si tiene un valor
-        if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
-        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
-        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
-        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
-        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+                                                // Concatenar cada campo si tiene un valor
+                                                if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                                if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                                if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                                if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                                if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
-        if (result.rows[i].tipo == 'CALLE') {
-            tabla = `carto_calle`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'CARRETERA'){
-            tabla = `carto_carreteras123`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'POI'){
-            tabla = `carto_poi`;
-            imagen = `punto`;
-        } 
-        // Asignar el resultado al campo "resultado"
-        result.rows[i].resultado = resultado.trim();
-        result.rows[i].tipo = `Calle`;
-        result.rows[i].id = result.rows[i].id_calle;
-        result.rows[i].campo = `Id`;
-        result.rows[i].imagen = imagen;
-        result.rows[i].tabla = tabla;
+                                                if (result.rows[i].tipo == 'CALLE') {
+                                                    tabla = `carto_calle`;
+                                                    imagen = `linea`;
+                                                }
+                                                else if (result.rows[i].tipo == 'CARRETERA') {
+                                                    tabla = `carto_carreteras123`;
+                                                    imagen = `linea`;
+                                                }
+                                                else if (result.rows[i].tipo == 'POI') {
+                                                    tabla = `carto_poi`;
+                                                    imagen = `punto`;
+                                                }
+                                                // Asignar el resultado al campo "resultado"
+                                                result.rows[i].resultado = resultado.trim();
+                                                result.rows[i].tipo = `Calle`;
+                                                result.rows[i].id = result.rows[i].id_calle;
+                                                result.rows[i].campo = `Id`;
+                                                result.rows[i].imagen = imagen;
+                                                result.rows[i].tabla = tabla;
                                                 result.rows[i].scoring = {
                                                     fiability: 10,
                                                     calle: 0,
@@ -1189,7 +1170,7 @@ async function sinEstado(direccionParsed) {
                                                     let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                                                     if (igualdad > 100) igualdad = 100;
                                                     result.rows[i].scoring.calle += Math.round(igualdad);
-                                                    result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
+                                                    result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                                 }
                                                 const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                                                 const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
@@ -1198,7 +1179,7 @@ async function sinEstado(direccionParsed) {
                                                     let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                                     if (igualdad > 100) igualdad = 100;
                                                     result.rows[i].scoring.colonia += Math.round(igualdad);
-                                                    result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
+                                                    result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                                 }
                                             }
                                             rows = rows.concat(result.rows);
@@ -1222,37 +1203,37 @@ async function sinEstado(direccionParsed) {
                                                 values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO];
                                                 const result = await pgClient.query(query, values);
                                                 for (let i = 0; i < result.rows.length; i++) {
-        // Inicializar la cadena de resultado
-        let resultado = '';
-        let tabla = '';
-        let imagen = '';
+                                                    // Inicializar la cadena de resultado
+                                                    let resultado = '';
+                                                    let tabla = '';
+                                                    let imagen = '';
 
-        // Concatenar cada campo si tiene un valor
-        if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
-        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
-        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
-        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
-        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+                                                    // Concatenar cada campo si tiene un valor
+                                                    if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                                    if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                                    if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                                    if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                                    if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
-        if (result.rows[i].tipo == 'CALLE') {
-            tabla = `carto_calle`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'CARRETERA'){
-            tabla = `carto_carreteras123`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'POI'){
-            tabla = `carto_poi`;
-            imagen = `punto`;
-        } 
-        // Asignar el resultado al campo "resultado"
-        result.rows[i].resultado = resultado.trim();
-        result.rows[i].tipo = `Calle`;
-        result.rows[i].id = result.rows[i].id_calle;
-        result.rows[i].campo = `Id`;
-        result.rows[i].imagen = imagen;
-        result.rows[i].tabla = tabla;
+                                                    if (result.rows[i].tipo == 'CALLE') {
+                                                        tabla = `carto_calle`;
+                                                        imagen = `linea`;
+                                                    }
+                                                    else if (result.rows[i].tipo == 'CARRETERA') {
+                                                        tabla = `carto_carreteras123`;
+                                                        imagen = `linea`;
+                                                    }
+                                                    else if (result.rows[i].tipo == 'POI') {
+                                                        tabla = `carto_poi`;
+                                                        imagen = `punto`;
+                                                    }
+                                                    // Asignar el resultado al campo "resultado"
+                                                    result.rows[i].resultado = resultado.trim();
+                                                    result.rows[i].tipo = `Calle`;
+                                                    result.rows[i].id = result.rows[i].id_calle;
+                                                    result.rows[i].campo = `Id`;
+                                                    result.rows[i].imagen = imagen;
+                                                    result.rows[i].tabla = tabla;
                                                     result.rows[i].scoring = {
                                                         fiability: 10,
                                                         calle: 0,
@@ -1268,7 +1249,7 @@ async function sinEstado(direccionParsed) {
                                                         let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                                                         if (igualdad > 100) igualdad = 100;
                                                         result.rows[i].scoring.calle += Math.round(igualdad);
-                                                        result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
+                                                        result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                                     }
                                                     // Calcular la distancia de Levenshtein
                                                     const distanceColonia = levenshteinDistance(quitarAcentos(result.rows[i].colonia), direccionParsed.COLONIA);
@@ -1302,37 +1283,37 @@ async function sinEstado(direccionParsed) {
                                                     values = [direccionParsed.CALLE, direccionParsed.CP, direccionParsed.MUNICIPIO];
                                                     const result = await pgClient.query(query, values);
                                                     for (let i = 0; i < result.rows.length; i++) {
-        // Inicializar la cadena de resultado
-        let resultado = '';
-        let tabla = '';
-        let imagen = '';
+                                                        // Inicializar la cadena de resultado
+                                                        let resultado = '';
+                                                        let tabla = '';
+                                                        let imagen = '';
 
-        // Concatenar cada campo si tiene un valor
-        if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
-        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
-        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
-        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
-        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+                                                        // Concatenar cada campo si tiene un valor
+                                                        if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                                        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                                        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                                        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                                        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
-        if (result.rows[i].tipo == 'CALLE') {
-            tabla = `carto_calle`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'CARRETERA'){
-            tabla = `carto_carreteras123`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'POI'){
-            tabla = `carto_poi`;
-            imagen = `punto`;
-        } 
-        // Asignar el resultado al campo "resultado"
-        result.rows[i].resultado = resultado.trim();
-        result.rows[i].tipo = `Calle`;
-        result.rows[i].id = result.rows[i].id_calle;
-        result.rows[i].campo = `Id`;
-        result.rows[i].imagen = imagen;
-        result.rows[i].tabla = tabla;
+                                                        if (result.rows[i].tipo == 'CALLE') {
+                                                            tabla = `carto_calle`;
+                                                            imagen = `linea`;
+                                                        }
+                                                        else if (result.rows[i].tipo == 'CARRETERA') {
+                                                            tabla = `carto_carreteras123`;
+                                                            imagen = `linea`;
+                                                        }
+                                                        else if (result.rows[i].tipo == 'POI') {
+                                                            tabla = `carto_poi`;
+                                                            imagen = `punto`;
+                                                        }
+                                                        // Asignar el resultado al campo "resultado"
+                                                        result.rows[i].resultado = resultado.trim();
+                                                        result.rows[i].tipo = `Calle`;
+                                                        result.rows[i].id = result.rows[i].id_calle;
+                                                        result.rows[i].campo = `Id`;
+                                                        result.rows[i].imagen = imagen;
+                                                        result.rows[i].tabla = tabla;
                                                         result.rows[i].scoring = {
                                                             fiability: 20,
                                                             calle: 0,
@@ -1348,7 +1329,7 @@ async function sinEstado(direccionParsed) {
                                                             let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
                                                             if (igualdad > 100) igualdad = 100;
                                                             result.rows[i].scoring.calle += Math.round(igualdad);
-                                                            result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
+                                                            result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                                         }
                                                         // Calcular la distancia de Levenshtein
                                                         const distanceColonia = levenshteinDistance(quitarAcentos(result.rows[i].colonia), direccionParsed.COLONIA);
@@ -1434,37 +1415,34 @@ async function sinEstado(direccionParsed) {
                                                         values = [direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1, direccionParsed.COLONIA];
                                                         const result = await pgClient.query(query, values);
                                                         for (let i = 0; i < result.rows.length; i++) {
-        // Inicializar la cadena de resultado
-        let resultado = '';
-        let tabla = '';
-        let imagen = '';
+                                                            // Inicializar la cadena de resultado
+                                                            let resultado = '';
+                                                            let tabla = '';
 
-        // Concatenar cada campo si tiene un valor
-        if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
-        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
-        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
-        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
-        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+                                                            // Concatenar cada campo si tiene un valor
+                                                            if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                                            resultado += `${direccionParsed.NUMEXTNUM1} `;
+                                                            if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                                            if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                                            if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                                            if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
-        if (result.rows[i].tipo == 'CALLE') {
-            tabla = `carto_calle`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'CARRETERA'){
-            tabla = `carto_carreteras123`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'POI'){
-            tabla = `carto_poi`;
-            imagen = `punto`;
-        } 
-        // Asignar el resultado al campo "resultado"
-        result.rows[i].resultado = resultado.trim();
-        result.rows[i].tipo = `Calle`;
-        result.rows[i].id = result.rows[i].id_calle;
-        result.rows[i].campo = `Id`;
-        result.rows[i].imagen = imagen;
-        result.rows[i].tabla = tabla;
+                                                            if (result.rows[i].tipo == 'CALLE') {
+                                                                tabla = `carto_calle`;
+                                                            }
+                                                            else if (result.rows[i].tipo == 'CARRETERA') {
+                                                                tabla = `carto_carreteras123`;
+                                                            }
+                                                            else if (result.rows[i].tipo == 'POI') {
+                                                                tabla = `carto_poi`;
+                                                            }
+                                                            // Asignar el resultado al campo "resultado"
+                                                            result.rows[i].resultado = resultado.trim();
+                                                            result.rows[i].tipo = `Calle`;
+                                                            result.rows[i].id = result.rows[i].id_calle;
+                                                            result.rows[i].campo = `Id`;
+                                                            result.rows[i].imagen = 'punto';
+                                                            result.rows[i].tabla = tabla;
                                                             result.rows[i].scoring = {
                                                                 fiability: 40,
                                                                 calle: 0,
@@ -1489,7 +1467,7 @@ async function sinEstado(direccionParsed) {
                                                                 let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                                                 if (igualdad > 100) igualdad = 100;
                                                                 result.rows[i].scoring.colonia += Math.round(igualdad);
-                                                                result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
+                                                                result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                                             }
                                                         }
                                                         rows = rows.concat(result.rows);
@@ -1565,37 +1543,34 @@ async function sinEstado(direccionParsed) {
                                                             values = [direccionParsed.COLONIA, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1];
                                                             const result = await pgClient.query(query, values);
                                                             for (let i = 0; i < result.rows.length; i++) {
-        // Inicializar la cadena de resultado
-        let resultado = '';
-        let tabla = '';
-        let imagen = '';
+                                                                // Inicializar la cadena de resultado
+                                                                let resultado = '';
+                                                                let tabla = '';
 
-        // Concatenar cada campo si tiene un valor
-        if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
-        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
-        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
-        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
-        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+                                                                // Concatenar cada campo si tiene un valor
+                                                                if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                                                resultado += `${direccionParsed.NUMEXTNUM1} `;
+                                                                if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                                                if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                                                if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                                                if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
-        if (result.rows[i].tipo == 'CALLE') {
-            tabla = `carto_calle`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'CARRETERA'){
-            tabla = `carto_carreteras123`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'POI'){
-            tabla = `carto_poi`;
-            imagen = `punto`;
-        } 
-        // Asignar el resultado al campo "resultado"
-        result.rows[i].resultado = resultado.trim();
-        result.rows[i].tipo = `Calle`;
-        result.rows[i].id = result.rows[i].id_calle;
-        result.rows[i].campo = `Id`;
-        result.rows[i].imagen = imagen;
-        result.rows[i].tabla = tabla;
+                                                                if (result.rows[i].tipo == 'CALLE') {
+                                                                    tabla = `carto_calle`;
+                                                                }
+                                                                else if (result.rows[i].tipo == 'CARRETERA') {
+                                                                    tabla = `carto_carreteras123`;
+                                                                }
+                                                                else if (result.rows[i].tipo == 'POI') {
+                                                                    tabla = `carto_poi`;
+                                                                }
+                                                                // Asignar el resultado al campo "resultado"
+                                                                result.rows[i].resultado = resultado.trim();
+                                                                result.rows[i].tipo = `Calle`;
+                                                                result.rows[i].id = result.rows[i].id_calle;
+                                                                result.rows[i].campo = `Id`;
+                                                                result.rows[i].imagen = 'punto';
+                                                                result.rows[i].tabla = tabla;
                                                                 result.rows[i].scoring = {
                                                                     fiability: 30,
                                                                     calle: 0,
@@ -1620,7 +1595,7 @@ async function sinEstado(direccionParsed) {
                                                                     let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                                                     if (igualdad > 100) igualdad = 100;
                                                                     result.rows[i].scoring.colonia += Math.round(igualdad);
-                                                                    result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
+                                                                    result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                                                 }
                                                             }
                                                             rows = rows.concat(result.rows);
@@ -1644,37 +1619,37 @@ async function sinEstado(direccionParsed) {
                                                                 values = [direccionParsed.COLONIA, direccionParsed.MUNICIPIO];
                                                                 const result = await pgClient.query(query, values);
                                                                 for (let i = 0; i < result.rows.length; i++) {
-        // Inicializar la cadena de resultado
-        let resultado = '';
-        let tabla = '';
-        let imagen = '';
+                                                                    // Inicializar la cadena de resultado
+                                                                    let resultado = '';
+                                                                    let tabla = '';
+                                                                    let imagen = '';
 
-        // Concatenar cada campo si tiene un valor
-        if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
-        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
-        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
-        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
-        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+                                                                    // Concatenar cada campo si tiene un valor
+                                                                    if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                                                    if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                                                    if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                                                    if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                                                    if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
-        if (result.rows[i].tipo == 'CALLE') {
-            tabla = `carto_calle`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'CARRETERA'){
-            tabla = `carto_carreteras123`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'POI'){
-            tabla = `carto_poi`;
-            imagen = `punto`;
-        } 
-        // Asignar el resultado al campo "resultado"
-        result.rows[i].resultado = resultado.trim();
-        result.rows[i].tipo = `Calle`;
-        result.rows[i].id = result.rows[i].id_calle;
-        result.rows[i].campo = `Id`;
-        result.rows[i].imagen = imagen;
-        result.rows[i].tabla = tabla;
+                                                                    if (result.rows[i].tipo == 'CALLE') {
+                                                                        tabla = `carto_calle`;
+                                                                        imagen = `linea`;
+                                                                    }
+                                                                    else if (result.rows[i].tipo == 'CARRETERA') {
+                                                                        tabla = `carto_carreteras123`;
+                                                                        imagen = `linea`;
+                                                                    }
+                                                                    else if (result.rows[i].tipo == 'POI') {
+                                                                        tabla = `carto_poi`;
+                                                                        imagen = `punto`;
+                                                                    }
+                                                                    // Asignar el resultado al campo "resultado"
+                                                                    result.rows[i].resultado = resultado.trim();
+                                                                    result.rows[i].tipo = `Calle`;
+                                                                    result.rows[i].id = result.rows[i].id_calle;
+                                                                    result.rows[i].campo = `Id`;
+                                                                    result.rows[i].imagen = imagen;
+                                                                    result.rows[i].tabla = tabla;
                                                                     result.rows[i].scoring = {
                                                                         fiability: 10,
                                                                         calle: 0,
@@ -1699,7 +1674,7 @@ async function sinEstado(direccionParsed) {
                                                                         let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                                                         if (igualdad > 100) igualdad = 100;
                                                                         result.rows[i].scoring.colonia += Math.round(igualdad);
-                                                                        result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
+                                                                        result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                                                     }
                                                                 }
                                                                 rows = rows.concat(result.rows);
@@ -1776,37 +1751,34 @@ async function sinEstado(direccionParsed) {
                                                                     values = [direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1, direccionParsed.COLONIA];
                                                                     const result = await pgClient.query(query, values);
                                                                     for (let i = 0; i < result.rows.length; i++) {
-        // Inicializar la cadena de resultado
-        let resultado = '';
-        let tabla = '';
-        let imagen = '';
+                                                                        // Inicializar la cadena de resultado
+                                                                        let resultado = '';
+                                                                        let tabla = '';
 
-        // Concatenar cada campo si tiene un valor
-        if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
-        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
-        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
-        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
-        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+                                                                        // Concatenar cada campo si tiene un valor
+                                                                        if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                                                        resultado += `${direccionParsed.NUMEXTNUM1} `;
+                                                                        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                                                        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                                                        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                                                        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
-        if (result.rows[i].tipo == 'CALLE') {
-            tabla = `carto_calle`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'CARRETERA'){
-            tabla = `carto_carreteras123`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'POI'){
-            tabla = `carto_poi`;
-            imagen = `punto`;
-        } 
-        // Asignar el resultado al campo "resultado"
-        result.rows[i].resultado = resultado.trim();
-        result.rows[i].tipo = `Calle`;
-        result.rows[i].id = result.rows[i].id_calle;
-        result.rows[i].campo = `Id`;
-        result.rows[i].imagen = imagen;
-        result.rows[i].tabla = tabla;
+                                                                        if (result.rows[i].tipo == 'CALLE') {
+                                                                            tabla = `carto_calle`;
+                                                                        }
+                                                                        else if (result.rows[i].tipo == 'CARRETERA') {
+                                                                            tabla = `carto_carreteras123`;
+                                                                        }
+                                                                        else if (result.rows[i].tipo == 'POI') {
+                                                                            tabla = `carto_poi`;
+                                                                        }
+                                                                        // Asignar el resultado al campo "resultado"
+                                                                        result.rows[i].resultado = resultado.trim();
+                                                                        result.rows[i].tipo = `Calle`;
+                                                                        result.rows[i].id = result.rows[i].id_calle;
+                                                                        result.rows[i].campo = `Id`;
+                                                                        result.rows[i].imagen = 'punto';
+                                                                        result.rows[i].tabla = tabla;
                                                                         result.rows[i].scoring = {
                                                                             fiability: 40,
                                                                             calle: 0,
@@ -1831,7 +1803,7 @@ async function sinEstado(direccionParsed) {
                                                                             let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                                                             if (igualdad > 100) igualdad = 100;
                                                                             result.rows[i].scoring.colonia += Math.round(igualdad);
-                                                                            result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
+                                                                            result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                                                         }
                                                                     }
                                                                     rows = rows.concat(result.rows);
@@ -1907,37 +1879,34 @@ async function sinEstado(direccionParsed) {
                                                                         values = [direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
                                                                         const result = await pgClient.query(query, values);
                                                                         for (let i = 0; i < result.rows.length; i++) {
-        // Inicializar la cadena de resultado
-        let resultado = '';
-        let tabla = '';
-        let imagen = '';
+                                                                            // Inicializar la cadena de resultado
+                                                                            let resultado = '';
+                                                                            let tabla = '';
 
-        // Concatenar cada campo si tiene un valor
-        if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
-        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
-        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
-        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
-        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+                                                                            // Concatenar cada campo si tiene un valor
+                                                                            if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                                                            resultado += `${direccionParsed.NUMEXTNUM1} `;
+                                                                            if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                                                            if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                                                            if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                                                            if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
-        if (result.rows[i].tipo == 'CALLE') {
-            tabla = `carto_calle`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'CARRETERA'){
-            tabla = `carto_carreteras123`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'POI'){
-            tabla = `carto_poi`;
-            imagen = `punto`;
-        } 
-        // Asignar el resultado al campo "resultado"
-        result.rows[i].resultado = resultado.trim();
-        result.rows[i].tipo = `Calle`;
-        result.rows[i].id = result.rows[i].id_calle;
-        result.rows[i].campo = `Id`;
-        result.rows[i].imagen = imagen;
-        result.rows[i].tabla = tabla;
+                                                                            if (result.rows[i].tipo == 'CALLE') {
+                                                                                tabla = `carto_calle`;
+                                                                            }
+                                                                            else if (result.rows[i].tipo == 'CARRETERA') {
+                                                                                tabla = `carto_carreteras123`;
+                                                                            }
+                                                                            else if (result.rows[i].tipo == 'POI') {
+                                                                                tabla = `carto_poi`;
+                                                                            }
+                                                                            // Asignar el resultado al campo "resultado"
+                                                                            result.rows[i].resultado = resultado.trim();
+                                                                            result.rows[i].tipo = `Calle`;
+                                                                            result.rows[i].id = result.rows[i].id_calle;
+                                                                            result.rows[i].campo = `Id`;
+                                                                            result.rows[i].imagen = 'punto';
+                                                                            result.rows[i].tabla = tabla;
                                                                             result.rows[i].scoring = {
                                                                                 fiability: 30,
                                                                                 calle: 0,
@@ -1962,7 +1931,7 @@ async function sinEstado(direccionParsed) {
                                                                                 let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                                                                 if (igualdad > 100) igualdad = 100;
                                                                                 result.rows[i].scoring.colonia += Math.round(igualdad);
-                                                                                result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
+                                                                                result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                                                             }
                                                                         }
                                                                         rows = rows.concat(result.rows);
@@ -2038,37 +2007,34 @@ async function sinEstado(direccionParsed) {
                                                                             values = [direccionParsed.CP, direccionParsed.NUMEXTNUM1, direccionParsed.COLONIA];
                                                                             const result = await pgClient.query(query, values);
                                                                             for (let i = 0; i < result.rows.length; i++) {
-        // Inicializar la cadena de resultado
-        let resultado = '';
-        let tabla = '';
-        let imagen = '';
+                                                                                // Inicializar la cadena de resultado
+                                                                                let resultado = '';
+                                                                                let tabla = '';
 
-        // Concatenar cada campo si tiene un valor
-        if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
-        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
-        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
-        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
-        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+                                                                                // Concatenar cada campo si tiene un valor
+                                                                                if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                                                                resultado += `${direccionParsed.NUMEXTNUM1} `;
+                                                                                if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                                                                if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                                                                if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                                                                if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
-        if (result.rows[i].tipo == 'CALLE') {
-            tabla = `carto_calle`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'CARRETERA'){
-            tabla = `carto_carreteras123`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'POI'){
-            tabla = `carto_poi`;
-            imagen = `punto`;
-        } 
-        // Asignar el resultado al campo "resultado"
-        result.rows[i].resultado = resultado.trim();
-        result.rows[i].tipo = `Calle`;
-        result.rows[i].id = result.rows[i].id_calle;
-        result.rows[i].campo = `Id`;
-        result.rows[i].imagen = imagen;
-        result.rows[i].tabla = tabla;
+                                                                                if (result.rows[i].tipo == 'CALLE') {
+                                                                                    tabla = `carto_calle`;
+                                                                                }
+                                                                                else if (result.rows[i].tipo == 'CARRETERA') {
+                                                                                    tabla = `carto_carreteras123`;
+                                                                                }
+                                                                                else if (result.rows[i].tipo == 'POI') {
+                                                                                    tabla = `carto_poi`;
+                                                                                }
+                                                                                // Asignar el resultado al campo "resultado"
+                                                                                result.rows[i].resultado = resultado.trim();
+                                                                                result.rows[i].tipo = `Calle`;
+                                                                                result.rows[i].id = result.rows[i].id_calle;
+                                                                                result.rows[i].campo = `Id`;
+                                                                                result.rows[i].imagen = 'punto';
+                                                                                result.rows[i].tabla = tabla;
                                                                                 result.rows[i].scoring = {
                                                                                     fiability: 30,
                                                                                     calle: 0,
@@ -2093,7 +2059,7 @@ async function sinEstado(direccionParsed) {
                                                                                     let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
                                                                                     if (igualdad > 100) igualdad = 100;
                                                                                     result.rows[i].scoring.colonia += Math.round(igualdad);
-                                                                                    result.rows[i].scoring.fiability += Math.round(igualdad*0.3);
+                                                                                    result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                                                                 }
                                                                             }
                                                                             rows = rows.concat(result.rows);
@@ -2116,37 +2082,37 @@ async function sinEstado(direccionParsed) {
                                                                                 values = [direccionParsed.MUNICIPIO];
                                                                                 const result = await pgClient.query(query, values);
                                                                                 for (let i = 0; i < result.rows.length; i++) {
-        // Inicializar la cadena de resultado
-        let resultado = '';
-        let tabla = '';
-        let imagen = '';
+                                                                                    // Inicializar la cadena de resultado
+                                                                                    let resultado = '';
+                                                                                    let tabla = '';
+                                                                                    let imagen = '';
 
-        // Concatenar cada campo si tiene un valor
-        if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
-        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
-        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
-        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
-        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+                                                                                    // Concatenar cada campo si tiene un valor
+                                                                                    if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                                                                    if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                                                                    if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                                                                    if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                                                                    if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
-        if (result.rows[i].tipo == 'CALLE') {
-            tabla = `carto_calle`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'CARRETERA'){
-            tabla = `carto_carreteras123`;
-            imagen = `linea`;
-        }
-        else if (result.rows[i].tipo == 'POI'){
-            tabla = `carto_poi`;
-            imagen = `punto`;
-        } 
-        // Asignar el resultado al campo "resultado"
-        result.rows[i].resultado = resultado.trim();
-        result.rows[i].tipo = `Calle`;
-        result.rows[i].id = result.rows[i].id_calle;
-        result.rows[i].campo = `Id`;
-        result.rows[i].imagen = imagen;
-        result.rows[i].tabla = tabla;
+                                                                                    if (result.rows[i].tipo == 'CALLE') {
+                                                                                        tabla = `carto_calle`;
+                                                                                        imagen = `linea`;
+                                                                                    }
+                                                                                    else if (result.rows[i].tipo == 'CARRETERA') {
+                                                                                        tabla = `carto_carreteras123`;
+                                                                                        imagen = `linea`;
+                                                                                    }
+                                                                                    else if (result.rows[i].tipo == 'POI') {
+                                                                                        tabla = `carto_poi`;
+                                                                                        imagen = `punto`;
+                                                                                    }
+                                                                                    // Asignar el resultado al campo "resultado"
+                                                                                    result.rows[i].resultado = resultado.trim();
+                                                                                    result.rows[i].tipo = `Calle`;
+                                                                                    result.rows[i].id = result.rows[i].id_calle;
+                                                                                    result.rows[i].campo = `Id`;
+                                                                                    result.rows[i].imagen = imagen;
+                                                                                    result.rows[i].tabla = tabla;
                                                                                     result.rows[i].scoring = {
                                                                                         fiability: 10,
                                                                                         calle: 0,
