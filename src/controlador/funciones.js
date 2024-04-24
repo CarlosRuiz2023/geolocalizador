@@ -47,7 +47,7 @@ function parseDireccion(direccion) {
         const componente = componentesDireccion[i].trim();
         // Buscar el tipo de vialidad
         const tipoVialidad = obtenerTipoVialidad(componente);
-        if (tipoVialidad && !direccionParsed.CALLE && !direccionParsed.TIPOVIAL && !direccionParsed.COLONIA && !direccionParsed.TIPOASEN) {
+        if (tipoVialidad && !direccionParsed.CALLE && !direccionParsed.TIPOVIAL && (!direccionParsed.COLONIA && componentesDireccion[i-1]!='COLONIA') && !direccionParsed.TIPOASEN) {
             direccionParsed.TIPOVIAL = tipoVialidad;
             calle = componente.replace(tipoVialidad, '').trim();
             i++;
@@ -76,7 +76,7 @@ function parseDireccion(direccion) {
         }
         // Buscar el tipo de asentamiento humano
         const tipoAsentamiento = obtenerTipoAsentamiento(componente);
-        if (tipoAsentamiento && !direccionParsed.CALLE && !direccionParsed.TIPOASEN && !direccionParsed.TIPOVIAL && !direccionParsed.COLONIA) {
+        if (tipoAsentamiento && !direccionParsed.CALLE && !direccionParsed.TIPOASEN && !direccionParsed.TIPOVIAL && (!direccionParsed.COLONIA && componentesDireccion[i-1]!='COLONIA')) {
             direccionParsed.TIPOASEN = tipoAsentamiento;
             calle = componente.replace(tipoAsentamiento, '').trim();
             i++;

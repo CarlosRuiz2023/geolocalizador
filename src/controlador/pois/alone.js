@@ -18,6 +18,23 @@ async function alone(direccionParsed) {
     values = [direccionParsed.CALLE];
     const result = await pgClient.query(query, values);
     for (let i = 0; i < result.rows.length; i++) {
+        // Inicializar la cadena de resultado
+        let resultado = '';
+
+        // Concatenar cada campo si tiene un valor
+        if (result.rows[i].poi) resultado += `${result.rows[i].poi} `;
+        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+        // Asignar el resultado al campo "resultado"
+        result.rows[i].resultado = resultado.trim();
+        result.rows[i].tipo = `Poi`;
+        result.rows[i].id = result.rows[i].id_calle;
+        result.rows[i].campo = `Id`;
+        result.rows[i].imagen = 'punto';
+        result.rows[i].tabla = 'carto_poi';
         result.rows[i].scoring = {
             fiability: 0,
             poi: 0
@@ -46,6 +63,23 @@ async function alone(direccionParsed) {
         values = ["_"];
         const result = await pgClient.query(query, values);
         for (let i = 0; i < result.rows.length; i++) {
+            // Inicializar la cadena de resultado
+            let resultado = '';
+
+            // Concatenar cada campo si tiene un valor
+            if (result.rows[i].poi) resultado += `${result.rows[i].poi} `;
+            if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+            if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+            if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+            if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+            // Asignar el resultado al campo "resultado"
+            result.rows[i].resultado = resultado.trim();
+            result.rows[i].tipo = `Poi`;
+            result.rows[i].id = result.rows[i].id_calle;
+            result.rows[i].campo = `Id`;
+            result.rows[i].imagen = 'punto';
+            result.rows[i].tabla = 'carto_poi';
             result.rows[i].scoring = {
                 fiability: 0,
                 poi: 0

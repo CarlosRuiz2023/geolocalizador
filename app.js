@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { parseDireccion } = require('./src/controlador/funciones');
 const scoringMaestro = require('./src/controlador/scoring');
+const cors = require("cors"); // Middleware para manejar CORS (Cross-Origin Resource Sharing)
 // CARGA LAS VARIABLES DE ENTORNO DESDE EL ARCHIVO .env
 require("dotenv").config();
 
@@ -13,6 +14,15 @@ const port = process.env.PORT || 3000;
 // Middleware para analizar el cuerpo de las solicitudes en formato JSON.
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true })); // x-www-form-urlencoded.
+// MIDDLEWARE PARA MANEJAR CORS
+app.use(
+    cors({
+      origin: ["http://localhost:4200"],
+      methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+      preflightContinue: false,
+      optionsSuccessStatus: 204,
+    })
+  );
 // MIDDLEWARE PARA SERVIR ARCHIVOS ESTÁTICOS DESDE LA CARPETA 'public'.
 app.use(express.static("public"));
 

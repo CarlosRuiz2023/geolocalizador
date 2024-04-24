@@ -80,6 +80,38 @@ async function sinEstado(direccionParsed) {
     values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
     const result = await pgClient.query(query, values);
     for (let i = 0; i < result.rows.length; i++) {
+        // Inicializar la cadena de resultado
+        let resultado = '';
+        let tabla = '';
+        let imagen = '';
+
+        // Concatenar cada campo si tiene un valor
+        if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
+        if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+        if (result.rows[i].tipo == 'CALLE') {
+            tabla = `carto_calle`;
+            imagen = `linea`;
+        }
+        else if (result.rows[i].tipo == 'CARRETERA') {
+            tabla = `carto_carreteras123`;
+            imagen = `linea`;
+        }
+        else if (result.rows[i].tipo == 'POI') {
+            tabla = `carto_poi`;
+            imagen = `punto`;
+        }
+        // Asignar el resultado al campo "resultado"
+        result.rows[i].resultado = resultado.trim();
+        result.rows[i].tipo = `Calle`;
+        result.rows[i].id = result.rows[i].id_calle;
+        result.rows[i].campo = `Id`;
+        result.rows[i].imagen = imagen;
+        result.rows[i].tabla = tabla;
         result.rows[i].scoring = {
             fiability: 40,
             tipo_vialidad: 100,
@@ -183,6 +215,38 @@ async function sinEstado(direccionParsed) {
         values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.MUNICIPIO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
         const result = await pgClient.query(query, values);
         for (let i = 0; i < result.rows.length; i++) {
+            // Inicializar la cadena de resultado
+            let resultado = '';
+            let tabla = '';
+            let imagen = '';
+
+            // Concatenar cada campo si tiene un valor
+            if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
+            if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+            if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+            if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+            if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+            if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+            if (result.rows[i].tipo == 'CALLE') {
+                tabla = `carto_calle`;
+                imagen = `linea`;
+            }
+            else if (result.rows[i].tipo == 'CARRETERA') {
+                tabla = `carto_carreteras123`;
+                imagen = `linea`;
+            }
+            else if (result.rows[i].tipo == 'POI') {
+                tabla = `carto_poi`;
+                imagen = `punto`;
+            }
+            // Asignar el resultado al campo "resultado"
+            result.rows[i].resultado = resultado.trim();
+            result.rows[i].tipo = `Calle`;
+            result.rows[i].id = result.rows[i].id_calle;
+            result.rows[i].campo = `Id`;
+            result.rows[i].imagen = imagen;
+            result.rows[i].tabla = tabla;
             result.rows[i].scoring = {
                 fiability: 30,
                 tipo_vialidad: 100,
@@ -286,6 +350,38 @@ async function sinEstado(direccionParsed) {
             values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
             const result = await pgClient.query(query, values);
             for (let i = 0; i < result.rows.length; i++) {
+                // Inicializar la cadena de resultado
+                let resultado = '';
+                let tabla = '';
+                let imagen = '';
+
+                // Concatenar cada campo si tiene un valor
+                if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
+                if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                if (result.rows[i].tipo == 'CALLE') {
+                    tabla = `carto_calle`;
+                    imagen = `linea`;
+                }
+                else if (result.rows[i].tipo == 'CARRETERA') {
+                    tabla = `carto_carreteras123`;
+                    imagen = `linea`;
+                }
+                else if (result.rows[i].tipo == 'POI') {
+                    tabla = `carto_poi`;
+                    imagen = `punto`;
+                }
+                // Asignar el resultado al campo "resultado"
+                result.rows[i].resultado = resultado.trim();
+                result.rows[i].tipo = `Calle`;
+                result.rows[i].id = result.rows[i].id_calle;
+                result.rows[i].campo = `Id`;
+                result.rows[i].imagen = imagen;
+                result.rows[i].tabla = tabla;
                 result.rows[i].scoring = {
                     fiability: 30,
                     tipo_vialidad: 100,
@@ -389,6 +485,38 @@ async function sinEstado(direccionParsed) {
                 values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1];
                 const result = await pgClient.query(query, values);
                 for (let i = 0; i < result.rows.length; i++) {
+                    // Inicializar la cadena de resultado
+                    let resultado = '';
+                    let tabla = '';
+                    let imagen = '';
+
+                    // Concatenar cada campo si tiene un valor
+                    if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
+                    if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                    if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                    if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                    if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                    if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                    if (result.rows[i].tipo == 'CALLE') {
+                        tabla = `carto_calle`;
+                        imagen = `linea`;
+                    }
+                    else if (result.rows[i].tipo == 'CARRETERA') {
+                        tabla = `carto_carreteras123`;
+                        imagen = `linea`;
+                    }
+                    else if (result.rows[i].tipo == 'POI') {
+                        tabla = `carto_poi`;
+                        imagen = `punto`;
+                    }
+                    // Asignar el resultado al campo "resultado"
+                    result.rows[i].resultado = resultado.trim();
+                    result.rows[i].tipo = `Calle`;
+                    result.rows[i].id = result.rows[i].id_calle;
+                    result.rows[i].campo = `Id`;
+                    result.rows[i].imagen = imagen;
+                    result.rows[i].tabla = tabla;
                     result.rows[i].scoring = {
                         fiability: 40,
                         tipo_vialidad: 100,
@@ -491,6 +619,38 @@ async function sinEstado(direccionParsed) {
                     values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1];
                     const result = await pgClient.query(query, values);
                     for (let i = 0; i < result.rows.length; i++) {
+                        // Inicializar la cadena de resultado
+                        let resultado = '';
+                        let tabla = '';
+                        let imagen = '';
+
+                        // Concatenar cada campo si tiene un valor
+                        if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
+                        if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                        if (result.rows[i].tipo == 'CALLE') {
+                            tabla = `carto_calle`;
+                            imagen = `linea`;
+                        }
+                        else if (result.rows[i].tipo == 'CARRETERA') {
+                            tabla = `carto_carreteras123`;
+                            imagen = `linea`;
+                        }
+                        else if (result.rows[i].tipo == 'POI') {
+                            tabla = `carto_poi`;
+                            imagen = `punto`;
+                        }
+                        // Asignar el resultado al campo "resultado"
+                        result.rows[i].resultado = resultado.trim();
+                        result.rows[i].tipo = `Calle`;
+                        result.rows[i].id = result.rows[i].id_calle;
+                        result.rows[i].campo = `Id`;
+                        result.rows[i].imagen = imagen;
+                        result.rows[i].tabla = tabla;
                         result.rows[i].scoring = {
                             fiability: 30,
                             tipo_vialidad: 100,
@@ -593,6 +753,38 @@ async function sinEstado(direccionParsed) {
                         values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.NUMEXTNUM1];
                         const result = await pgClient.query(query, values);
                         for (let i = 0; i < result.rows.length; i++) {
+                            // Inicializar la cadena de resultado
+                            let resultado = '';
+                            let tabla = '';
+                            let imagen = '';
+
+                            // Concatenar cada campo si tiene un valor
+                            if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
+                            if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                            if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                            if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                            if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                            if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                            if (result.rows[i].tipo == 'CALLE') {
+                                tabla = `carto_calle`;
+                                imagen = `linea`;
+                            }
+                            else if (result.rows[i].tipo == 'CARRETERA') {
+                                tabla = `carto_carreteras123`;
+                                imagen = `linea`;
+                            }
+                            else if (result.rows[i].tipo == 'POI') {
+                                tabla = `carto_poi`;
+                                imagen = `punto`;
+                            }
+                            // Asignar el resultado al campo "resultado"
+                            result.rows[i].resultado = resultado.trim();
+                            result.rows[i].tipo = `Calle`;
+                            result.rows[i].id = result.rows[i].id_calle;
+                            result.rows[i].campo = `Id`;
+                            result.rows[i].imagen = imagen;
+                            result.rows[i].tabla = tabla;
                             result.rows[i].scoring = {
                                 fiability: 30,
                                 tipo_vialidad: 100,
@@ -645,6 +837,38 @@ async function sinEstado(direccionParsed) {
                             values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
                             const result = await pgClient.query(query, values);
                             for (let i = 0; i < result.rows.length; i++) {
+                                // Inicializar la cadena de resultado
+                                let resultado = '';
+                                let tabla = '';
+                                let imagen = '';
+
+                                // Concatenar cada campo si tiene un valor
+                                if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
+                                if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                                if (result.rows[i].tipo == 'CALLE') {
+                                    tabla = `carto_calle`;
+                                    imagen = `linea`;
+                                }
+                                else if (result.rows[i].tipo == 'CARRETERA') {
+                                    tabla = `carto_carreteras123`;
+                                    imagen = `linea`;
+                                }
+                                else if (result.rows[i].tipo == 'POI') {
+                                    tabla = `carto_poi`;
+                                    imagen = `punto`;
+                                }
+                                // Asignar el resultado al campo "resultado"
+                                result.rows[i].resultado = resultado.trim();
+                                result.rows[i].tipo = `Calle`;
+                                result.rows[i].id = result.rows[i].id_calle;
+                                result.rows[i].campo = `Id`;
+                                result.rows[i].imagen = imagen;
+                                result.rows[i].tabla = tabla;
                                 result.rows[i].scoring = {
                                     fiability: 25,
                                     tipo_vialidad: 100,
@@ -696,6 +920,38 @@ async function sinEstado(direccionParsed) {
                                 values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
                                 const result = await pgClient.query(query, values);
                                 for (let i = 0; i < result.rows.length; i++) {
+                                    // Inicializar la cadena de resultado
+                                    let resultado = '';
+                                    let tabla = '';
+                                    let imagen = '';
+
+                                    // Concatenar cada campo si tiene un valor
+                                    if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
+                                    if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                    if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                    if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                    if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                    if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                                    if (result.rows[i].tipo == 'CALLE') {
+                                        tabla = `carto_calle`;
+                                        imagen = `linea`;
+                                    }
+                                    else if (result.rows[i].tipo == 'CARRETERA') {
+                                        tabla = `carto_carreteras123`;
+                                        imagen = `linea`;
+                                    }
+                                    else if (result.rows[i].tipo == 'POI') {
+                                        tabla = `carto_poi`;
+                                        imagen = `punto`;
+                                    }
+                                    // Asignar el resultado al campo "resultado"
+                                    result.rows[i].resultado = resultado.trim();
+                                    result.rows[i].tipo = `Calle`;
+                                    result.rows[i].id = result.rows[i].id_calle;
+                                    result.rows[i].campo = `Id`;
+                                    result.rows[i].imagen = imagen;
+                                    result.rows[i].tabla = tabla;
                                     result.rows[i].scoring = {
                                         fiability: 15,
                                         tipo_vialidad: 100,
@@ -747,6 +1003,38 @@ async function sinEstado(direccionParsed) {
                                     values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.COLONIA];
                                     const result = await pgClient.query(query, values);
                                     for (let i = 0; i < result.rows.length; i++) {
+                                        // Inicializar la cadena de resultado
+                                        let resultado = '';
+                                        let tabla = '';
+                                        let imagen = '';
+
+                                        // Concatenar cada campo si tiene un valor
+                                        if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
+                                        if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                                        if (result.rows[i].tipo == 'CALLE') {
+                                            tabla = `carto_calle`;
+                                            imagen = `linea`;
+                                        }
+                                        else if (result.rows[i].tipo == 'CARRETERA') {
+                                            tabla = `carto_carreteras123`;
+                                            imagen = `linea`;
+                                        }
+                                        else if (result.rows[i].tipo == 'POI') {
+                                            tabla = `carto_poi`;
+                                            imagen = `punto`;
+                                        }
+                                        // Asignar el resultado al campo "resultado"
+                                        result.rows[i].resultado = resultado.trim();
+                                        result.rows[i].tipo = `Calle`;
+                                        result.rows[i].id = result.rows[i].id_calle;
+                                        result.rows[i].campo = `Id`;
+                                        result.rows[i].imagen = imagen;
+                                        result.rows[i].tabla = tabla;
                                         result.rows[i].scoring = {
                                             fiability: 15,
                                             tipo_vialidad: 100,
@@ -798,6 +1086,38 @@ async function sinEstado(direccionParsed) {
                                         values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO];
                                         const result = await pgClient.query(query, values);
                                         for (let i = 0; i < result.rows.length; i++) {
+                                            // Inicializar la cadena de resultado
+                                            let resultado = '';
+                                            let tabla = '';
+                                            let imagen = '';
+
+                                            // Concatenar cada campo si tiene un valor
+                                            if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
+                                            if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                            if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                            if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                            if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                            if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                                            if (result.rows[i].tipo == 'CALLE') {
+                                                tabla = `carto_calle`;
+                                                imagen = `linea`;
+                                            }
+                                            else if (result.rows[i].tipo == 'CARRETERA') {
+                                                tabla = `carto_carreteras123`;
+                                                imagen = `linea`;
+                                            }
+                                            else if (result.rows[i].tipo == 'POI') {
+                                                tabla = `carto_poi`;
+                                                imagen = `punto`;
+                                            }
+                                            // Asignar el resultado al campo "resultado"
+                                            result.rows[i].resultado = resultado.trim();
+                                            result.rows[i].tipo = `Calle`;
+                                            result.rows[i].id = result.rows[i].id_calle;
+                                            result.rows[i].campo = `Id`;
+                                            result.rows[i].imagen = imagen;
+                                            result.rows[i].tabla = tabla;
                                             result.rows[i].scoring = {
                                                 fiability: 25,
                                                 tipo_vialidad: 100,
@@ -848,6 +1168,38 @@ async function sinEstado(direccionParsed) {
                                             values = [direccionParsed.TIPOVIAL, direccionParsed.COLONIA, direccionParsed.MUNICIPIO];
                                             const result = await pgClient.query(query, values);
                                             for (let i = 0; i < result.rows.length; i++) {
+                                                // Inicializar la cadena de resultado
+                                                let resultado = '';
+                                                let tabla = '';
+                                                let imagen = '';
+
+                                                // Concatenar cada campo si tiene un valor
+                                                if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
+                                                if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                                if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                                if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                                if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                                if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                                                if (result.rows[i].tipo == 'CALLE') {
+                                                    tabla = `carto_calle`;
+                                                    imagen = `linea`;
+                                                }
+                                                else if (result.rows[i].tipo == 'CARRETERA') {
+                                                    tabla = `carto_carreteras123`;
+                                                    imagen = `linea`;
+                                                }
+                                                else if (result.rows[i].tipo == 'POI') {
+                                                    tabla = `carto_poi`;
+                                                    imagen = `punto`;
+                                                }
+                                                // Asignar el resultado al campo "resultado"
+                                                result.rows[i].resultado = resultado.trim();
+                                                result.rows[i].tipo = `Calle`;
+                                                result.rows[i].id = result.rows[i].id_calle;
+                                                result.rows[i].campo = `Id`;
+                                                result.rows[i].imagen = imagen;
+                                                result.rows[i].tabla = tabla;
                                                 result.rows[i].scoring = {
                                                     fiability: 15,
                                                     tipo_vialidad: 100,
@@ -898,6 +1250,38 @@ async function sinEstado(direccionParsed) {
                                                 values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.MUNICIPIO];
                                                 const result = await pgClient.query(query, values);
                                                 for (let i = 0; i < result.rows.length; i++) {
+                                                    // Inicializar la cadena de resultado
+                                                    let resultado = '';
+                                                    let tabla = '';
+                                                    let imagen = '';
+
+                                                    // Concatenar cada campo si tiene un valor
+                                                    if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
+                                                    if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                                    if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                                    if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                                    if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                                    if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                                                    if (result.rows[i].tipo == 'CALLE') {
+                                                        tabla = `carto_calle`;
+                                                        imagen = `linea`;
+                                                    }
+                                                    else if (result.rows[i].tipo == 'CARRETERA') {
+                                                        tabla = `carto_carreteras123`;
+                                                        imagen = `linea`;
+                                                    }
+                                                    else if (result.rows[i].tipo == 'POI') {
+                                                        tabla = `carto_poi`;
+                                                        imagen = `punto`;
+                                                    }
+                                                    // Asignar el resultado al campo "resultado"
+                                                    result.rows[i].resultado = resultado.trim();
+                                                    result.rows[i].tipo = `Calle`;
+                                                    result.rows[i].id = result.rows[i].id_calle;
+                                                    result.rows[i].campo = `Id`;
+                                                    result.rows[i].imagen = imagen;
+                                                    result.rows[i].tabla = tabla;
                                                     result.rows[i].scoring = {
                                                         fiability: 15,
                                                         tipo_vialidad: 100,
@@ -948,6 +1332,38 @@ async function sinEstado(direccionParsed) {
                                                     values = [direccionParsed.TIPOVIAL, direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
                                                     const result = await pgClient.query(query, values);
                                                     for (let i = 0; i < result.rows.length; i++) {
+                                                        // Inicializar la cadena de resultado
+                                                        let resultado = '';
+                                                        let tabla = '';
+                                                        let imagen = '';
+
+                                                        // Concatenar cada campo si tiene un valor
+                                                        if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
+                                                        if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                                        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                                        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                                        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                                        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                                                        if (result.rows[i].tipo == 'CALLE') {
+                                                            tabla = `carto_calle`;
+                                                            imagen = `linea`;
+                                                        }
+                                                        else if (result.rows[i].tipo == 'CARRETERA') {
+                                                            tabla = `carto_carreteras123`;
+                                                            imagen = `linea`;
+                                                        }
+                                                        else if (result.rows[i].tipo == 'POI') {
+                                                            tabla = `carto_poi`;
+                                                            imagen = `punto`;
+                                                        }
+                                                        // Asignar el resultado al campo "resultado"
+                                                        result.rows[i].resultado = resultado.trim();
+                                                        result.rows[i].tipo = `Calle`;
+                                                        result.rows[i].id = result.rows[i].id_calle;
+                                                        result.rows[i].campo = `Id`;
+                                                        result.rows[i].imagen = imagen;
+                                                        result.rows[i].tabla = tabla;
                                                         result.rows[i].scoring = {
                                                             fiability: 15,
                                                             tipo_vialidad: 100,
@@ -1050,6 +1466,38 @@ async function sinEstado(direccionParsed) {
                                                         values = [direccionParsed.TIPOVIAL, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1, direccionParsed.COLONIA];
                                                         const result = await pgClient.query(query, values);
                                                         for (let i = 0; i < result.rows.length; i++) {
+                                                            // Inicializar la cadena de resultado
+                                                            let resultado = '';
+                                                            let tabla = '';
+                                                            let imagen = '';
+
+                                                            // Concatenar cada campo si tiene un valor
+                                                            if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
+                                                            if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                                            if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                                            if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                                            if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                                            if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                                                            if (result.rows[i].tipo == 'CALLE') {
+                                                                tabla = `carto_calle`;
+                                                                imagen = `linea`;
+                                                            }
+                                                            else if (result.rows[i].tipo == 'CARRETERA') {
+                                                                tabla = `carto_carreteras123`;
+                                                                imagen = `linea`;
+                                                            }
+                                                            else if (result.rows[i].tipo == 'POI') {
+                                                                tabla = `carto_poi`;
+                                                                imagen = `punto`;
+                                                            }
+                                                            // Asignar el resultado al campo "resultado"
+                                                            result.rows[i].resultado = resultado.trim();
+                                                            result.rows[i].tipo = `Calle`;
+                                                            result.rows[i].id = result.rows[i].id_calle;
+                                                            result.rows[i].campo = `Id`;
+                                                            result.rows[i].imagen = imagen;
+                                                            result.rows[i].tabla = tabla;
                                                             result.rows[i].scoring = {
                                                                 fiability: 30,
                                                                 tipo_vialidad: 100,
@@ -1153,6 +1601,38 @@ async function sinEstado(direccionParsed) {
                                                             values = [direccionParsed.TIPOVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
                                                             const result = await pgClient.query(query, values);
                                                             for (let i = 0; i < result.rows.length; i++) {
+                                                                // Inicializar la cadena de resultado
+                                                                let resultado = '';
+                                                                let tabla = '';
+                                                                let imagen = '';
+
+                                                                // Concatenar cada campo si tiene un valor
+                                                                if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
+                                                                if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                                                if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                                                if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                                                if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                                                if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                                                                if (result.rows[i].tipo == 'CALLE') {
+                                                                    tabla = `carto_calle`;
+                                                                    imagen = `linea`;
+                                                                }
+                                                                else if (result.rows[i].tipo == 'CARRETERA') {
+                                                                    tabla = `carto_carreteras123`;
+                                                                    imagen = `linea`;
+                                                                }
+                                                                else if (result.rows[i].tipo == 'POI') {
+                                                                    tabla = `carto_poi`;
+                                                                    imagen = `punto`;
+                                                                }
+                                                                // Asignar el resultado al campo "resultado"
+                                                                result.rows[i].resultado = resultado.trim();
+                                                                result.rows[i].tipo = `Calle`;
+                                                                result.rows[i].id = result.rows[i].id_calle;
+                                                                result.rows[i].campo = `Id`;
+                                                                result.rows[i].imagen = imagen;
+                                                                result.rows[i].tabla = tabla;
                                                                 result.rows[i].scoring = {
                                                                     fiability: 40,
                                                                     tipo_vialidad: 100,
@@ -1255,6 +1735,38 @@ async function sinEstado(direccionParsed) {
                                                                 values = [direccionParsed.TIPOVIAL, direccionParsed.MUNICIPIO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
                                                                 const result = await pgClient.query(query, values);
                                                                 for (let i = 0; i < result.rows.length; i++) {
+                                                                    // Inicializar la cadena de resultado
+                                                                    let resultado = '';
+                                                                    let tabla = '';
+                                                                    let imagen = '';
+
+                                                                    // Concatenar cada campo si tiene un valor
+                                                                    if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
+                                                                    if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                                                    if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                                                    if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                                                    if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                                                    if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                                                                    if (result.rows[i].tipo == 'CALLE') {
+                                                                        tabla = `carto_calle`;
+                                                                        imagen = `linea`;
+                                                                    }
+                                                                    else if (result.rows[i].tipo == 'CARRETERA') {
+                                                                        tabla = `carto_carreteras123`;
+                                                                        imagen = `linea`;
+                                                                    }
+                                                                    else if (result.rows[i].tipo == 'POI') {
+                                                                        tabla = `carto_poi`;
+                                                                        imagen = `punto`;
+                                                                    }
+                                                                    // Asignar el resultado al campo "resultado"
+                                                                    result.rows[i].resultado = resultado.trim();
+                                                                    result.rows[i].tipo = `Calle`;
+                                                                    result.rows[i].id = result.rows[i].id_calle;
+                                                                    result.rows[i].campo = `Id`;
+                                                                    result.rows[i].imagen = imagen;
+                                                                    result.rows[i].tabla = tabla;
                                                                     result.rows[i].scoring = {
                                                                         fiability: 30,
                                                                         tipo_vialidad: 100,
@@ -1357,6 +1869,38 @@ async function sinEstado(direccionParsed) {
                                                                     values = [direccionParsed.TIPOVIAL, direccionParsed.CP, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
                                                                     const result = await pgClient.query(query, values);
                                                                     for (let i = 0; i < result.rows.length; i++) {
+                                                                        // Inicializar la cadena de resultado
+                                                                        let resultado = '';
+                                                                        let tabla = '';
+                                                                        let imagen = '';
+
+                                                                        // Concatenar cada campo si tiene un valor
+                                                                        if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
+                                                                        if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                                                        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                                                        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                                                        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                                                        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                                                                        if (result.rows[i].tipo == 'CALLE') {
+                                                                            tabla = `carto_calle`;
+                                                                            imagen = `linea`;
+                                                                        }
+                                                                        else if (result.rows[i].tipo == 'CARRETERA') {
+                                                                            tabla = `carto_carreteras123`;
+                                                                            imagen = `linea`;
+                                                                        }
+                                                                        else if (result.rows[i].tipo == 'POI') {
+                                                                            tabla = `carto_poi`;
+                                                                            imagen = `punto`;
+                                                                        }
+                                                                        // Asignar el resultado al campo "resultado"
+                                                                        result.rows[i].resultado = resultado.trim();
+                                                                        result.rows[i].tipo = `Calle`;
+                                                                        result.rows[i].id = result.rows[i].id_calle;
+                                                                        result.rows[i].campo = `Id`;
+                                                                        result.rows[i].imagen = imagen;
+                                                                        result.rows[i].tabla = tabla;
                                                                         result.rows[i].scoring = {
                                                                             fiability: 30,
                                                                             tipo_vialidad: 100,
@@ -1408,6 +1952,38 @@ async function sinEstado(direccionParsed) {
                                                                         values = [direccionParsed.TIPOVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
                                                                         const result = await pgClient.query(query, values);
                                                                         for (let i = 0; i < result.rows.length; i++) {
+                                                                            // Inicializar la cadena de resultado
+                                                                            let resultado = '';
+                                                                            let tabla = '';
+                                                                            let imagen = '';
+
+                                                                            // Concatenar cada campo si tiene un valor
+                                                                            if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
+                                                                            if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                                                            if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                                                            if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                                                            if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                                                            if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                                                                            if (result.rows[i].tipo == 'CALLE') {
+                                                                                tabla = `carto_calle`;
+                                                                                imagen = `linea`;
+                                                                            }
+                                                                            else if (result.rows[i].tipo == 'CARRETERA') {
+                                                                                tabla = `carto_carreteras123`;
+                                                                                imagen = `linea`;
+                                                                            }
+                                                                            else if (result.rows[i].tipo == 'POI') {
+                                                                                tabla = `carto_poi`;
+                                                                                imagen = `punto`;
+                                                                            }
+                                                                            // Asignar el resultado al campo "resultado"
+                                                                            result.rows[i].resultado = resultado.trim();
+                                                                            result.rows[i].tipo = `Calle`;
+                                                                            result.rows[i].id = result.rows[i].id_calle;
+                                                                            result.rows[i].campo = `Id`;
+                                                                            result.rows[i].imagen = imagen;
+                                                                            result.rows[i].tabla = tabla;
                                                                             result.rows[i].scoring = {
                                                                                 fiability: 25,
                                                                                 tipo_vialidad: 100,
@@ -1457,6 +2033,38 @@ async function sinEstado(direccionParsed) {
                                                                             values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL];
                                                                             const result = await pgClient.query(query, values);
                                                                             for (let i = 0; i < result.rows.length; i++) {
+                                                                                // Inicializar la cadena de resultado
+                                                                                let resultado = '';
+                                                                                let tabla = '';
+                                                                                let imagen = '';
+
+                                                                                // Concatenar cada campo si tiene un valor
+                                                                                if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
+                                                                                if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                                                                if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                                                                if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                                                                if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                                                                if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                                                                                if (result.rows[i].tipo == 'CALLE') {
+                                                                                    tabla = `carto_calle`;
+                                                                                    imagen = `linea`;
+                                                                                }
+                                                                                else if (result.rows[i].tipo == 'CARRETERA') {
+                                                                                    tabla = `carto_carreteras123`;
+                                                                                    imagen = `linea`;
+                                                                                }
+                                                                                else if (result.rows[i].tipo == 'POI') {
+                                                                                    tabla = `carto_poi`;
+                                                                                    imagen = `punto`;
+                                                                                }
+                                                                                // Asignar el resultado al campo "resultado"
+                                                                                result.rows[i].resultado = resultado.trim();
+                                                                                result.rows[i].tipo = `Calle`;
+                                                                                result.rows[i].id = result.rows[i].id_calle;
+                                                                                result.rows[i].campo = `Id`;
+                                                                                result.rows[i].imagen = imagen;
+                                                                                result.rows[i].tabla = tabla;
                                                                                 result.rows[i].scoring = {
                                                                                     fiability: 20,
                                                                                     tipo_vialidad: 100,
@@ -1506,6 +2114,38 @@ async function sinEstado(direccionParsed) {
                                                                                 values = [direccionParsed.TIPOVIAL, direccionParsed.MUNICIPIO];
                                                                                 const result = await pgClient.query(query, values);
                                                                                 for (let i = 0; i < result.rows.length; i++) {
+                                                                                // Inicializar la cadena de resultado
+                                                                                let resultado = '';
+                                                                                let tabla = '';
+                                                                                let imagen = '';
+                                                                        
+                                                                                // Concatenar cada campo si tiene un valor
+                                                                                if (result.rows[i].tipo_vialidad) resultado += `${result.rows[i].tipo_vialidad} `;
+                                                                                if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                                                                if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                                                                if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                                                                if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                                                                if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+                                                                        
+                                                                                if (result.rows[i].tipo == 'CALLE') {
+                                                                                    tabla = `carto_calle`;
+                                                                                    imagen = `linea`;
+                                                                                }
+                                                                                else if (result.rows[i].tipo == 'CARRETERA'){
+                                                                                    tabla = `carto_carreteras123`;
+                                                                                    imagen = `linea`;
+                                                                                }
+                                                                                else if (result.rows[i].tipo == 'POI'){
+                                                                                    tabla = `carto_poi`;
+                                                                                    imagen = `punto`;
+                                                                                } 
+                                                                                // Asignar el resultado al campo "resultado"
+                                                                                result.rows[i].resultado = resultado.trim();
+                                                                                result.rows[i].tipo = `Calle`;
+                                                                                result.rows[i].id = result.rows[i].id_calle;
+                                                                                result.rows[i].campo = `Id`;
+                                                                                result.rows[i].imagen = imagen;
+                                                                                result.rows[i].tabla = tabla;
                                                                                     result.rows[i].scoring = {
                                                                                         fiability: 15,
                                                                                         tipo_vialidad: 100,

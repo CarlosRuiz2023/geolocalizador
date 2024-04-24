@@ -20,6 +20,22 @@ async function sinEstado(direccionParsed) {
     values = [direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
     const result = await pgClient.query(query, values);
     for (let i = 0; i < result.rows.length; i++) {
+        // Inicializar la cadena de resultado
+        let resultado = '';
+
+        // Concatenar cada campo si tiene un valor
+        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+        // Asignar el resultado al campo "resultado"
+        result.rows[i].resultado = resultado.trim();
+        result.rows[i].tipo = `Colonia`;
+        result.rows[i].id = result.rows[i].id_colonia;
+        result.rows[i].campo = `Id`;
+        result.rows[i].imagen = 'poligono';
+        result.rows[i].tabla = 'carto_colonia';
         result.rows[i].scoring = {
             fiability: 50,
             colonia: 0,
@@ -51,6 +67,22 @@ async function sinEstado(direccionParsed) {
         values = [direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
         const result = await pgClient.query(query, values);
         for (let i = 0; i < result.rows.length; i++) {
+            // Inicializar la cadena de resultado
+            let resultado = '';
+
+            // Concatenar cada campo si tiene un valor
+            if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+            if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+            if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+            if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+            // Asignar el resultado al campo "resultado"
+            result.rows[i].resultado = resultado.trim();
+            result.rows[i].tipo = `Colonia`;
+            result.rows[i].id = result.rows[i].id_colonia;
+            result.rows[i].campo = `Id`;
+            result.rows[i].imagen = 'poligono';
+            result.rows[i].tabla = 'carto_colonia';
             result.rows[i].scoring = {
                 fiability: 25,
                 colonia: 0,
@@ -82,6 +114,22 @@ async function sinEstado(direccionParsed) {
             values = [direccionParsed.CP, direccionParsed.COLONIA];
             const result = await pgClient.query(query, values);
             for (let i = 0; i < result.rows.length; i++) {
+                // Inicializar la cadena de resultado
+                let resultado = '';
+
+                // Concatenar cada campo si tiene un valor
+                if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                // Asignar el resultado al campo "resultado"
+                result.rows[i].resultado = resultado.trim();
+                result.rows[i].tipo = `Colonia`;
+                result.rows[i].id = result.rows[i].id_colonia;
+                result.rows[i].campo = `Id`;
+                result.rows[i].imagen = 'poligono';
+                result.rows[i].tabla = 'carto_colonia';
                 result.rows[i].scoring = {
                     fiability: 25,
                     colonia: 0,
@@ -112,6 +160,22 @@ async function sinEstado(direccionParsed) {
                 values = [direccionParsed.COLONIA];
                 const result = await pgClient.query(query, values);
                 for (let i = 0; i < result.rows.length; i++) {
+                    // Inicializar la cadena de resultado
+                    let resultado = '';
+
+                    // Concatenar cada campo si tiene un valor
+                    if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                    if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                    if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                    if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                    // Asignar el resultado al campo "resultado"
+                    result.rows[i].resultado = resultado.trim();
+                    result.rows[i].tipo = `Colonia`;
+                    result.rows[i].id = result.rows[i].id_colonia;
+                    result.rows[i].campo = `Id`;
+                    result.rows[i].imagen = 'poligono';
+                    result.rows[i].tabla = 'carto_colonia';
                     result.rows[i].scoring = {
                         fiability: 0,
                         colonia: 0,
@@ -143,6 +207,22 @@ async function sinEstado(direccionParsed) {
                     values = [direccionParsed.CP, direccionParsed.MUNICIPIO];
                     const result = await pgClient.query(query, values);
                     for (let i = 0; i < result.rows.length; i++) {
+                        // Inicializar la cadena de resultado
+                        let resultado = '';
+
+                        // Concatenar cada campo si tiene un valor
+                        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                        // Asignar el resultado al campo "resultado"
+                        result.rows[i].resultado = resultado.trim();
+                        result.rows[i].tipo = `Colonia`;
+                        result.rows[i].id = result.rows[i].id_colonia;
+                        result.rows[i].campo = `Id`;
+                        result.rows[i].imagen = 'poligono';
+                        result.rows[i].tabla = 'carto_colonia';
                         result.rows[i].scoring = {
                             fiability: 50,
                             colonia: 0,
@@ -173,6 +253,22 @@ async function sinEstado(direccionParsed) {
                         values = [direccionParsed.MUNICIPIO];
                         const result = await pgClient.query(query, values);
                         for (let i = 0; i < result.rows.length; i++) {
+                            // Inicializar la cadena de resultado
+                            let resultado = '';
+
+                            // Concatenar cada campo si tiene un valor
+                            if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                            if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                            if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                            if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                            // Asignar el resultado al campo "resultado"
+                            result.rows[i].resultado = resultado.trim();
+                            result.rows[i].tipo = `Colonia`;
+                            result.rows[i].id = result.rows[i].id_colonia;
+                            result.rows[i].campo = `Id`;
+                            result.rows[i].imagen = 'poligono';
+                            result.rows[i].tabla = 'carto_colonia';
                             result.rows[i].scoring = {
                                 fiability: 25,
                                 colonia: 0,
@@ -203,6 +299,22 @@ async function sinEstado(direccionParsed) {
                             values = [direccionParsed.CP];
                             const result = await pgClient.query(query, values);
                             for (let i = 0; i < result.rows.length; i++) {
+                                // Inicializar la cadena de resultado
+                                let resultado = '';
+
+                                // Concatenar cada campo si tiene un valor
+                                if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                                // Asignar el resultado al campo "resultado"
+                                result.rows[i].resultado = resultado.trim();
+                                result.rows[i].tipo = `Colonia`;
+                                result.rows[i].id = result.rows[i].id_colonia;
+                                result.rows[i].campo = `Id`;
+                                result.rows[i].imagen = 'poligono';
+                                result.rows[i].tabla = 'carto_colonia';
                                 result.rows[i].scoring = {
                                     fiability: 25,
                                     colonia: 0,

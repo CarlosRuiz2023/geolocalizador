@@ -22,6 +22,23 @@ async function sinCP(direccionParsed) {
     values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
     const result = await pgClient.query(query, values);
     for (let i = 0; i < result.rows.length; i++) {
+        // Inicializar la cadena de resultado
+        let resultado = '';
+
+        // Concatenar cada campo si tiene un valor
+        if (result.rows[i].poi) resultado += `${result.rows[i].poi} `;
+        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+        // Asignar el resultado al campo "resultado"
+        result.rows[i].resultado = resultado.trim();
+        result.rows[i].tipo = `Poi`;
+        result.rows[i].id = result.rows[i].id_calle;
+        result.rows[i].campo = `Id`;
+        result.rows[i].imagen = 'punto';
+        result.rows[i].tabla = 'carto_poi';
         result.rows[i].scoring = {
             fiability: 40,
             poi: 0,
@@ -66,6 +83,23 @@ async function sinCP(direccionParsed) {
         values = [direccionParsed.CALLE, direccionParsed.ESTADO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
         const result = await pgClient.query(query, values);
         for (let i = 0; i < result.rows.length; i++) {
+            // Inicializar la cadena de resultado
+            let resultado = '';
+
+            // Concatenar cada campo si tiene un valor
+            if (result.rows[i].poi) resultado += `${result.rows[i].poi} `;
+            if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+            if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+            if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+            if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+            // Asignar el resultado al campo "resultado"
+            result.rows[i].resultado = resultado.trim();
+            result.rows[i].tipo = `Poi`;
+            result.rows[i].id = result.rows[i].id_calle;
+            result.rows[i].campo = `Id`;
+            result.rows[i].imagen = 'punto';
+            result.rows[i].tabla = 'carto_poi';
             result.rows[i].scoring = {
                 fiability: 30,
                 poi: 0,
@@ -110,6 +144,23 @@ async function sinCP(direccionParsed) {
             values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
             const result = await pgClient.query(query, values);
             for (let i = 0; i < result.rows.length; i++) {
+                // Inicializar la cadena de resultado
+                let resultado = '';
+
+                // Concatenar cada campo si tiene un valor
+                if (result.rows[i].poi) resultado += `${result.rows[i].poi} `;
+                if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                // Asignar el resultado al campo "resultado"
+                result.rows[i].resultado = resultado.trim();
+                result.rows[i].tipo = `Poi`;
+                result.rows[i].id = result.rows[i].id_calle;
+                result.rows[i].campo = `Id`;
+                result.rows[i].imagen = 'punto';
+                result.rows[i].tabla = 'carto_poi';
                 result.rows[i].scoring = {
                     fiability: 30,
                     poi: 0,
@@ -154,6 +205,23 @@ async function sinCP(direccionParsed) {
                 values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1];
                 const result = await pgClient.query(query, values);
                 for (let i = 0; i < result.rows.length; i++) {
+                    // Inicializar la cadena de resultado
+                    let resultado = '';
+
+                    // Concatenar cada campo si tiene un valor
+                    if (result.rows[i].poi) resultado += `${result.rows[i].poi} `;
+                    if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                    if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                    if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                    if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                    // Asignar el resultado al campo "resultado"
+                    result.rows[i].resultado = resultado.trim();
+                    result.rows[i].tipo = `Poi`;
+                    result.rows[i].id = result.rows[i].id_calle;
+                    result.rows[i].campo = `Id`;
+                    result.rows[i].imagen = 'punto';
+                    result.rows[i].tabla = 'carto_poi';
                     result.rows[i].scoring = {
                         fiability: 40,
                         poi: 0,
@@ -197,6 +265,23 @@ async function sinCP(direccionParsed) {
                     values = [direccionParsed.CALLE, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1];
                     const result = await pgClient.query(query, values);
                     for (let i = 0; i < result.rows.length; i++) {
+                        // Inicializar la cadena de resultado
+                        let resultado = '';
+
+                        // Concatenar cada campo si tiene un valor
+                        if (result.rows[i].poi) resultado += `${result.rows[i].poi} `;
+                        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                        // Asignar el resultado al campo "resultado"
+                        result.rows[i].resultado = resultado.trim();
+                        result.rows[i].tipo = `Poi`;
+                        result.rows[i].id = result.rows[i].id_calle;
+                        result.rows[i].campo = `Id`;
+                        result.rows[i].imagen = 'punto';
+                        result.rows[i].tabla = 'carto_poi';
                         result.rows[i].scoring = {
                             fiability: 30,
                             poi: 0,
@@ -240,6 +325,23 @@ async function sinCP(direccionParsed) {
                         values = [direccionParsed.CALLE, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
                         const result = await pgClient.query(query, values);
                         for (let i = 0; i < result.rows.length; i++) {
+                            // Inicializar la cadena de resultado
+                            let resultado = '';
+
+                            // Concatenar cada campo si tiene un valor
+                            if (result.rows[i].poi) resultado += `${result.rows[i].poi} `;
+                            if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                            if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                            if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                            if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                            // Asignar el resultado al campo "resultado"
+                            result.rows[i].resultado = resultado.trim();
+                            result.rows[i].tipo = `Poi`;
+                            result.rows[i].id = result.rows[i].id_calle;
+                            result.rows[i].campo = `Id`;
+                            result.rows[i].imagen = 'punto';
+                            result.rows[i].tabla = 'carto_poi';
                             result.rows[i].scoring = {
                                 fiability: 20,
                                 poi: 0,
@@ -284,6 +386,23 @@ async function sinCP(direccionParsed) {
                             values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
                             const result = await pgClient.query(query, values);
                             for (let i = 0; i < result.rows.length; i++) {
+                                // Inicializar la cadena de resultado
+                                let resultado = '';
+
+                                // Concatenar cada campo si tiene un valor
+                                if (result.rows[i].poi) resultado += `${result.rows[i].poi} `;
+                                if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                                // Asignar el resultado al campo "resultado"
+                                result.rows[i].resultado = resultado.trim();
+                                result.rows[i].tipo = `Poi`;
+                                result.rows[i].id = result.rows[i].id_calle;
+                                result.rows[i].campo = `Id`;
+                                result.rows[i].imagen = 'punto';
+                                result.rows[i].tabla = 'carto_poi';
                                 result.rows[i].scoring = {
                                     fiability: 20,
                                     poi: 0,
@@ -327,6 +446,23 @@ async function sinCP(direccionParsed) {
                                 values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1];
                                 const result = await pgClient.query(query, values);
                                 for (let i = 0; i < result.rows.length; i++) {
+                                    // Inicializar la cadena de resultado
+                                    let resultado = '';
+
+                                    // Concatenar cada campo si tiene un valor
+                                    if (result.rows[i].poi) resultado += `${result.rows[i].poi} `;
+                                    if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                    if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                    if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                    if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                                    // Asignar el resultado al campo "resultado"
+                                    result.rows[i].resultado = resultado.trim();
+                                    result.rows[i].tipo = `Poi`;
+                                    result.rows[i].id = result.rows[i].id_calle;
+                                    result.rows[i].campo = `Id`;
+                                    result.rows[i].imagen = 'punto';
+                                    result.rows[i].tabla = 'carto_poi';
                                     result.rows[i].scoring = {
                                         fiability: 30,
                                         poi: 0,
@@ -370,6 +506,23 @@ async function sinCP(direccionParsed) {
                                     values = [direccionParsed.CALLE, direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
                                     const result = await pgClient.query(query, values);
                                     for (let i = 0; i < result.rows.length; i++) {
+                                        // Inicializar la cadena de resultado
+                                        let resultado = '';
+
+                                        // Concatenar cada campo si tiene un valor
+                                        if (result.rows[i].poi) resultado += `${result.rows[i].poi} `;
+                                        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                                        // Asignar el resultado al campo "resultado"
+                                        result.rows[i].resultado = resultado.trim();
+                                        result.rows[i].tipo = `Poi`;
+                                        result.rows[i].id = result.rows[i].id_calle;
+                                        result.rows[i].campo = `Id`;
+                                        result.rows[i].imagen = 'punto';
+                                        result.rows[i].tabla = 'carto_poi';
                                         result.rows[i].scoring = {
                                             fiability: 10,
                                             poi: 0,
@@ -413,6 +566,23 @@ async function sinCP(direccionParsed) {
                                         values = [direccionParsed.CALLE, direccionParsed.ESTADO, direccionParsed.COLONIA];
                                         const result = await pgClient.query(query, values);
                                         for (let i = 0; i < result.rows.length; i++) {
+                                            // Inicializar la cadena de resultado
+                                            let resultado = '';
+
+                                            // Concatenar cada campo si tiene un valor
+                                            if (result.rows[i].poi) resultado += `${result.rows[i].poi} `;
+                                            if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                            if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                            if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                            if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                                            // Asignar el resultado al campo "resultado"
+                                            result.rows[i].resultado = resultado.trim();
+                                            result.rows[i].tipo = `Poi`;
+                                            result.rows[i].id = result.rows[i].id_calle;
+                                            result.rows[i].campo = `Id`;
+                                            result.rows[i].imagen = 'punto';
+                                            result.rows[i].tabla = 'carto_poi';
                                             result.rows[i].scoring = {
                                                 fiability: 10,
                                                 poi: 0,
@@ -456,6 +626,23 @@ async function sinCP(direccionParsed) {
                                             values = [direccionParsed.CALLE, direccionParsed.ESTADO, direccionParsed.MUNICIPIO];
                                             const result = await pgClient.query(query, values);
                                             for (let i = 0; i < result.rows.length; i++) {
+                                                // Inicializar la cadena de resultado
+                                                let resultado = '';
+
+                                                // Concatenar cada campo si tiene un valor
+                                                if (result.rows[i].poi) resultado += `${result.rows[i].poi} `;
+                                                if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                                if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                                if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                                if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                                                // Asignar el resultado al campo "resultado"
+                                                result.rows[i].resultado = resultado.trim();
+                                                result.rows[i].tipo = `Poi`;
+                                                result.rows[i].id = result.rows[i].id_calle;
+                                                result.rows[i].campo = `Id`;
+                                                result.rows[i].imagen = 'punto';
+                                                result.rows[i].tabla = 'carto_poi';
                                                 result.rows[i].scoring = {
                                                     fiability: 20,
                                                     poi: 0,
@@ -500,6 +687,23 @@ async function sinCP(direccionParsed) {
                                                 values = [direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
                                                 const result = await pgClient.query(query, values);
                                                 for (let i = 0; i < result.rows.length; i++) {
+                                                    // Inicializar la cadena de resultado
+                                                    let resultado = '';
+
+                                                    // Concatenar cada campo si tiene un valor
+                                                    if (result.rows[i].poi) resultado += `${result.rows[i].poi} `;
+                                                    if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                                    if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                                    if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                                    if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                                                    // Asignar el resultado al campo "resultado"
+                                                    result.rows[i].resultado = resultado.trim();
+                                                    result.rows[i].tipo = `Poi`;
+                                                    result.rows[i].id = result.rows[i].id_calle;
+                                                    result.rows[i].campo = `Id`;
+                                                    result.rows[i].imagen = 'punto';
+                                                    result.rows[i].tabla = 'carto_poi';
                                                     result.rows[i].scoring = {
                                                         fiability: 40,
                                                         poi: 0,
@@ -543,6 +747,23 @@ async function sinCP(direccionParsed) {
                                                     values = [direccionParsed.MUNICIPIO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
                                                     const result = await pgClient.query(query, values);
                                                     for (let i = 0; i < result.rows.length; i++) {
+                                                        // Inicializar la cadena de resultado
+                                                        let resultado = '';
+
+                                                        // Concatenar cada campo si tiene un valor
+                                                        if (result.rows[i].poi) resultado += `${result.rows[i].poi} `;
+                                                        if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                                        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                                        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                                        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                                                        // Asignar el resultado al campo "resultado"
+                                                        result.rows[i].resultado = resultado.trim();
+                                                        result.rows[i].tipo = `Poi`;
+                                                        result.rows[i].id = result.rows[i].id_calle;
+                                                        result.rows[i].campo = `Id`;
+                                                        result.rows[i].imagen = 'punto';
+                                                        result.rows[i].tabla = 'carto_poi';
                                                         result.rows[i].scoring = {
                                                             fiability: 30,
                                                             poi: 0,
@@ -586,6 +807,23 @@ async function sinCP(direccionParsed) {
                                                         values = [direccionParsed.ESTADO, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
                                                         const result = await pgClient.query(query, values);
                                                         for (let i = 0; i < result.rows.length; i++) {
+                                                            // Inicializar la cadena de resultado
+                                                            let resultado = '';
+
+                                                            // Concatenar cada campo si tiene un valor
+                                                            if (result.rows[i].poi) resultado += `${result.rows[i].poi} `;
+                                                            if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                                            if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                                            if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                                            if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                                                            // Asignar el resultado al campo "resultado"
+                                                            result.rows[i].resultado = resultado.trim();
+                                                            result.rows[i].tipo = `Poi`;
+                                                            result.rows[i].id = result.rows[i].id_calle;
+                                                            result.rows[i].campo = `Id`;
+                                                            result.rows[i].imagen = 'punto';
+                                                            result.rows[i].tabla = 'carto_poi';
                                                             result.rows[i].scoring = {
                                                                 fiability: 30,
                                                                 poi: 0,
@@ -629,6 +867,23 @@ async function sinCP(direccionParsed) {
                                                             values = [direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
                                                             const result = await pgClient.query(query, values);
                                                             for (let i = 0; i < result.rows.length; i++) {
+                                                                // Inicializar la cadena de resultado
+                                                                let resultado = '';
+
+                                                                // Concatenar cada campo si tiene un valor
+                                                                if (result.rows[i].poi) resultado += `${result.rows[i].poi} `;
+                                                                if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                                                if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                                                if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                                                if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                                                                // Asignar el resultado al campo "resultado"
+                                                                result.rows[i].resultado = resultado.trim();
+                                                                result.rows[i].tipo = `Poi`;
+                                                                result.rows[i].id = result.rows[i].id_calle;
+                                                                result.rows[i].campo = `Id`;
+                                                                result.rows[i].imagen = 'punto';
+                                                                result.rows[i].tabla = 'carto_poi';
                                                                 result.rows[i].scoring = {
                                                                     fiability: 20,
                                                                     poi: 0,
@@ -671,6 +926,23 @@ async function sinCP(direccionParsed) {
                                                                 values = [direccionParsed.ESTADO, direccionParsed.MUNICIPIO];
                                                                 const result = await pgClient.query(query, values);
                                                                 for (let i = 0; i < result.rows.length; i++) {
+                                                                    // Inicializar la cadena de resultado
+                                                                    let resultado = '';
+
+                                                                    // Concatenar cada campo si tiene un valor
+                                                                    if (result.rows[i].poi) resultado += `${result.rows[i].poi} `;
+                                                                    if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                                                                    if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                                                                    if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                                                                    if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                                                                    // Asignar el resultado al campo "resultado"
+                                                                    result.rows[i].resultado = resultado.trim();
+                                                                    result.rows[i].tipo = `Poi`;
+                                                                    result.rows[i].id = result.rows[i].id_calle;
+                                                                    result.rows[i].campo = `Id`;
+                                                                    result.rows[i].imagen = 'punto';
+                                                                    result.rows[i].tabla = 'carto_poi';
                                                                     result.rows[i].scoring = {
                                                                         fiability: 20,
                                                                         poi: 0,

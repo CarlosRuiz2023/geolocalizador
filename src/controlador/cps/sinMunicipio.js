@@ -18,6 +18,21 @@ async function sinMunicipio(direccionParsed) {
     values = [direccionParsed.CP, direccionParsed.ESTADO];
     const result = await pgClient.query(query, values);
     for (let i = 0; i < result.rows.length; i++) {
+        // Inicializar la cadena de resultado
+        let resultado = '';
+
+        // Concatenar cada campo si tiene un valor
+        if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+        if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+        if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+        // Asignar el resultado al campo "resultado"
+        result.rows[i].resultado = resultado.trim();
+        result.rows[i].tipo = `Codigo_postal`;
+        result.rows[i].id = result.rows[i].id_codigo_postal;
+        result.rows[i].campo = `Id`;
+        result.rows[i].imagen = 'poligono';
+        result.rows[i].tabla = 'carto_codigo_postal';
         result.rows[i].scoring = {
             fiability: 100,
             codigo_postal: 100,
@@ -38,7 +53,21 @@ async function sinMunicipio(direccionParsed) {
         values = [direccionParsed.CP];
         const result = await pgClient.query(query, values);
         for (let i = 0; i < result.rows.length; i++) {
-            result.rows[i].scoring = {
+            // Inicializar la cadena de resultado
+            let resultado = '';
+
+            // Concatenar cada campo si tiene un valor
+            if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+            if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+            if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+            // Asignar el resultado al campo "resultado"
+            result.rows[i].resultado = resultado.trim();
+            result.rows[i].tipo = `Codigo_postal`;
+            result.rows[i].id = result.rows[i].id_codigo_postal;
+            result.rows[i].campo = `Id`;
+            result.rows[i].imagen = 'poligono';
+            result.rows[i].tabla = 'carto_codigo_postal'; result.rows[i].scoring = {
                 fiability: 50,
                 codigo_postal: 100,
                 estado: 0
