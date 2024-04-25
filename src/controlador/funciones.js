@@ -394,4 +394,14 @@ function quitarAcentos(texto) {
     texto = texto.replace(/\)/g, '');
     return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
-module.exports = { parseDireccion, levenshteinDistance, quitarAcentos };
+function capitalizeFirstLetter(str) {
+    // Capitaliza la primera letra de cada palabra
+    str = str.toLowerCase().replace(/^(.)|\s+(.)/g, function ($1) {
+        return $1.toUpperCase();
+    });
+    // Reemplaza todas las ocurrencias de "Ii" por "II"
+    str = str.replace(/Ii/g, 'II');
+    return str;
+}
+
+module.exports = { parseDireccion, levenshteinDistance, quitarAcentos, capitalizeFirstLetter};

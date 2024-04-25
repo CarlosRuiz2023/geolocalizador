@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const { parseDireccion } = require('./src/controlador/funciones');
+const { parseDireccion, capitalizeFirstLetter } = require('./src/controlador/funciones');
 const scoringMaestro = require('./src/controlador/scoring');
 const cors = require("cors"); // Middleware para manejar CORS (Cross-Origin Resource Sharing)
 const { config } = require('dotenv');
@@ -44,6 +44,27 @@ app.post('/geolocalizar', async (req, res) => {
         const results = await scoringMaestro(direccionParsed);
         // Reorganizamos por mayor fiabilidad.
         let sortedResults = results.sort((a, b) => b.scoring.fiability - a.scoring.fiability);
+
+        // Objeto para realizar un seguimiento de los resultados únicos
+        let resultadosUnicos = {};
+
+        if (!results[0].scoring.numero_exterior) {
+            // Filtrar los resultados para mantener solo los únicos basados en la propiedad 'resultado'
+            sortedResults = sortedResults.filter(result => {
+                // Verificar si el resultado ya ha sido encontrado y si el número exterior es 0
+                if (!resultadosUnicos[result.resultado]) {
+                    resultadosUnicos[result.resultado] = true; // Marcar el resultado como encontrado
+                    return true; // Mantener este resultado
+                }
+                return false; // Descartar este resultado porque ya se ha encontrado
+            });
+        }
+        sortedResults.forEach(result => {
+            // Capitalizar todas las palabras en la propiedad 'resultado'
+            if (result.hasOwnProperty('resultado')) {
+                result['resultado'] = capitalizeFirstLetter(result['resultado']);
+            }
+        });
         // Recortar a solo 10 resultados.
         sortedResults = sortedResults.slice(0, limit);
         // Devolver las coordenadas encontradas.

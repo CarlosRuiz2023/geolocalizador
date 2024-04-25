@@ -207,7 +207,7 @@ async function alone(direccionParsed) {
                 }
             }
             rows = rows.concat(result.rows);
-            if (result.rows.length === 0) {
+            /* if (result.rows.length === 0) {
                 // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
                 query = `
                     SELECT *,
@@ -274,7 +274,7 @@ async function alone(direccionParsed) {
                     }
                 }
                 rows = rows.concat(result.rows);
-            }
+            } */
         }
     }
     return rows;

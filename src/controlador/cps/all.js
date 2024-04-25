@@ -23,6 +23,7 @@ async function all(direccionParsed) {
         let resultado = '';
 
         // Concatenar cada campo si tiene un valor
+        resultado += `CP. `;
         if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
         if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
         if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
@@ -63,6 +64,7 @@ async function all(direccionParsed) {
             let resultado = '';
 
             // Concatenar cada campo si tiene un valor
+            resultado += `CP. `;
             if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
             if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
             if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
@@ -102,6 +104,7 @@ async function all(direccionParsed) {
                 let resultado = '';
 
                 // Concatenar cada campo si tiene un valor
+                resultado += `CP. `;
                 if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
                 if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
                 if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
@@ -140,6 +143,7 @@ async function all(direccionParsed) {
                     let resultado = '';
 
                     // Concatenar cada campo si tiene un valor
+                    resultado += `CP. `;
                     if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
                     if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
                     if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
