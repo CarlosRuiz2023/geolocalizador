@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const { parseDireccion } = require('./src/controlador/funciones');
 const scoringMaestro = require('./src/controlador/scoring');
 const cors = require("cors"); // Middleware para manejar CORS (Cross-Origin Resource Sharing)
+const { config } = require('dotenv');
 // CARGA LAS VARIABLES DE ENTORNO DESDE EL ARCHIVO .env
 require("dotenv").config();
 
@@ -17,12 +18,12 @@ app.use(express.urlencoded({ extended: true })); // x-www-form-urlencoded.
 // MIDDLEWARE PARA MANEJAR CORS
 app.use(
     cors({
-      origin: ["http://localhost:4200"],
-      methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-      preflightContinue: false,
-      optionsSuccessStatus: 204,
+        origin: ["http://localhost:4200"],
+        methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+        preflightContinue: false,
+        optionsSuccessStatus: 204,
     })
-  );
+);
 // MIDDLEWARE PARA SERVIR ARCHIVOS ESTÁTICOS DESDE LA CARPETA 'public'.
 app.use(express.static("public"));
 
@@ -47,6 +48,40 @@ app.post('/geolocalizar', async (req, res) => {
         sortedResults = sortedResults.slice(0, limit);
         // Devolver las coordenadas encontradas.
         if (results.length > 0) {
+            return res.status(200).json({ ok: true, results: sortedResults });
+        } else {
+            return res.status(404).json({ ok: false, error: 'Sin resultados.' });
+        }
+    } catch (error) {
+        // Manejar cualquier error que pueda ocurrir durante el proceso de geolocalización.
+        console.error('Error al geolocalizar dirección:', error);
+        return res.status(500).json({ ok: false, error: 'Contacte al Administrador.' });
+    }
+});
+
+// Endpoint para geolocalizar una dirección proporcionada por el usuario usando Here.
+app.post('/geolocalizadorHere', async (req, res) => {
+    try {
+        // Obtener la dirección proporcionada por el usuario desde el cuerpo de la solicitud.
+        const { direccion = '', limit = 5 } = req.body;
+
+        // Validar que venga la direccion con algun valor de busqueda.
+        if (!direccion) return res.status(404).json({ ok: false, error: 'Falta capturar alguna direccion al servicio. Intente nuevamente' });
+
+        const apiKey = process.env.API_HERE;
+        const direccionEstandar = encodeURIComponent(direccion);
+        const url = `https://geocode.search.hereapi.com/v1/geocode?q=${direccionEstandar}&apiKey=${apiKey}`;
+
+        const response = await fetch(url);
+        const data = await response.json();
+        // Recortar a solo 10 resultados.
+        let sortedResults = data.items.slice(0, limit);
+        // Agregar el atributo "resultado" a cada objeto en el array sortedResults
+        sortedResults = sortedResults.map(result => {
+            return { ...result, resultado: result.title };
+        });
+        // Devolver las coordenadas encontradas.
+        if (sortedResults.length > 0) {
             return res.status(200).json({ ok: true, results: sortedResults });
         } else {
             return res.status(404).json({ ok: false, error: 'Sin resultados.' });
