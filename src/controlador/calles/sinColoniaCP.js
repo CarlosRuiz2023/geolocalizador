@@ -152,6 +152,7 @@ async function sinColoniaCP(direccionParsed) {
 
             // Concatenar cada campo si tiene un valor
             if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+            resultado += `COL. `;
             if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
             if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
             if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
@@ -576,6 +577,7 @@ async function sinColoniaCP(direccionParsed) {
 
                             // Concatenar cada campo si tiene un valor
                             if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                            resultado += `COL. `;
                             if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
                             if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
                             if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
@@ -645,6 +647,7 @@ async function sinColoniaCP(direccionParsed) {
 
                                 // Concatenar cada campo si tiene un valor
                                 if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                resultado += `COL. `;
                                 if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
                                 if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
                                 if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
@@ -714,6 +717,7 @@ async function sinColoniaCP(direccionParsed) {
 
                                     // Concatenar cada campo si tiene un valor
                                     if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
+                                    resultado += `COL. `;
                                     if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
                                     if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
                                     if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
@@ -815,29 +819,30 @@ async function sinColoniaCP(direccionParsed) {
                                             result.rows[i].scoring.calle += similarity;
                                             result.rows[i].scoring.fiability += (similarity * 0.5);
                                         }
-                                        if (result.rows[i].l_refaddr <= direccionParsed.NUMEXTNUM1 && result.rows[i].l_nrefaddr >= direccionParsed.NUMEXTNUM1 && (similarityColonia > 80 || similarity > 80)) {
+                                        if (result.rows[i].l_refaddr <= direccionParsed.NUMEXTNUM1 && result.rows[i].l_nrefaddr >= direccionParsed.NUMEXTNUM1 && similarity > 80) {
                                             result.rows[i].scoring.numero_exterior += 100;
-                                            result.rows[i].scoring.fiability += 10;
+                                            result.rows[i].scoring.fiability += 20;
                                             result.rows[i].imagen = 'punto';
                                         }
-                                        else if (result.rows[i].l_refaddr >= direccionParsed.NUMEXTNUM1 && result.rows[i].l_nrefaddr <= direccionParsed.NUMEXTNUM1 && (similarityColonia > 80 || similarity > 80)) {
+                                        else if (result.rows[i].l_refaddr >= direccionParsed.NUMEXTNUM1 && result.rows[i].l_nrefaddr <= direccionParsed.NUMEXTNUM1 && similarity > 80) {
                                             result.rows[i].scoring.numero_exterior += 100;
-                                            result.rows[i].scoring.fiability += 10;
+                                            result.rows[i].scoring.fiability += 20;
                                             result.rows[i].imagen = 'punto';
                                         }
-                                        else if (result.rows[i].r_refaddr <= direccionParsed.NUMEXTNUM1 && result.rows[i].r_nrefaddr >= direccionParsed.NUMEXTNUM1 && (similarityColonia > 80 || similarity > 80)) {
+                                        else if (result.rows[i].r_refaddr <= direccionParsed.NUMEXTNUM1 && result.rows[i].r_nrefaddr >= direccionParsed.NUMEXTNUM1 && similarity > 80) {
                                             result.rows[i].scoring.numero_exterior += 100;
-                                            result.rows[i].scoring.fiability += 10;
+                                            result.rows[i].scoring.fiability += 20;
                                             result.rows[i].imagen = 'punto';
                                         }
-                                        else if (result.rows[i].r_refaddr >= direccionParsed.NUMEXTNUM1 && result.rows[i].r_nrefaddr <= direccionParsed.NUMEXTNUM1 && (similarityColonia > 80 || similarity > 80)) {
+                                        else if (result.rows[i].r_refaddr >= direccionParsed.NUMEXTNUM1 && result.rows[i].r_nrefaddr <= direccionParsed.NUMEXTNUM1 && similarity > 80) {
                                             result.rows[i].scoring.numero_exterior += 100;
-                                            result.rows[i].scoring.fiability += 10;
+                                            result.rows[i].scoring.fiability += 20;
                                             result.rows[i].imagen = 'punto';
                                         }
                                         // Concatenar cada campo si tiene un valor
                                         if (result.rows[i].nombre_vialidad) resultado += `${result.rows[i].nombre_vialidad} `;
                                         if (result.rows[i].imagen === 'punto') resultado += `${direccionParsed.NUMEXTNUM1} `;
+                                        else resultado += `COL. `;
                                         if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
                                         if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
                                         if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;

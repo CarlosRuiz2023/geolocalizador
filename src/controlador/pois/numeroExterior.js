@@ -74,6 +74,7 @@ async function numeroExterior(direccionParsed) {
 
             // Concatenar cada campo si tiene un valor
             if (result.rows[i].poi) resultado += `${result.rows[i].poi} `;
+            resultado += `COL. `;
             if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
             if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
             if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
@@ -171,15 +172,7 @@ async function numeroExterior(direccionParsed) {
                     // Inicializar la cadena de resultado
                     let resultado = '';
 
-                    // Concatenar cada campo si tiene un valor
-                    if (result.rows[i].poi) resultado += `${result.rows[i].poi} `;
-                    if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
-                    if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
-                    if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
-                    if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
-
                     // Asignar el resultado al campo "resultado"
-                    result.rows[i].resultado = resultado.trim();
                     result.rows[i].tipo = `POI`;
                     result.rows[i].id = result.rows[i].id_calle;
                     result.rows[i].campo = `Id`;
@@ -202,6 +195,21 @@ async function numeroExterior(direccionParsed) {
                         result.rows[i].scoring.poi += similarity;
                         result.rows[i].scoring.fiability += (similarity * 0.5);
                     }
+                    if (result.rows[i].numero === direccionParsed.NUMEXTNUM1 && similarity > 80 ) {
+                        result.rows[i].scoring.numero_exterior += 100;
+                        result.rows[i].scoring.fiability += 50;
+                    }
+                    // Concatenar cada campo si tiene un valor
+                    if (result.rows[i].poi) resultado += `${result.rows[i].poi} `;
+                    if(result.rows[i].scoring.numero_exterior===100) resultado += `${direccionParsed.NUMEXTNUM1} `;
+                    else resultado += `COL. `;
+                    if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
+                    if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
+                    if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
+                    if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
+
+                    // Asignar el resultado al campo "resultado"
+                    result.rows[i].resultado = resultado.trim();
                 }
                 rows = rows.concat(result.rows);
             }

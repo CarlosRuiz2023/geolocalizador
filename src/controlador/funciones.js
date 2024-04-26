@@ -400,7 +400,46 @@ function capitalizeFirstLetter(str) {
         return $1.toUpperCase();
     });
     // Reemplaza todas las ocurrencias de "Ii" por "II"
-    str = str.replace(/Ii/g, 'II');
+    str = str.replace('Ii ', 'II ');
+    // Reemplaza todas las ocurrencias de "Iii" por "III"
+    str = str.replace('Iii ', 'III ');
+    // Reemplaza todas las ocurrencias de "Iv" por "IV"
+    str = str.replace('Iv ', 'IV ');
+    // Reemplaza todas las ocurrencias de "Vi" por "VI"
+    str = str.replace('Vi ', 'VI ');
+    // Reemplaza todas las ocurrencias de "Vii" por "VII"
+    str = str.replace('Vii ', 'VII ');
+    // Reemplaza todas las ocurrencias de "Viii" por "VIII"
+    str = str.replace('Viii ', 'VIII ');
+    // Reemplaza todas las ocurrencias de "Ix" por "IX"
+    str = str.replace('Ix ', 'IX ');
+    // Reemplaza todas las ocurrencias de "Xi" por "XI"
+    str = str.replace('Xi ', 'XI ');
+    // Reemplaza todas las ocurrencias de "Xii" por "XII"
+    str = str.replace('Xii ', 'XII ');
+    // Reemplaza todas las ocurrencias de "Xiii" por "XIII"
+    str = str.replace('Xiii ', 'XIII ');
+    // Reemplaza todas las ocurrencias de "Xiv" por "XIV"
+    str = str.replace('Xiv ', 'XIV ');
+    // Reemplaza todas las ocurrencias de "Xv" por "XV"
+    str = str.replace('Xv ', 'XV ');
+    // Reemplaza todas las ocurrencias de "Xvi" por "XVI"
+    str = str.replace('Xvi ', 'XVI ');
+    // Reemplaza todas las ocurrencias de "Xvii" por "XVII"
+    str = str.replace('Xvii ', 'XVII ');
+    // Reemplaza todas las ocurrencias de "Xviii" por "XVIII"
+    str = str.replace('Xviii ', 'XVIII ');
+    // Reemplaza todas las ocurrencias de "Xix" por "XIX"
+    str = str.replace('Xix ', 'XIX ');
+    // Reemplaza todas las ocurrencias de "Xxi" por "XXI"
+    str = str.replace('Xx ', 'XX ');
+    // Reemplaza todas las ocurrencias de "Xxi" por "XXI"
+    str = str.replace('Xxi ', 'XXI ');
+    // Reemplaza todas las ocurrencias de "Xxi" por "XXI"
+    str = str.replace('Xxi ', 'XXI ');
+    // Reemplaza todas las ocurrencias de "Xxiii" por "XXIII"
+    str = str.replace('Xxiii ', 'XXIII ');
+
     return str;
 }
 

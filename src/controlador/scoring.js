@@ -46,7 +46,7 @@ async function scoringMaestro(direccionParsed) {
         else if (direccionParsed.MUNICIPIO && direccionParsed.NUMEXTNUM1) {
             results=await municipioNumeroExterior_Vialidad(direccionParsed);
         }
-        else if (ireccionParsed.NUMEXTNUM1) {
+        else if (direccionParsed.NUMEXTNUM1) {
             results=await numeroExterior_Vialidad(direccionParsed);
         }
         else {

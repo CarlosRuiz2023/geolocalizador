@@ -163,6 +163,7 @@ async function numeroExteriorColonia(direccionParsed) {
             // Concatenar cada campo si tiene un valor
             if (result.rows[i].tipo_asentamiento) resultado += `${result.rows[i].tipo_asentamiento} `;
             if (result.rows[i].nombre_asentamiento) resultado += `${result.rows[i].nombre_asentamiento} `;
+            resultado += `COL. `;
             if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
             if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
             if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
@@ -498,6 +499,7 @@ async function numeroExteriorColonia(direccionParsed) {
                         // Concatenar cada campo si tiene un valor
                         if (result.rows[i].tipo_asentamiento) resultado += `${result.rows[i].tipo_asentamiento} `;
                         if (result.rows[i].nombre_asentamiento) resultado += `${result.rows[i].nombre_asentamiento} `;
+                        resultado += `COL. `;
                         if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
                         if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
                         if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
@@ -704,6 +706,7 @@ async function numeroExteriorColonia(direccionParsed) {
                                 // Concatenar cada campo si tiene un valor
                                 if (result.rows[i].tipo_asentamiento) resultado += `${result.rows[i].tipo_asentamiento} `;
                                 if (result.rows[i].nombre_asentamiento) resultado += `${result.rows[i].nombre_asentamiento} `;
+                                resultado += `COL. `;
                                 if (result.rows[i].colonia) resultado += `${result.rows[i].colonia} `;
                                 if (result.rows[i].codigo_postal) resultado += `${result.rows[i].codigo_postal} `;
                                 if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
