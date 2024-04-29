@@ -1,5 +1,5 @@
 // Importamos el cliente PostgreSQL
-const pgClient = require('../data/conexion');
+const pgClient = require('./conexion');
 
 // Variable para almacenar los estados una vez que se hayan consultado
 let municipiosCache = null;

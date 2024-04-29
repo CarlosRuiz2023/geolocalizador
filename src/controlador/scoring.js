@@ -5,11 +5,15 @@ const { all : all_Poi, sinNumeroExterior: sinNumeroExterior_Poi, sinCP:sinCP_Poi
 const { all: all_Colonia, alone: alone_Colonia, sinCP: sinCP_Colonia, sinEstado: sinEstado_Colonia, sinMunicipio: sinMunicipio_Colonia, sinCPEstado: sinCPEstado_Colonia } = require("./colonias");
 const { all: all_CP, alone: alone_CP, sinEstado: sinEstado_CP, sinMunicipio: sinMunicipio_CP } = require("./cps");
 
-// Función para parsear la dirección según la Norma Técnica sobre Domicilios Geográficos
+// Función que enrutara la dirección según la Norma Técnica sobre Domicilios Geográficos.
 async function scoringMaestro(direccionParsed) {
+    // Declaramso un arreglo vacio para las direcciones.
     let results = [];
+    // Declaramso un arreglo vacio para las direcciones TOP.
     let sortedResults = [];
+    // Validamos que sea de tipo_vialidad.
     if (direccionParsed.TIPOVIAL) {
+        // Validamos segun sus propiedades a que funcion debe dirigirse.
         if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
             results=await all_Vialidad(direccionParsed);
         }
@@ -53,10 +57,13 @@ async function scoringMaestro(direccionParsed) {
             results=await alone_Vialidad(direccionParsed);
         }
     }
+    // Si se encontro algo regresalo.
     if(results.length!==0){
         return results;
     }
+    // Validamos que sea de tipo_asentamiento.
     if (direccionParsed.TIPOASEN) {
+        // Validamos segun sus propiedades a que funcion debe dirigirse.
         if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
             results=await all_Asentamiento(direccionParsed);
         }
@@ -100,10 +107,13 @@ async function scoringMaestro(direccionParsed) {
             results=await alone_Asentamiento(direccionParsed);
         }
     }
+    // Si se encontro algo regresalo.
     if(results.length!==0){
         return results;
     }
+    // Validamos que se halla detectado al menos lleve CALLE para buscar primero por POI.
     if (direccionParsed.CALLE) {
+        // Validamos segun sus propiedades a que funcion debe dirigirse.
         if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
             results=await all_Poi(direccionParsed);
         }
@@ -149,10 +159,13 @@ async function scoringMaestro(direccionParsed) {
         // Ordenar scoring mas alto primero
         sortedResults = results.sort((a, b) => b.scoring.fiability - a.scoring.fiability);
     }
+    // Si se encontro algo y tiene un alto grado de Fiability regresalo.
     if(results.length!==0 && sortedResults[0].scoring.fiability>80){
-        return results;
+        return sortedResults;
     }
+    // Validamos que se halla detectado al menos lleve CALLE para realizar una busqueda masiva.
     if (direccionParsed.CALLE) {
+        // Validamos segun sus propiedades a que funcion debe dirigirse.
         if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
             results=await all_Calle(direccionParsed);
         }
@@ -196,10 +209,13 @@ async function scoringMaestro(direccionParsed) {
             results=await alone_Calle(direccionParsed);
         }
     }
+    // Si se encontro algo regresalo.
     if(results.length!==0){
         return results;
     }
+    // Validamos que lleve COLONIA y caresca de CALLE
     if (direccionParsed.COLONIA && !direccionParsed.CALLE) {
+        // Validamos segun sus propiedades a que funcion debe dirigirse.
         if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO) {
             results=await all_Colonia(direccionParsed);
         }
@@ -219,10 +235,13 @@ async function scoringMaestro(direccionParsed) {
             results=await alone_Colonia(direccionParsed);
         }
     }
+    // Si se encontro algo regresalo.
     if(results.length!==0){
         return results;
     }
+    // Validamos que lleve CP, caresca de CALLE y COLONIA
     if (direccionParsed.CP && !direccionParsed.CALLE && !direccionParsed.COLONIA) {
+        // Validamos segun sus propiedades a que funcion debe dirigirse.
         if (direccionParsed.MUNICIPIO && direccionParsed.ESTADO) {
             results=await all_CP(direccionParsed);
         }
@@ -236,6 +255,7 @@ async function scoringMaestro(direccionParsed) {
             results=await alone_CP(direccionParsed);
         }
     }
+    // Regresa lo que se tenga de momento.
     return results;
 }
 module.exports = scoringMaestro;
