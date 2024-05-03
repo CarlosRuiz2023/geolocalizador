@@ -1,12 +1,15 @@
 const pgClient = require("../../data/conexion");
 const { levenshteinDistance, quitarAcentos } = require("../funciones");
 
-// Aplicable solo en caso de llevar todos los campos
+// Aplicable solo en caso de llevar los campos CALLE NUMEXTNUM1 y COLONIA
 async function numeroExteriorColonia(direccionParsed) {
+    // Declaramos un valor nulo para la query de tipo String
     let query = '';
+    // Generamos un arreglo para los valores que suplantaran "$X" en la query
     let values = [];
+    // Generamos un arreglo para guardar los resultados obtenidos de la BD
     let rows = [];
-    // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+    // Construimos la query para comenzar a generar consultas a la BD
     query = `
         SELECT *,
         CASE
@@ -74,11 +77,15 @@ async function numeroExteriorColonia(direccionParsed) {
         OR (CAST(r_refaddr AS INTEGER) >= $3 AND CAST(r_nrefaddr AS INTEGER) <= $3)))
         ;
     `;
+    // Almacenamos en el arreglo values los campos que seran usados en la consulta
     values = [direccionParsed.CALLE, direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
+    // Guardamos en una constante el resultado obtenido
     const result = await pgClient.query(query, values);
+    // Creamos ciclo for el cual recorrera cada uno de los resultados obtenidos
     for (let i = 0; i < result.rows.length; i++) {
         // Inicializar la cadena de resultado
         let resultado = '';
+        // Inicializamos la variable tabla
         let tabla = '';
 
         // Concatenar cada campo si tiene un valor
@@ -89,6 +96,7 @@ async function numeroExteriorColonia(direccionParsed) {
         if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
         if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
+        // Segun el tipo que regreso definimos la tabla de donde se obtuvo
         if (result.rows[i].tipo == 'CALLE') {
             tabla = `carto_calle`;
         }
@@ -100,39 +108,63 @@ async function numeroExteriorColonia(direccionParsed) {
         }
         // Asignar el resultado al campo "resultado"
         result.rows[i].resultado = resultado.trim();
+        // Modificamos el tipo por uno controlado para el servicio del Front
         result.rows[i].tipo = `Calle`;
+        // Asignar el id_calle al campo "id"
         result.rows[i].id = result.rows[i].id_calle;
+        // Asignar el campo por el que se puede identificar el id previo.
         result.rows[i].campo = `Id`;
+        // Asignar la imagen final que recibira dicha direccion
         result.rows[i].imagen = 'punto';
+        // Asignar la tabla de donde se obtuvo principalmente dicho registro
         result.rows[i].tabla = tabla;
+        // Calificamos el registro recuperado segun los parametros coincididos
         result.rows[i].scoring = {
             fiability: 20,
             calle: 0,
             colonia: 0,
             numero_exterior: 100
         };
+        // Quitamos acentos del nombre_vialidad recuperado debido a que en la BD se tiene con acentos
         const nombreCalleSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
+        // Hacemos match con lo que proporciono el usuario.
         const matchNombreCalle = nombreCalleSinAcentos.match(new RegExp(direccionParsed.CALLE, 'i'));
+        // Validamos que exista Match
         if (matchNombreCalle) {
-            const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
+            // Obtiene el texto coincidente
+            const matchedText = matchNombreCalle[0];
+            // Generamos la igualdad que se tienen
             let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
+            // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
             if (igualdad > 100) igualdad = 100;
+            // Subimos el scoring en calle
             result.rows[i].scoring.calle += Math.round(igualdad);
+            // Subimos el scoring en fiability
             result.rows[i].scoring.fiability += Math.round(igualdad * 0.4);
         }
+        // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
         const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+        // Hacemos match con lo que proporciono el usuario.
         const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+        // Validamos que exista Match
         if (matchColonia) {
-            const matchedText = matchColonia[0]; // Obtiene el texto coincidente
+            // Obtiene el texto coincidente
+            const matchedText = matchColonia[0];
+            // Generamos la igualdad que se tienen
             let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
+            // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
             if (igualdad > 100) igualdad = 100;
+            // Subimos el scoring en colonia
             result.rows[i].scoring.colonia += Math.round(igualdad);
+            // Subimos el scoring en fiability
             result.rows[i].scoring.fiability += Math.round(igualdad * 0.4);
         }
     }
+    // Añadimos los resultados obtenidos al arreglo rows
     rows = rows.concat(result.rows);
+    // Evaluamos que rows este vacio para seguir con la busqueda
     if (result.rows.length === 0) {
-        // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+        // Construimos la query para comenzar a generar consultas a la BD
         query = `
             SELECT *,
             CASE
@@ -148,12 +180,17 @@ async function numeroExteriorColonia(direccionParsed) {
             AND unaccent(colonia) LIKE '%' || $2 || '%'
             ;
         `;
+        // Almacenamos en el arreglo values los campos que seran usados en la consulta
         values = [direccionParsed.CALLE, direccionParsed.COLONIA];
+        // Guardamos en una constante el resultado obtenido
         const result = await pgClient.query(query, values);
+        // Creamos ciclo for el cual recorrera cada uno de los resultados obtenidos
         for (let i = 0; i < result.rows.length; i++) {
             // Inicializar la cadena de resultado
             let resultado = '';
+            // Inicializamos la variable tabla
             let tabla = '';
+            // Inicializamos la variable imagen
             let imagen = '';
 
             // Concatenar cada campo si tiene un valor
@@ -164,6 +201,7 @@ async function numeroExteriorColonia(direccionParsed) {
             if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
             if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
+            // Segun el tipo que regreso definimos la tabla de donde se obtuvo
             if (result.rows[i].tipo == 'CALLE') {
                 tabla = `carto_calle`;
                 imagen = `linea`;
@@ -178,39 +216,63 @@ async function numeroExteriorColonia(direccionParsed) {
             }
             // Asignar el resultado al campo "resultado"
             result.rows[i].resultado = resultado.trim();
+            // Modificamos el tipo por uno controlado para el servicio del Front
             result.rows[i].tipo = `Calle`;
+            // Asignar el id_calle al campo "id"
             result.rows[i].id = result.rows[i].id_calle;
+            // Asignar el campo por el que se puede identificar el id previo.
             result.rows[i].campo = `Id`;
+            // Asignar la imagen final que recibira dicha direccion
             result.rows[i].imagen = imagen;
+            // Asignar la tabla de donde se obtuvo principalmente dicho registro
             result.rows[i].tabla = tabla;
+            // Calificamos el registro recuperado segun los parametros coincididos
             result.rows[i].scoring = {
                 fiability: 0,
                 calle: 0,
                 colonia: 0,
                 numero_exterior: 0
             };
+            // Quitamos acentos del nombre_vialidad recuperado debido a que en la BD se tiene con acentos
             const nombreCalleSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
+            // Hacemos match con lo que proporciono el usuario.
             const matchNombreCalle = nombreCalleSinAcentos.match(new RegExp(direccionParsed.CALLE, 'i'));
+            // Validamos que exista Match
             if (matchNombreCalle) {
-                const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
+                // Obtiene el texto coincidente
+                const matchedText = matchNombreCalle[0];
+                // Generamos la igualdad que se tienen
                 let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
+                // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                 if (igualdad > 100) igualdad = 100;
+                // Subimos el scoring en calle
                 result.rows[i].scoring.calle += Math.round(igualdad);
+                // Subimos el scoring en fiability
                 result.rows[i].scoring.fiability += Math.round(igualdad * 0.4);
             }
+            // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
             const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+            // Hacemos match con lo que proporciono el usuario.
             const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+            // Validamos que exista Match
             if (matchColonia) {
-                const matchedText = matchColonia[0]; // Obtiene el texto coincidente
+                // Obtiene el texto coincidente
+                const matchedText = matchColonia[0];
+                // Generamos la igualdad que se tienen
                 let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
+                // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                 if (igualdad > 100) igualdad = 100;
+                // Subimos el scoring en colonia
                 result.rows[i].scoring.colonia += Math.round(igualdad);
+                // Subimos el scoring en fiability
                 result.rows[i].scoring.fiability += Math.round(igualdad * 0.4);
             }
         }
+        // Añadimos los resultados obtenidos al arreglo rows
         rows = rows.concat(result.rows);
+        // Evaluamos que rows este vacio para seguir con la busqueda
         if (result.rows.length === 0) {
-            // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+            // Construimos la query para comenzar a generar consultas a la BD
             query = `
                 SELECT *,
                 CASE
@@ -277,11 +339,15 @@ async function numeroExteriorColonia(direccionParsed) {
                 OR (CAST(r_refaddr AS INTEGER) >= $2 AND CAST(r_nrefaddr AS INTEGER) <= $2)))
                 ;
             `;
+            // Almacenamos en el arreglo values los campos que seran usados en la consulta
             values = [direccionParsed.CALLE, direccionParsed.NUMEXTNUM1];
+            // Guardamos en una constante el resultado obtenido
             const result = await pgClient.query(query, values);
+            // Creamos ciclo for el cual recorrera cada uno de los resultados obtenidos
             for (let i = 0; i < result.rows.length; i++) {
                 // Inicializar la cadena de resultado
                 let resultado = '';
+                // Inicializamos la variable tabla
                 let tabla = '';
 
                 // Concatenar cada campo si tiene un valor
@@ -292,6 +358,7 @@ async function numeroExteriorColonia(direccionParsed) {
                 if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
                 if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
+                // Segun el tipo que regreso definimos la tabla de donde se obtuvo
                 if (result.rows[i].tipo == 'CALLE') {
                     tabla = `carto_calle`;
                 }
@@ -303,39 +370,59 @@ async function numeroExteriorColonia(direccionParsed) {
                 }
                 // Asignar el resultado al campo "resultado"
                 result.rows[i].resultado = resultado.trim();
+                // Modificamos el tipo por uno controlado para el servicio del Front
                 result.rows[i].tipo = `Calle`;
+                // Asignar el id_calle al campo "id"
                 result.rows[i].id = result.rows[i].id_calle;
+                // Asignar el campo por el que se puede identificar el id previo.
                 result.rows[i].campo = `Id`;
+                // Asignar la imagen final que recibira dicha direccion
                 result.rows[i].imagen = 'punto';
+                // Asignar la tabla de donde se obtuvo principalmente dicho registro
                 result.rows[i].tabla = tabla;
+                // Calificamos el registro recuperado segun los parametros coincididos
                 result.rows[i].scoring = {
                     fiability: 20,
                     calle: 0,
                     colonia: 0,
                     numero_exterior: 100
                 };
+                // Quitamos acentos del nombre_vialidad recuperado debido a que en la BD se tiene con acentos
                 const nombreCalleSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
+                // Hacemos match con lo que proporciono el usuario.
                 const matchNombreCalle = nombreCalleSinAcentos.match(new RegExp(direccionParsed.CALLE, 'i'));
+                // Validamos que exista Match
                 if (matchNombreCalle) {
-                    const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
+                    // Obtiene el texto coincidente
+                    const matchedText = matchNombreCalle[0];
+                    // Generamos la igualdad que se tienen
                     let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
+                    // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                     if (igualdad > 100) igualdad = 100;
+                    // Subimos el scoring en calle
                     result.rows[i].scoring.calle += Math.round(igualdad);
+                    // Subimos el scoring en fiability
                     result.rows[i].scoring.fiability += Math.round(igualdad * 0.4);
                 }
                 // Calcular la distancia de Levenshtein
                 const distanceColonia = levenshteinDistance(quitarAcentos(result.rows[i].colonia), direccionParsed.COLONIA);
                 // Calcular la similitud como el inverso de la distancia de Levenshtein
                 const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
+                // Calculamos la similitud de la colonia segun sus comparativos
                 const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
+                // Validamos que exista similitud alguna
                 if (similarityColonia) {
+                    // Subimos el scoring en colonia
                     result.rows[i].scoring.colonia += similarityColonia;
+                    // Subimos el scoring en fiability
                     result.rows[i].scoring.fiability += (similarityColonia * 0.4);
                 }
             }
+            // Añadimos los resultados obtenidos al arreglo rows
             rows = rows.concat(result.rows);
+            // Evaluamos que rows este vacio para seguir con la busqueda
             if (result.rows.length === 0) {
-                // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+                // Construimos la query para comenzar a generar consultas a la BD
                 query = `
                     SELECT *,
                     CASE
@@ -402,11 +489,15 @@ async function numeroExteriorColonia(direccionParsed) {
                     OR (CAST(r_refaddr AS INTEGER) >= $2 AND CAST(r_nrefaddr AS INTEGER) <= $2)))
                     ;
                 `;
+                // Almacenamos en el arreglo values los campos que seran usados en la consulta
                 values = [direccionParsed.COLONIA, direccionParsed.NUMEXTNUM1];
+                // Guardamos en una constante el resultado obtenido
                 const result = await pgClient.query(query, values);
+                // Creamos ciclo for el cual recorrera cada uno de los resultados obtenidos
                 for (let i = 0; i < result.rows.length; i++) {
                     // Inicializar la cadena de resultado
                     let resultado = '';
+                    // Inicializamos la variable tabla
                     let tabla = '';
 
                     // Concatenar cada campo si tiene un valor
@@ -417,6 +508,7 @@ async function numeroExteriorColonia(direccionParsed) {
                     if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
                     if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
+                    // Segun el tipo que regreso definimos la tabla de donde se obtuvo
                     if (result.rows[i].tipo == 'CALLE') {
                         tabla = `carto_calle`;
                     }
@@ -428,11 +520,17 @@ async function numeroExteriorColonia(direccionParsed) {
                     }
                     // Asignar el resultado al campo "resultado"
                     result.rows[i].resultado = resultado.trim();
+                    // Modificamos el tipo por uno controlado para el servicio del Front
                     result.rows[i].tipo = `Calle`;
+                    // Asignar el id_calle al campo "id"
                     result.rows[i].id = result.rows[i].id_calle;
+                    // Asignar el campo por el que se puede identificar el id previo.
                     result.rows[i].campo = `Id`;
+                    // Asignar la imagen final que recibira dicha direccion
                     result.rows[i].imagen = 'punto';
+                    // Asignar la tabla de donde se obtuvo principalmente dicho registro
                     result.rows[i].tabla = tabla;
+                    // Calificamos el registro recuperado segun los parametros coincididos
                     result.rows[i].scoring = {
                         fiability: 20,
                         calle: 0,
@@ -443,24 +541,38 @@ async function numeroExteriorColonia(direccionParsed) {
                     const distance = levenshteinDistance(quitarAcentos(result.rows[i].nombre_vialidad), direccionParsed.CALLE);
                     // Calcular la similitud como el inverso de la distancia de Levenshtein
                     const maxLength = Math.max(result.rows[i].nombre_vialidad.length, direccionParsed.CALLE.length);
+                    // Calculamos la similitud del nombre_vialidad segun sus comparativos
                     const similarity = ((maxLength - distance) / maxLength) * 100;
+                    // Validamos que exista similitud alguna
                     if (similarity) {
+                        // Subimos el scoring en calle
                         result.rows[i].scoring.calle += similarity;
+                        // Subimos el scoring en fiability
                         result.rows[i].scoring.fiability += (similarity * 0.4);
                     }
+                    // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
                     const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+                    // Hacemos match con lo que proporciono el usuario.
                     const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                    // Validamos que exista Match
                     if (matchColonia) {
-                        const matchedText = matchColonia[0]; // Obtiene el texto coincidente
+                        // Obtiene el texto coincidente
+                        const matchedText = matchColonia[0];
+                        // Generamos la igualdad que se tienen
                         let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
+                        // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                         if (igualdad > 100) igualdad = 100;
+                        // Subimos el scoring en colonia
                         result.rows[i].scoring.colonia += Math.round(igualdad);
+                        // Subimos el scoring en fiability
                         result.rows[i].scoring.fiability += Math.round(igualdad * 0.4);
                     }
                 }
+                // Añadimos los resultados obtenidos al arreglo rows
                 rows = rows.concat(result.rows);
+                // Evaluamos que rows este vacio para seguir con la busqueda
                 if (result.rows.length === 0) {
-                    // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+                    // Construimos la query para comenzar a generar consultas a la BD
                     query = `
                         SELECT *,
                         CASE
@@ -475,12 +587,17 @@ async function numeroExteriorColonia(direccionParsed) {
                         WHERE unaccent(colonia) LIKE '%' || $1 || '%'
                         ;
                     `;
+                    // Almacenamos en el arreglo values los campos que seran usados en la consulta
                     values = [direccionParsed.COLONIA];
+                    // Guardamos en una constante el resultado obtenido
                     const result = await pgClient.query(query, values);
+                    // Creamos ciclo for el cual recorrera cada uno de los resultados obtenidos
                     for (let i = 0; i < result.rows.length; i++) {
                         // Inicializar la cadena de resultado
                         let resultado = '';
+                        // Inicializamos la variable tabla
                         let tabla = '';
+                        // Inicializamos la variable imagen
                         let imagen = '';
 
                         // Concatenar cada campo si tiene un valor
@@ -491,6 +608,7 @@ async function numeroExteriorColonia(direccionParsed) {
                         if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
                         if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
+                        // Segun el tipo que regreso definimos la tabla de donde se obtuvo
                         if (result.rows[i].tipo == 'CALLE') {
                             tabla = `carto_calle`;
                             imagen = `linea`;
@@ -505,11 +623,17 @@ async function numeroExteriorColonia(direccionParsed) {
                         }
                         // Asignar el resultado al campo "resultado"
                         result.rows[i].resultado = resultado.trim();
+                        // Modificamos el tipo por uno controlado para el servicio del Front
                         result.rows[i].tipo = `Calle`;
+                        // Asignar el id_calle al campo "id"
                         result.rows[i].id = result.rows[i].id_calle;
+                        // Asignar el campo por el que se puede identificar el id previo.
                         result.rows[i].campo = `Id`;
+                        // Asignar la imagen final que recibira dicha direccion
                         result.rows[i].imagen = imagen;
+                        // Asignar la tabla de donde se obtuvo principalmente dicho registro
                         result.rows[i].tabla = tabla;
+                        // Calificamos el registro recuperado segun los parametros coincididos
                         result.rows[i].scoring = {
                             fiability: 0,
                             calle: 0,
@@ -520,24 +644,38 @@ async function numeroExteriorColonia(direccionParsed) {
                         const distance = levenshteinDistance(quitarAcentos(result.rows[i].nombre_vialidad), direccionParsed.CALLE);
                         // Calcular la similitud como el inverso de la distancia de Levenshtein
                         const maxLength = Math.max(result.rows[i].nombre_vialidad.length, direccionParsed.CALLE.length);
+                        // Calculamos la similitud del nombre_vialidad segun sus comparativos
                         const similarity = ((maxLength - distance) / maxLength) * 100;
+                        // Validamos que exista similitud alguna
                         if (similarity) {
+                            // Subimos el scoring en calle
                             result.rows[i].scoring.calle += similarity;
+                            // Subimos el scoring en fiability
                             result.rows[i].scoring.fiability += (similarity * 0.4);
                         }
+                        // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
                         const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+                        // Hacemos match con lo que proporciono el usuario.
                         const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                        // Validamos que exista Match
                         if (matchColonia) {
-                            const matchedText = matchColonia[0]; // Obtiene el texto coincidente
+                            // Obtiene el texto coincidente
+                            const matchedText = matchColonia[0];
+                            // Generamos la igualdad que se tienen
                             let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
+                            // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                             if (igualdad > 100) igualdad = 100;
+                            // Subimos el scoring en colonia
                             result.rows[i].scoring.colonia += Math.round(igualdad);
+                            // Subimos el scoring en fiability
                             result.rows[i].scoring.fiability += Math.round(igualdad * 0.4);
                         }
                     }
+                    // Añadimos los resultados obtenidos al arreglo rows
                     rows = rows.concat(result.rows);
+                    // Evaluamos que rows este vacio para seguir con la busqueda
                     if (result.rows.length === 0) {
-                        // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+                        // Construimos la query para comenzar a generar consultas a la BD
                         query = `
                             SELECT *,
                             CASE
@@ -603,11 +741,15 @@ async function numeroExteriorColonia(direccionParsed) {
                             OR (CAST(r_refaddr AS INTEGER) >= $1 AND CAST(r_nrefaddr AS INTEGER) <= $1)))
                             ;
                         `;
+                        // Almacenamos en el arreglo values los campos que seran usados en la consulta
                         values = [direccionParsed.NUMEXTNUM1];
+                        // Guardamos en una constante el resultado obtenido
                         const result = await pgClient.query(query, values);
+                        // Creamos ciclo for el cual recorrera cada uno de los resultados obtenidos
                         for (let i = 0; i < result.rows.length; i++) {
                             // Inicializar la cadena de resultado
                             let resultado = '';
+                            // Inicializamos la variable tabla
                             let tabla = '';
 
                             // Concatenar cada campo si tiene un valor
@@ -618,6 +760,7 @@ async function numeroExteriorColonia(direccionParsed) {
                             if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
                             if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
+                            // Segun el tipo que regreso definimos la tabla de donde se obtuvo
                             if (result.rows[i].tipo == 'CALLE') {
                                 tabla = `carto_calle`;
                             }
@@ -629,11 +772,17 @@ async function numeroExteriorColonia(direccionParsed) {
                             }
                             // Asignar el resultado al campo "resultado"
                             result.rows[i].resultado = resultado.trim();
+                            // Modificamos el tipo por uno controlado para el servicio del Front
                             result.rows[i].tipo = `Calle`;
+                            // Asignar el id_calle al campo "id"
                             result.rows[i].id = result.rows[i].id_calle;
+                            // Asignar el campo por el que se puede identificar el id previo.
                             result.rows[i].campo = `Id`;
+                            // Asignar la imagen final que recibira dicha direccion
                             result.rows[i].imagen = 'punto';
+                            // Asignar la tabla de donde se obtuvo principalmente dicho registro
                             result.rows[i].tabla = tabla;
+                            // Calificamos el registro recuperado segun los parametros coincididos
                             result.rows[i].scoring = {
                                 fiability: 20,
                                 calle: 0,
@@ -644,24 +793,34 @@ async function numeroExteriorColonia(direccionParsed) {
                             const distance = levenshteinDistance(quitarAcentos(result.rows[i].nombre_vialidad), direccionParsed.CALLE);
                             // Calcular la similitud como el inverso de la distancia de Levenshtein
                             const maxLength = Math.max(result.rows[i].nombre_vialidad.length, direccionParsed.CALLE.length);
+                            // Calculamos la similitud del nombre_vialidad segun sus comparativos
                             const similarity = ((maxLength - distance) / maxLength) * 100;
+                            // Validamos que exista similitud alguna
                             if (similarity) {
+                                // Subimos el scoring en calle
                                 result.rows[i].scoring.calle += similarity;
+                                // Subimos el scoring en fiability
                                 result.rows[i].scoring.fiability += (similarity * 0.4);
                             }
                             // Calcular la distancia de Levenshtein
                             const distanceColonia = levenshteinDistance(quitarAcentos(result.rows[i].colonia), direccionParsed.COLONIA);
                             // Calcular la similitud como el inverso de la distancia de Levenshtein
                             const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
+                            // Calculamos la similitud de la colonia segun sus comparativos
                             const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
+                            // Validamos que exista similitud alguna
                             if (similarityColonia) {
+                                // Subimos el scoring en colonia
                                 result.rows[i].scoring.colonia += similarityColonia;
+                                // Subimos el scoring en fiability
                                 result.rows[i].scoring.fiability += (similarityColonia * 0.4);
                             }
                         }
+                        // Añadimos los resultados obtenidos al arreglo rows
                         rows = rows.concat(result.rows);
+                        // Evaluamos que rows este vacio para seguir con la busqueda
                         if (result.rows.length === 0) {
-                            // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+                            // Construimos la query para comenzar a generar consultas a la BD
                             query = `
                                 SELECT *,
                                 CASE
@@ -676,14 +835,20 @@ async function numeroExteriorColonia(direccionParsed) {
                                 WHERE unaccent(nombre_vialidad) LIKE '%' || $1 || '%'
                                 ;
                             `;
+                            // Almacenamos en el arreglo values los campos que seran usados en la consulta
                             values = [direccionParsed.CALLE];
+                            // Guardamos en una constante el resultado obtenido
                             const result = await pgClient.query(query, values);
+                            // Creamos ciclo for el cual recorrera cada uno de los resultados obtenidos
                             for (let i = 0; i < result.rows.length; i++) {
                                 // Inicializar la cadena de resultado
                                 let resultado = '';
+                                // Inicializamos la variable tabla
                                 let tabla = '';
+                                // Inicializamos la variable imagen
                                 let imagen = '';
 
+                                // Segun el tipo que regreso definimos la tabla de donde se obtuvo
                                 if (result.rows[i].tipo == 'CALLE') {
                                     tabla = `carto_calle`;
                                     imagen = `linea`;
@@ -697,33 +862,51 @@ async function numeroExteriorColonia(direccionParsed) {
                                     imagen = `punto`;
                                 }
                                 // Asignar el resultado al campo "resultado"
+                                // Modificamos el tipo por uno controlado para el servicio del Front
                                 result.rows[i].tipo = `Calle`;
+                                // Asignar el id_calle al campo "id"
                                 result.rows[i].id = result.rows[i].id_calle;
+                                // Asignar el campo por el que se puede identificar el id previo.
                                 result.rows[i].campo = `Id`;
+                                // Asignar la imagen final que recibira dicha direccion
                                 result.rows[i].imagen = imagen;
+                                // Asignar la tabla de donde se obtuvo principalmente dicho registro
                                 result.rows[i].tabla = tabla;
+                                // Calificamos el registro recuperado segun los parametros coincididos
                                 result.rows[i].scoring = {
                                     fiability: 0,
                                     calle: 0,
                                     colonia: 0,
                                     numero_exterior: 0
                                 };
+                                // Quitamos acentos del nombre_vialidad recuperado debido a que en la BD se tiene con acentos
                                 const nombreCalleSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
+                                // Hacemos match con lo que proporciono el usuario.
                                 const matchNombreCalle = nombreCalleSinAcentos.match(new RegExp(direccionParsed.CALLE, 'i'));
+                                // Validamos que exista Match
                                 if (matchNombreCalle) {
-                                    const matchedText = matchNombreCalle[0]; // Obtiene el texto coincidente
+                                    // Obtiene el texto coincidente
+                                    const matchedText = matchNombreCalle[0];
+                                    // Generamos la igualdad que se tienen
                                     let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
+                                    // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                                     if (igualdad > 100) igualdad = 100;
+                                    // Subimos el scoring en calle
                                     result.rows[i].scoring.calle += Math.round(igualdad);
+                                    // Subimos el scoring en fiability
                                     result.rows[i].scoring.fiability += Math.round(igualdad * 0.4);
                                 }
                                 // Calcular la distancia de Levenshtein
                                 const distanceColonia = levenshteinDistance(quitarAcentos(result.rows[i].colonia), direccionParsed.COLONIA);
                                 // Calcular la similitud como el inverso de la distancia de Levenshtein
                                 const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
+                                // Calculamos la similitud de la colonia segun sus comparativos
                                 const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
+                                // Validamos que exista similitud alguna
                                 if (similarityColonia) {
+                                    // Subimos el scoring en colonia
                                     result.rows[i].scoring.colonia += similarityColonia;
+                                    // Subimos el scoring en fiability
                                     result.rows[i].scoring.fiability += (similarityColonia * 0.4);
                                 }
                                 // Concatenar cada campo si tiene un valor
@@ -737,9 +920,11 @@ async function numeroExteriorColonia(direccionParsed) {
                                 // Asignar el resultado al campo "resultado"
                                 result.rows[i].resultado = resultado.trim();
                             }
+                            // Añadimos los resultados obtenidos al arreglo rows
                             rows = rows.concat(result.rows);
+                            // Evaluamos que rows este vacio para seguir con la busqueda
                             if (result.rows.length === 0) {
-                                // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+                                // Construimos la query para comenzar a generar consultas a la BD
                                 query = `
                                     SELECT *,
                                     CASE
@@ -754,14 +939,20 @@ async function numeroExteriorColonia(direccionParsed) {
                                     WHERE unaccent(nombre_vialidad) LIKE '%' || $1 || '%'
                                     ;
                                 `;
+                                // Almacenamos en el arreglo values los campos que seran usados en la consulta
                                 values = [direccionParsed.CALLE];
+                                // Guardamos en una constante el resultado obtenido
                                 const result = await pgClient.query(query, values);
+                                // Creamos ciclo for el cual recorrera cada uno de los resultados obtenidos
                                 for (let i = 0; i < result.rows.length; i++) {
                                     // Inicializar la cadena de resultado
                                     let resultado = '';
+                                    // Inicializamos la variable tabla
                                     let tabla = '';
+                                    // Inicializamos la variable imagen
                                     let imagen = '';
 
+                                    // Segun el tipo que regreso definimos la tabla de donde se obtuvo
                                     if (result.rows[i].tipo == 'CALLE') {
                                         tabla = `carto_calle`;
                                         imagen = `linea`;
@@ -775,11 +966,17 @@ async function numeroExteriorColonia(direccionParsed) {
                                         imagen = `punto`;
                                     }
                                     // Asignar el resultado al campo "resultado"
+                                    // Modificamos el tipo por uno controlado para el servicio del Front
                                     result.rows[i].tipo = `Calle`;
+                                    // Asignar el id_calle al campo "id"
                                     result.rows[i].id = result.rows[i].id_calle;
+                                    // Asignar el campo por el que se puede identificar el id previo.
                                     result.rows[i].campo = `Id`;
+                                    // Asignar la imagen final que recibira dicha direccion
                                     result.rows[i].imagen = imagen;
+                                    // Asignar la tabla de donde se obtuvo principalmente dicho registro
                                     result.rows[i].tabla = tabla;
+                                    // Calificamos el registro recuperado segun los parametros coincididos
                                     result.rows[i].scoring = {
                                         fiability: 0,
                                         calle: 0,
@@ -790,38 +987,50 @@ async function numeroExteriorColonia(direccionParsed) {
                                     const distance = levenshteinDistance(quitarAcentos(result.rows[i].nombre_vialidad), direccionParsed.CALLE);
                                     // Calcular la similitud como el inverso de la distancia de Levenshtein
                                     const maxLength = Math.max(result.rows[i].nombre_vialidad.length, direccionParsed.CALLE.length);
+                                    // Calculamos la similitud del nombre_vialidad segun sus comparativos
                                     const similarity = ((maxLength - distance) / maxLength) * 100;
+                                    // Validamos que exista similitud alguna
                                     if (similarity) {
+                                        // Subimos el scoring en calle
                                         result.rows[i].scoring.calle += similarity;
+                                        // Subimos el scoring en fiability
                                         result.rows[i].scoring.fiability += (similarity * 0.4);
                                     }
                                     // Calcular la distancia de Levenshtein
                                     const distanceColonia = levenshteinDistance(quitarAcentos(result.rows[i].colonia), direccionParsed.COLONIA);
                                     // Calcular la similitud como el inverso de la distancia de Levenshtein
                                     const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
+                                    // Calculamos la similitud de la colonia segun sus comparativos
                                     const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
+                                    // Validamos que exista similitud alguna
                                     if (similarityColonia) {
+                                        // Subimos el scoring en colonia
                                         result.rows[i].scoring.colonia += similarityColonia;
+                                        // Subimos el scoring en fiability
                                         result.rows[i].scoring.fiability += (similarityColonia * 0.4);
                                     }
                                     if (result.rows[i].l_refaddr <= direccionParsed.NUMEXTNUM1 && result.rows[i].l_nrefaddr >= direccionParsed.NUMEXTNUM1 && (similarityColonia > 80 || similarity > 80)) {
                                         result.rows[i].scoring.numero_exterior += 100;
                                         result.rows[i].scoring.fiability += 20;
+                                        // Asignar la imagen final que recibira dicha direccion
                                         result.rows[i].imagen = 'punto';
                                     }
                                     else if (result.rows[i].l_refaddr >= direccionParsed.NUMEXTNUM1 && result.rows[i].l_nrefaddr <= direccionParsed.NUMEXTNUM1 && (similarityColonia > 80 || similarity > 80)) {
                                         result.rows[i].scoring.numero_exterior += 100;
                                         result.rows[i].scoring.fiability += 20;
+                                        // Asignar la imagen final que recibira dicha direccion
                                         result.rows[i].imagen = 'punto';
                                     }
                                     else if (result.rows[i].r_refaddr <= direccionParsed.NUMEXTNUM1 && result.rows[i].r_nrefaddr >= direccionParsed.NUMEXTNUM1 && (similarityColonia > 80 || similarity > 80)) {
                                         result.rows[i].scoring.numero_exterior += 100;
                                         result.rows[i].scoring.fiability += 20;
+                                        // Asignar la imagen final que recibira dicha direccion
                                         result.rows[i].imagen = 'punto';
                                     }
                                     else if (result.rows[i].r_refaddr >= direccionParsed.NUMEXTNUM1 && result.rows[i].r_nrefaddr <= direccionParsed.NUMEXTNUM1 && (similarityColonia > 80 || similarity > 80)) {
                                         result.rows[i].scoring.numero_exterior += 100;
                                         result.rows[i].scoring.fiability += 20;
+                                        // Asignar la imagen final que recibira dicha direccion
                                         result.rows[i].imagen = 'punto';
                                     }
                                     // Concatenar cada campo si tiene un valor
@@ -835,6 +1044,7 @@ async function numeroExteriorColonia(direccionParsed) {
                                     // Asignar el resultado al campo "resultado"
                                     result.rows[i].resultado = resultado.trim();
                                 }
+                                // Añadimos los resultados obtenidos al arreglo rows
                                 rows = rows.concat(result.rows);
                             }
                         }
@@ -843,6 +1053,7 @@ async function numeroExteriorColonia(direccionParsed) {
             }
         }
     }
+    // Retornamos los rows que se obtuvieron hasta el momento
     return rows;
 }
 module.exports = numeroExteriorColonia;

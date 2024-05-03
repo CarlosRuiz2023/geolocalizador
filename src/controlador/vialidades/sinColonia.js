@@ -1,12 +1,15 @@
 const pgClient = require("../../data/conexion");
 const { levenshteinDistance, quitarAcentos } = require("../funciones");
 
-// Aplicable solo en caso de llevar todos los campos
+// Aplicable solo en caso de llevar todos los campos a excepcion de COLONIA
 async function sinColonia(direccionParsed) {
+    // Declaramos un valor nulo para la query de tipo String
     let query = '';
+    // Generamos un arreglo para los valores que suplantaran "$X" en la query
     let values = [];
+    // Generamos un arreglo para guardar los resultados obtenidos de la BD
     let rows = [];
-    // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+    // Construimos la query para comenzar a generar consultas a la BD
     query = `
         SELECT *,
         CASE
@@ -77,11 +80,15 @@ async function sinColonia(direccionParsed) {
         OR (CAST(r_refaddr AS INTEGER) >= $6 AND CAST(r_nrefaddr AS INTEGER) <= $6)))
         ;
     `;
+    // Almacenamos en el arreglo values los campos que seran usados en la consulta
     values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1];
+    // Guardamos en una constante el resultado obtenido
     const result = await pgClient.query(query, values);
+    // Creamos ciclo for el cual recorrera cada uno de los resultados obtenidos
     for (let i = 0; i < result.rows.length; i++) {
         // Inicializar la cadena de resultado
         let resultado = '';
+        // Inicializamos la variable tabla
         let tabla = '';
 
         // Concatenar cada campo si tiene un valor
@@ -93,6 +100,7 @@ async function sinColonia(direccionParsed) {
         if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
         if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
+        // Segun el tipo que regreso definimos la tabla de donde se obtuvo
         if (result.rows[i].tipo == 'CALLE') {
             tabla = `carto_calle`;
         }
@@ -104,11 +112,17 @@ async function sinColonia(direccionParsed) {
         }
         // Asignar el resultado al campo "resultado"
         result.rows[i].resultado = resultado.trim();
+        // Modificamos el tipo por uno controlado para el servicio del Front
         result.rows[i].tipo = `Calle`;
+        // Asignar el id_calle al campo "id"
         result.rows[i].id = result.rows[i].id_calle;
+        // Asignar el campo por el que se puede identificar el id previo.
         result.rows[i].campo = `Id`;
+        // Asignar la imagen final que recibira dicha direccion
         result.rows[i].imagen = 'punto';
+        // Asignar la tabla de donde se obtuvo principalmente dicho registro
         result.rows[i].tabla = tabla;
+        // Calificamos el registro recuperado segun los parametros coincididos
         result.rows[i].scoring = {
             fiability: 50,
             tipo_vialidad: 100,
@@ -118,19 +132,29 @@ async function sinColonia(direccionParsed) {
             estado: 100,
             numero_exterior: 100
         };
+        // Quitamos acentos del nombre_vialidad recuperado debido a que en la BD se tiene con acentos
         const nombreVialidadSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
+        // Hacemos match con lo que proporciono el usuario.
         const matchNombreVialidad = nombreVialidadSinAcentos.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
+        // Validamos que exista Match
         if (matchNombreVialidad) {
-            const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
+            // Obtiene el texto coincidente
+            const matchedText = matchNombreVialidad[0];
+            // Generamos la igualdad que se tienen
             let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
+            // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
             if (igualdad > 100) igualdad = 100;
+            // Subimos el scoring en nombre_vialidad
             result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
+            // Subimos el scoring en fiability
             result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
         }
     }
+    // Añadimos los resultados obtenidos al arreglo rows
     rows = rows.concat(result.rows);
+    // Evaluamos que rows este vacio para seguir con la busqueda
     if (result.rows.length === 0) {
-        // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+        // Construimos la query para comenzar a generar consultas a la BD
         query = `
             SELECT *,
             CASE
@@ -200,11 +224,15 @@ async function sinColonia(direccionParsed) {
             OR (CAST(r_refaddr AS INTEGER) >= $5 AND CAST(r_nrefaddr AS INTEGER) <= $5)))
             ;
         `;
+        // Almacenamos en el arreglo values los campos que seran usados en la consulta
         values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1];
+        // Guardamos en una constante el resultado obtenido
         const result = await pgClient.query(query, values);
+        // Creamos ciclo for el cual recorrera cada uno de los resultados obtenidos
         for (let i = 0; i < result.rows.length; i++) {
             // Inicializar la cadena de resultado
             let resultado = '';
+            // Inicializamos la variable tabla
             let tabla = '';
 
             // Concatenar cada campo si tiene un valor
@@ -216,6 +244,7 @@ async function sinColonia(direccionParsed) {
             if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
             if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
+            // Segun el tipo que regreso definimos la tabla de donde se obtuvo
             if (result.rows[i].tipo == 'CALLE') {
                 tabla = `carto_calle`;
             }
@@ -227,11 +256,17 @@ async function sinColonia(direccionParsed) {
             }
             // Asignar el resultado al campo "resultado"
             result.rows[i].resultado = resultado.trim();
+            // Modificamos el tipo por uno controlado para el servicio del Front
             result.rows[i].tipo = `Calle`;
+            // Asignar el id_calle al campo "id"
             result.rows[i].id = result.rows[i].id_calle;
+            // Asignar el campo por el que se puede identificar el id previo.
             result.rows[i].campo = `Id`;
+            // Asignar la imagen final que recibira dicha direccion
             result.rows[i].imagen = 'punto';
+            // Asignar la tabla de donde se obtuvo principalmente dicho registro
             result.rows[i].tabla = tabla;
+            // Calificamos el registro recuperado segun los parametros coincididos
             result.rows[i].scoring = {
                 fiability: 40,
                 tipo_vialidad: 100,
@@ -241,19 +276,29 @@ async function sinColonia(direccionParsed) {
                 estado: 100,
                 numero_exterior: 100
             };
+            // Quitamos acentos del nombre_vialidad recuperado debido a que en la BD se tiene con acentos
             const nombreVialidadSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
+            // Hacemos match con lo que proporciono el usuario.
             const matchNombreVialidad = nombreVialidadSinAcentos.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
+            // Validamos que exista Match
             if (matchNombreVialidad) {
-                const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
+                // Obtiene el texto coincidente
+                const matchedText = matchNombreVialidad[0];
+                // Generamos la igualdad que se tienen
                 let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
+                // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                 if (igualdad > 100) igualdad = 100;
+                // Subimos el scoring en nombre_vialidad
                 result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
+                // Subimos el scoring en fiability
                 result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
             }
         }
+        // Añadimos los resultados obtenidos al arreglo rows
         rows = rows.concat(result.rows);
+        // Evaluamos que rows este vacio para seguir con la busqueda
         if (result.rows.length === 0) {
-            // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+            // Construimos la query para comenzar a generar consultas a la BD
             query = `
                 SELECT *,
                 CASE
@@ -323,11 +368,15 @@ async function sinColonia(direccionParsed) {
                 OR (CAST(r_refaddr AS INTEGER) >= $5 AND CAST(r_nrefaddr AS INTEGER) <= $5)))
                 ;
             `;
+            // Almacenamos en el arreglo values los campos que seran usados en la consulta
             values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.ESTADO, direccionParsed.NUMEXTNUM1];
+            // Guardamos en una constante el resultado obtenido
             const result = await pgClient.query(query, values);
+            // Creamos ciclo for el cual recorrera cada uno de los resultados obtenidos
             for (let i = 0; i < result.rows.length; i++) {
                 // Inicializar la cadena de resultado
                 let resultado = '';
+                // Inicializamos la variable tabla
                 let tabla = '';
 
                 // Concatenar cada campo si tiene un valor
@@ -339,6 +388,7 @@ async function sinColonia(direccionParsed) {
                 if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
                 if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
+                // Segun el tipo que regreso definimos la tabla de donde se obtuvo
                 if (result.rows[i].tipo == 'CALLE') {
                     tabla = `carto_calle`;
                 }
@@ -350,11 +400,17 @@ async function sinColonia(direccionParsed) {
                 }
                 // Asignar el resultado al campo "resultado"
                 result.rows[i].resultado = resultado.trim();
+                // Modificamos el tipo por uno controlado para el servicio del Front
                 result.rows[i].tipo = `Calle`;
+                // Asignar el id_calle al campo "id"
                 result.rows[i].id = result.rows[i].id_calle;
+                // Asignar el campo por el que se puede identificar el id previo.
                 result.rows[i].campo = `Id`;
+                // Asignar la imagen final que recibira dicha direccion
                 result.rows[i].imagen = 'punto';
+                // Asignar la tabla de donde se obtuvo principalmente dicho registro
                 result.rows[i].tabla = tabla;
+                // Calificamos el registro recuperado segun los parametros coincididos
                 result.rows[i].scoring = {
                     fiability: 40,
                     tipo_vialidad: 100,
@@ -364,19 +420,29 @@ async function sinColonia(direccionParsed) {
                     estado: 100,
                     numero_exterior: 100
                 };
+                // Quitamos acentos del nombre_vialidad recuperado debido a que en la BD se tiene con acentos
                 const nombreVialidadSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
+                // Hacemos match con lo que proporciono el usuario.
                 const matchNombreVialidad = nombreVialidadSinAcentos.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
+                // Validamos que exista Match
                 if (matchNombreVialidad) {
-                    const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
+                    // Obtiene el texto coincidente
+                    const matchedText = matchNombreVialidad[0];
+                    // Generamos la igualdad que se tienen
                     let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
+                    // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                     if (igualdad > 100) igualdad = 100;
+                    // Subimos el scoring en nombre_vialidad
                     result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
+                    // Subimos el scoring en fiability
                     result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                 }
             }
+            // Añadimos los resultados obtenidos al arreglo rows
             rows = rows.concat(result.rows);
+            // Evaluamos que rows este vacio para seguir con la busqueda
             if (result.rows.length === 0) {
-                // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+                // Construimos la query para comenzar a generar consultas a la BD
                 query = `
                     SELECT *,
                     CASE
@@ -446,11 +512,15 @@ async function sinColonia(direccionParsed) {
                     OR (CAST(r_refaddr AS INTEGER) >= $5 AND CAST(r_nrefaddr AS INTEGER) <= $5)))
                     ;
                 `;
+                // Almacenamos en el arreglo values los campos que seran usados en la consulta
                 values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1];
+                // Guardamos en una constante el resultado obtenido
                 const result = await pgClient.query(query, values);
+                // Creamos ciclo for el cual recorrera cada uno de los resultados obtenidos
                 for (let i = 0; i < result.rows.length; i++) {
                     // Inicializar la cadena de resultado
                     let resultado = '';
+                    // Inicializamos la variable tabla
                     let tabla = '';
 
                     // Concatenar cada campo si tiene un valor
@@ -462,6 +532,7 @@ async function sinColonia(direccionParsed) {
                     if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
                     if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
+                    // Segun el tipo que regreso definimos la tabla de donde se obtuvo
                     if (result.rows[i].tipo == 'CALLE') {
                         tabla = `carto_calle`;
                     }
@@ -473,11 +544,17 @@ async function sinColonia(direccionParsed) {
                     }
                     // Asignar el resultado al campo "resultado"
                     result.rows[i].resultado = resultado.trim();
+                    // Modificamos el tipo por uno controlado para el servicio del Front
                     result.rows[i].tipo = `Calle`;
+                    // Asignar el id_calle al campo "id"
                     result.rows[i].id = result.rows[i].id_calle;
+                    // Asignar el campo por el que se puede identificar el id previo.
                     result.rows[i].campo = `Id`;
+                    // Asignar la imagen final que recibira dicha direccion
                     result.rows[i].imagen = 'punto';
+                    // Asignar la tabla de donde se obtuvo principalmente dicho registro
                     result.rows[i].tabla = tabla;
+                    // Calificamos el registro recuperado segun los parametros coincididos
                     result.rows[i].scoring = {
                         fiability: 40,
                         tipo_vialidad: 100,
@@ -487,19 +564,29 @@ async function sinColonia(direccionParsed) {
                         estado: 0,
                         numero_exterior: 100
                     };
+                    // Quitamos acentos del nombre_vialidad recuperado debido a que en la BD se tiene con acentos
                     const nombreVialidadSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
+                    // Hacemos match con lo que proporciono el usuario.
                     const matchNombreVialidad = nombreVialidadSinAcentos.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
+                    // Validamos que exista Match
                     if (matchNombreVialidad) {
-                        const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
+                        // Obtiene el texto coincidente
+                        const matchedText = matchNombreVialidad[0];
+                        // Generamos la igualdad que se tienen
                         let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
+                        // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                         if (igualdad > 100) igualdad = 100;
+                        // Subimos el scoring en nombre_vialidad
                         result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
+                        // Subimos el scoring en fiability
                         result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                     }
                 }
+                // Añadimos los resultados obtenidos al arreglo rows
                 rows = rows.concat(result.rows);
+                // Evaluamos que rows este vacio para seguir con la busqueda
                 if (result.rows.length === 0) {
-                    // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+                    // Construimos la query para comenzar a generar consultas a la BD
                     query = `
                         SELECT *,
                         CASE
@@ -568,12 +655,16 @@ async function sinColonia(direccionParsed) {
                         OR (CAST(r_refaddr AS INTEGER) >= $4 AND CAST(r_nrefaddr AS INTEGER) <= $4)))
                         ;
                     `;
+                    // Almacenamos en el arreglo values los campos que seran usados en la consulta
                     values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.MUNICIPIO, direccionParsed.NUMEXTNUM1];
+                    // Guardamos en una constante el resultado obtenido
                     const result = await pgClient.query(query, values);
 
+                    // Creamos ciclo for el cual recorrera cada uno de los resultados obtenidos
                     for (let i = 0; i < result.rows.length; i++) {
                         // Inicializar la cadena de resultado
                         let resultado = '';
+                        // Inicializamos la variable tabla
                         let tabla = '';
 
                         // Concatenar cada campo si tiene un valor
@@ -585,6 +676,7 @@ async function sinColonia(direccionParsed) {
                         if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
                         if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
+                        // Segun el tipo que regreso definimos la tabla de donde se obtuvo
                         if (result.rows[i].tipo == 'CALLE') {
                             tabla = `carto_calle`;
                         }
@@ -596,11 +688,17 @@ async function sinColonia(direccionParsed) {
                         }
                         // Asignar el resultado al campo "resultado"
                         result.rows[i].resultado = resultado.trim();
+                        // Modificamos el tipo por uno controlado para el servicio del Front
                         result.rows[i].tipo = `Calle`;
+                        // Asignar el id_calle al campo "id"
                         result.rows[i].id = result.rows[i].id_calle;
+                        // Asignar el campo por el que se puede identificar el id previo.
                         result.rows[i].campo = `Id`;
+                        // Asignar la imagen final que recibira dicha direccion
                         result.rows[i].imagen = 'punto';
+                        // Asignar la tabla de donde se obtuvo principalmente dicho registro
                         result.rows[i].tabla = tabla;
+                        // Calificamos el registro recuperado segun los parametros coincididos
                         result.rows[i].scoring = {
                             fiability: 30,
                             tipo_vialidad: 100,
@@ -610,19 +708,29 @@ async function sinColonia(direccionParsed) {
                             estado: 0,
                             numero_exterior: 100
                         };
+                        // Quitamos acentos del nombre_vialidad recuperado debido a que en la BD se tiene con acentos
                         const nombreVialidadSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
+                        // Hacemos match con lo que proporciono el usuario.
                         const matchNombreVialidad = nombreVialidadSinAcentos.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
+                        // Validamos que exista Match
                         if (matchNombreVialidad) {
-                            const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
+                            // Obtiene el texto coincidente
+                            const matchedText = matchNombreVialidad[0];
+                            // Generamos la igualdad que se tienen
                             let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
+                            // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                             if (igualdad > 100) igualdad = 100;
+                            // Subimos el scoring en nombre_vialidad
                             result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
+                            // Subimos el scoring en fiability
                             result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                         }
                     }
+                    // Añadimos los resultados obtenidos al arreglo rows
                     rows = rows.concat(result.rows);
+                    // Evaluamos que rows este vacio para seguir con la busqueda
                     if (result.rows.length === 0) {
-                        // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+                        // Construimos la query para comenzar a generar consultas a la BD
                         query = `
                             SELECT *,
                             CASE
@@ -691,12 +799,16 @@ async function sinColonia(direccionParsed) {
                             OR (CAST(r_refaddr AS INTEGER) >= $4 AND CAST(r_nrefaddr AS INTEGER) <= $4)))
                             ;
                         `;
+                        // Almacenamos en el arreglo values los campos que seran usados en la consulta
                         values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.NUMEXTNUM1];
+                        // Guardamos en una constante el resultado obtenido
                         const result = await pgClient.query(query, values);
 
+                        // Creamos ciclo for el cual recorrera cada uno de los resultados obtenidos
                         for (let i = 0; i < result.rows.length; i++) {
                             // Inicializar la cadena de resultado
                             let resultado = '';
+                            // Inicializamos la variable tabla
                             let tabla = '';
 
                             // Concatenar cada campo si tiene un valor
@@ -708,6 +820,7 @@ async function sinColonia(direccionParsed) {
                             if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
                             if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
+                            // Segun el tipo que regreso definimos la tabla de donde se obtuvo
                             if (result.rows[i].tipo == 'CALLE') {
                                 tabla = `carto_calle`;
                             }
@@ -719,11 +832,17 @@ async function sinColonia(direccionParsed) {
                             }
                             // Asignar el resultado al campo "resultado"
                             result.rows[i].resultado = resultado.trim();
+                            // Modificamos el tipo por uno controlado para el servicio del Front
                             result.rows[i].tipo = `Calle`;
+                            // Asignar el id_calle al campo "id"
                             result.rows[i].id = result.rows[i].id_calle;
+                            // Asignar el campo por el que se puede identificar el id previo.
                             result.rows[i].campo = `Id`;
+                            // Asignar la imagen final que recibira dicha direccion
                             result.rows[i].imagen = 'punto';
+                            // Asignar la tabla de donde se obtuvo principalmente dicho registro
                             result.rows[i].tabla = tabla;
+                            // Calificamos el registro recuperado segun los parametros coincididos
                             result.rows[i].scoring = {
                                 fiability: 30,
                                 tipo_vialidad: 100,
@@ -733,19 +852,29 @@ async function sinColonia(direccionParsed) {
                                 estado: 0,
                                 numero_exterior: 100,
                             };
+                            // Quitamos acentos del nombre_vialidad recuperado debido a que en la BD se tiene con acentos
                             const nombreVialidadSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
+                            // Hacemos match con lo que proporciono el usuario.
                             const matchNombreVialidad = nombreVialidadSinAcentos.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
+                            // Validamos que exista Match
                             if (matchNombreVialidad) {
-                                const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
+                                // Obtiene el texto coincidente
+                                const matchedText = matchNombreVialidad[0];
+                                // Generamos la igualdad que se tienen
                                 let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
+                                // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                                 if (igualdad > 100) igualdad = 100;
+                                // Subimos el scoring en nombre_vialidad
                                 result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
+                                // Subimos el scoring en fiability
                                 result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                             }
                         }
+                        // Añadimos los resultados obtenidos al arreglo rows
                         rows = rows.concat(result.rows);
+                        // Evaluamos que rows este vacio para seguir con la busqueda
                         if (result.rows.length === 0) {
-                            // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+                            // Construimos la query para comenzar a generar consultas a la BD
                             query = `
                                 SELECT *,
                                 CASE
@@ -764,12 +893,17 @@ async function sinColonia(direccionParsed) {
                                 AND unaccent(estado) = $5
                                 ;
                             `;
+                            // Almacenamos en el arreglo values los campos que seran usados en la consulta
                             values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
+                            // Guardamos en una constante el resultado obtenido
                             const result = await pgClient.query(query, values);
+                            // Creamos ciclo for el cual recorrera cada uno de los resultados obtenidos
                             for (let i = 0; i < result.rows.length; i++) {
                                 // Inicializar la cadena de resultado
                                 let resultado = '';
+                                // Inicializamos la variable tabla
                                 let tabla = '';
+                                // Inicializamos la variable imagen
                                 let imagen = '';
 
                                 // Concatenar cada campo si tiene un valor
@@ -781,6 +915,7 @@ async function sinColonia(direccionParsed) {
                                 if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
                                 if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
+                                // Segun el tipo que regreso definimos la tabla de donde se obtuvo
                                 if (result.rows[i].tipo == 'CALLE') {
                                     tabla = `carto_calle`;
                                     imagen = `linea`;
@@ -795,11 +930,17 @@ async function sinColonia(direccionParsed) {
                                 }
                                 // Asignar el resultado al campo "resultado"
                                 result.rows[i].resultado = resultado.trim();
+                                // Modificamos el tipo por uno controlado para el servicio del Front
                                 result.rows[i].tipo = `Calle`;
+                                // Asignar el id_calle al campo "id"
                                 result.rows[i].id = result.rows[i].id_calle;
+                                // Asignar el campo por el que se puede identificar el id previo.
                                 result.rows[i].campo = `Id`;
+                                // Asignar la imagen final que recibira dicha direccion
                                 result.rows[i].imagen = imagen;
+                                // Asignar la tabla de donde se obtuvo principalmente dicho registro
                                 result.rows[i].tabla = tabla;
+                                // Calificamos el registro recuperado segun los parametros coincididos
                                 result.rows[i].scoring = {
                                     fiability: 35,
                                     tipo_vialidad: 100,
@@ -809,19 +950,29 @@ async function sinColonia(direccionParsed) {
                                     estado: 100,
                                     numero_exterior: 0
                                 };
+                                // Quitamos acentos del nombre_vialidad recuperado debido a que en la BD se tiene con acentos
                                 const nombreVialidadSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
+                                // Hacemos match con lo que proporciono el usuario.
                                 const matchNombreVialidad = nombreVialidadSinAcentos.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
+                                // Validamos que exista Match
                                 if (matchNombreVialidad) {
-                                    const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
+                                    // Obtiene el texto coincidente
+                                    const matchedText = matchNombreVialidad[0];
+                                    // Generamos la igualdad que se tienen
                                     let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
+                                    // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                                     if (igualdad > 100) igualdad = 100;
+                                    // Subimos el scoring en nombre_vialidad
                                     result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
+                                    // Subimos el scoring en fiability
                                     result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                                 }
                             }
+                            // Añadimos los resultados obtenidos al arreglo rows
                             rows = rows.concat(result.rows);
+                            // Evaluamos que rows este vacio para seguir con la busqueda
                             if (result.rows.length === 0) {
-                                // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+                                // Construimos la query para comenzar a generar consultas a la BD
                                 query = `
                                     SELECT *,
                                     CASE
@@ -839,12 +990,17 @@ async function sinColonia(direccionParsed) {
                                     AND unaccent(municipio) = $4
                                     ;
                                 `;
+                                // Almacenamos en el arreglo values los campos que seran usados en la consulta
                                 values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.MUNICIPIO];
+                                // Guardamos en una constante el resultado obtenido
                                 const result = await pgClient.query(query, values);
+                                // Creamos ciclo for el cual recorrera cada uno de los resultados obtenidos
                                 for (let i = 0; i < result.rows.length; i++) {
                                     // Inicializar la cadena de resultado
                                     let resultado = '';
+                                    // Inicializamos la variable tabla
                                     let tabla = '';
+                                    // Inicializamos la variable imagen
                                     let imagen = '';
 
                                     // Concatenar cada campo si tiene un valor
@@ -856,6 +1012,7 @@ async function sinColonia(direccionParsed) {
                                     if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
                                     if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
+                                    // Segun el tipo que regreso definimos la tabla de donde se obtuvo
                                     if (result.rows[i].tipo == 'CALLE') {
                                         tabla = `carto_calle`;
                                         imagen = `linea`;
@@ -870,11 +1027,17 @@ async function sinColonia(direccionParsed) {
                                     }
                                     // Asignar el resultado al campo "resultado"
                                     result.rows[i].resultado = resultado.trim();
+                                    // Modificamos el tipo por uno controlado para el servicio del Front
                                     result.rows[i].tipo = `Calle`;
+                                    // Asignar el id_calle al campo "id"
                                     result.rows[i].id = result.rows[i].id_calle;
+                                    // Asignar el campo por el que se puede identificar el id previo.
                                     result.rows[i].campo = `Id`;
+                                    // Asignar la imagen final que recibira dicha direccion
                                     result.rows[i].imagen = imagen;
+                                    // Asignar la tabla de donde se obtuvo principalmente dicho registro
                                     result.rows[i].tabla = tabla;
+                                    // Calificamos el registro recuperado segun los parametros coincididos
                                     result.rows[i].scoring = {
                                         fiability: 25,
                                         tipo_vialidad: 100,
@@ -884,19 +1047,29 @@ async function sinColonia(direccionParsed) {
                                         estado: 0,
                                         numero_exterior: 0
                                     };
+                                    // Quitamos acentos del nombre_vialidad recuperado debido a que en la BD se tiene con acentos
                                     const nombreVialidadSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
+                                    // Hacemos match con lo que proporciono el usuario.
                                     const matchNombreVialidad = nombreVialidadSinAcentos.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
+                                    // Validamos que exista Match
                                     if (matchNombreVialidad) {
-                                        const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
+                                        // Obtiene el texto coincidente
+                                        const matchedText = matchNombreVialidad[0];
+                                        // Generamos la igualdad que se tienen
                                         let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
+                                        // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                                         if (igualdad > 100) igualdad = 100;
+                                        // Subimos el scoring en nombre_vialidad
                                         result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
+                                        // Subimos el scoring en fiability
                                         result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                                     }
                                 }
+                                // Añadimos los resultados obtenidos al arreglo rows
                                 rows = rows.concat(result.rows);
+                                // Evaluamos que rows este vacio para seguir con la busqueda
                                 if (result.rows.length === 0) {
-                                    // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+                                    // Construimos la query para comenzar a generar consultas a la BD
                                     query = `
                                         SELECT *,
                                         CASE
@@ -914,12 +1087,17 @@ async function sinColonia(direccionParsed) {
                                         AND unaccent(estado) = $4
                                         ;
                                     `;
+                                    // Almacenamos en el arreglo values los campos que seran usados en la consulta
                                     values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
+                                    // Guardamos en una constante el resultado obtenido
                                     const result = await pgClient.query(query, values);
+                                    // Creamos ciclo for el cual recorrera cada uno de los resultados obtenidos
                                     for (let i = 0; i < result.rows.length; i++) {
                                         // Inicializar la cadena de resultado
                                         let resultado = '';
+                                        // Inicializamos la variable tabla
                                         let tabla = '';
+                                        // Inicializamos la variable imagen
                                         let imagen = '';
 
                                         // Concatenar cada campo si tiene un valor
@@ -931,6 +1109,7 @@ async function sinColonia(direccionParsed) {
                                         if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
                                         if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
+                                        // Segun el tipo que regreso definimos la tabla de donde se obtuvo
                                         if (result.rows[i].tipo == 'CALLE') {
                                             tabla = `carto_calle`;
                                             imagen = `linea`;
@@ -945,11 +1124,17 @@ async function sinColonia(direccionParsed) {
                                         }
                                         // Asignar el resultado al campo "resultado"
                                         result.rows[i].resultado = resultado.trim();
+                                        // Modificamos el tipo por uno controlado para el servicio del Front
                                         result.rows[i].tipo = `Calle`;
+                                        // Asignar el id_calle al campo "id"
                                         result.rows[i].id = result.rows[i].id_calle;
+                                        // Asignar el campo por el que se puede identificar el id previo.
                                         result.rows[i].campo = `Id`;
+                                        // Asignar la imagen final que recibira dicha direccion
                                         result.rows[i].imagen = imagen;
+                                        // Asignar la tabla de donde se obtuvo principalmente dicho registro
                                         result.rows[i].tabla = tabla;
+                                        // Calificamos el registro recuperado segun los parametros coincididos
                                         result.rows[i].scoring = {
                                             fiability: 25,
                                             tipo_vialidad: 100,
@@ -959,19 +1144,29 @@ async function sinColonia(direccionParsed) {
                                             estado: 100,
                                             numero_exterior: 0
                                         };
+                                        // Quitamos acentos del nombre_vialidad recuperado debido a que en la BD se tiene con acentos
                                         const nombreVialidadSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
+                                        // Hacemos match con lo que proporciono el usuario.
                                         const matchNombreVialidad = nombreVialidadSinAcentos.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
+                                        // Validamos que exista Match
                                         if (matchNombreVialidad) {
-                                            const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
+                                            // Obtiene el texto coincidente
+                                            const matchedText = matchNombreVialidad[0];
+                                            // Generamos la igualdad que se tienen
                                             let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
+                                            // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                                             if (igualdad > 100) igualdad = 100;
+                                            // Subimos el scoring en nombre_vialidad
                                             result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
+                                            // Subimos el scoring en fiability
                                             result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                                         }
                                     }
+                                    // Añadimos los resultados obtenidos al arreglo rows
                                     rows = rows.concat(result.rows);
+                                    // Evaluamos que rows este vacio para seguir con la busqueda
                                     if (result.rows.length === 0) {
-                                        // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+                                        // Construimos la query para comenzar a generar consultas a la BD
                                         query = `
                                             SELECT *,
                                             CASE
@@ -989,12 +1184,17 @@ async function sinColonia(direccionParsed) {
                                             AND unaccent(estado) = $4
                                             ;
                                         `;
+                                        // Almacenamos en el arreglo values los campos que seran usados en la consulta
                                         values = [direccionParsed.TIPOVIAL, direccionParsed.NOMVIAL, direccionParsed.CP, direccionParsed.ESTADO];
+                                        // Guardamos en una constante el resultado obtenido
                                         const result = await pgClient.query(query, values);
+                                        // Creamos ciclo for el cual recorrera cada uno de los resultados obtenidos
                                         for (let i = 0; i < result.rows.length; i++) {
                                             // Inicializar la cadena de resultado
                                             let resultado = '';
+                                            // Inicializamos la variable tabla
                                             let tabla = '';
+                                            // Inicializamos la variable imagen
                                             let imagen = '';
 
                                             // Concatenar cada campo si tiene un valor
@@ -1006,6 +1206,7 @@ async function sinColonia(direccionParsed) {
                                             if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
                                             if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
 
+                                            // Segun el tipo que regreso definimos la tabla de donde se obtuvo
                                             if (result.rows[i].tipo == 'CALLE') {
                                                 tabla = `carto_calle`;
                                                 imagen = `linea`;
@@ -1020,11 +1221,17 @@ async function sinColonia(direccionParsed) {
                                             }
                                             // Asignar el resultado al campo "resultado"
                                             result.rows[i].resultado = resultado.trim();
+                                            // Modificamos el tipo por uno controlado para el servicio del Front
                                             result.rows[i].tipo = `Calle`;
+                                            // Asignar el id_calle al campo "id"
                                             result.rows[i].id = result.rows[i].id_calle;
+                                            // Asignar el campo por el que se puede identificar el id previo.
                                             result.rows[i].campo = `Id`;
+                                            // Asignar la imagen final que recibira dicha direccion
                                             result.rows[i].imagen = imagen;
+                                            // Asignar la tabla de donde se obtuvo principalmente dicho registro
                                             result.rows[i].tabla = tabla;
+                                            // Calificamos el registro recuperado segun los parametros coincididos
                                             result.rows[i].scoring = {
                                                 fiability: 25,
                                                 tipo_vialidad: 100,
@@ -1034,19 +1241,29 @@ async function sinColonia(direccionParsed) {
                                                 estado: 100,
                                                 numero_exterior: 0
                                             };
+                                            // Quitamos acentos del nombre_vialidad recuperado debido a que en la BD se tiene con acentos
                                             const nombreVialidadSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
+                                            // Hacemos match con lo que proporciono el usuario.
                                             const matchNombreVialidad = nombreVialidadSinAcentos.match(new RegExp(direccionParsed.NOMVIAL, 'i'));
+                                            // Validamos que exista Match
                                             if (matchNombreVialidad) {
-                                                const matchedText = matchNombreVialidad[0]; // Obtiene el texto coincidente
+                                                // Obtiene el texto coincidente
+                                                const matchedText = matchNombreVialidad[0];
+                                                // Generamos la igualdad que se tienen
                                                 let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
+                                                // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                                                 if (igualdad > 100) igualdad = 100;
+                                                // Subimos el scoring en nombre_vialidad
                                                 result.rows[i].scoring.nombre_vialidad += Math.round(igualdad);
+                                                // Subimos el scoring en fiability
                                                 result.rows[i].scoring.fiability += Math.round(igualdad) / 2;
                                             }
                                         }
+                                        // Añadimos los resultados obtenidos al arreglo rows
                                         rows = rows.concat(result.rows);
-                                        /* if (result.rows.length === 0) {
-                                            // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+                                        // Evaluamos que rows este vacio para seguir con la busqueda
+                                        /*if (result.rows.length === 0) {
+                                            // Construimos la query para comenzar a generar consultas a la BD
                                             query = `
                                                 SELECT *,
                                                 CASE
@@ -1063,12 +1280,17 @@ async function sinColonia(direccionParsed) {
                                                 AND unaccent(municipio) = $3
                                                 ;
                                             `;
+                                            // Almacenamos en el arreglo values los campos que seran usados en la consulta
                                             values = [direccionParsed.TIPOVIAL, direccionParsed.ESTADO, direccionParsed.MUNICIPIO];
+                                            // Guardamos en una constante el resultado obtenido
                                             const result = await pgClient.query(query, values);
+                                            // Creamos ciclo for el cual recorrera cada uno de los resultados obtenidos
                                             for (let i = 0; i < result.rows.length; i++) {
                                                 // Inicializar la cadena de resultado
                                                 let resultado = '';
+                                                // Inicializamos la variable tabla
                                                 let tabla = '';
+                                                // Inicializamos la variable imagen
                                                 let imagen = '';
                                                                                     
                                                 // Concatenar cada campo si tiene un valor
@@ -1080,6 +1302,7 @@ async function sinColonia(direccionParsed) {
                                                 if (result.rows[i].municipio) resultado += `${result.rows[i].municipio} `;
                                                 if (result.rows[i].estado) resultado += `${result.rows[i].estado} `;
                                                                                     
+                                                // Segun el tipo que regreso definimos la tabla de donde se obtuvo
                                                 if (result.rows[i].tipo == 'CALLE') {
                                                     tabla = `carto_calle`;
                                                     imagen = `linea`;
@@ -1094,11 +1317,17 @@ async function sinColonia(direccionParsed) {
                                                 } 
                                                 // Asignar el resultado al campo "resultado"
                                                 result.rows[i].resultado = resultado.trim();
+                                                // Modificamos el tipo por uno controlado para el servicio del Front
                                                 result.rows[i].tipo = `Calle`;
+                                                // Asignar el id_calle al campo "id"
                                                 result.rows[i].id = result.rows[i].id_calle;
+                                                // Asignar el campo por el que se puede identificar el id previo.
                                                 result.rows[i].campo = `Id`;
+                                                // Asignar la imagen final que recibira dicha direccion
                                                 result.rows[i].imagen = imagen;
+                                                // Asignar la tabla de donde se obtuvo principalmente dicho registro
                                                 result.rows[i].tabla = tabla;
+                                                // Calificamos el registro recuperado segun los parametros coincididos
                                                 result.rows[i].scoring = {
                                                     fiability: 25,
                                                     tipo_vialidad: 100,
@@ -1138,6 +1367,7 @@ async function sinColonia(direccionParsed) {
                                                     result.rows[i].scoring.fiability += 10;
                                                 }
                                             }
+                                            // Añadimos los resultados obtenidos al arreglo rows
                                             rows = rows.concat(result.rows);
                                         } */
                                     }
@@ -1149,6 +1379,7 @@ async function sinColonia(direccionParsed) {
             }
         }
     }
+    // Retornamos los rows que se obtuvieron hasta el momento
     return rows;
 }
 module.exports = sinColonia;
