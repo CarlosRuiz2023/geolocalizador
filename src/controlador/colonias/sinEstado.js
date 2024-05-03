@@ -1,12 +1,15 @@
 const pgClient = require("../../data/conexion");
 const { levenshteinDistance, quitarAcentos } = require("../funciones");
 
-// Aplicable solo en caso de llevar todos los campos
+// Aplicable solo en caso de llevar todos los campos a excepcion del ESTADO
 async function sinEstado(direccionParsed) {
+    // Declaramos un valor nulo para la query de tipo String
     let query = '';
+    // Generamos un arreglo para los valores que suplantaran "$X" en la query
     let values = [];
+    // Generamos un arreglo para guardar los resultados obtenidos de la BD
     let rows = [];
-    // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+    // Construimos la query para comenzar a generar consultas a la BD
     query = `
         SELECT *,
         ST_Y(ST_Centroid("SP_GEOMETRY")) AS x_centro,
@@ -17,8 +20,11 @@ async function sinEstado(direccionParsed) {
         AND unaccent(colonia) LIKE '%' || $3 || '%'
         ;
     `;
+    // Almacenamos en el arreglo values los campos que seran usados en la consulta
     values = [direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
+    // Guardamos en una constante el resultado obtenido
     const result = await pgClient.query(query, values);
+    // Creamos ciclo for el cual recorrera cada uno de los resultados obtenidos
     for (let i = 0; i < result.rows.length; i++) {
         // Inicializar la cadena de resultado
         let resultado = '';
@@ -32,33 +38,50 @@ async function sinEstado(direccionParsed) {
 
         // Asignar el resultado al campo "resultado"
         result.rows[i].resultado = resultado.trim();
+        // Modificamos el tipo por uno controlado para el servicio del Front
         result.rows[i].tipo = `Colonia`;
+        // Asignar el id_colonia al campo "id"
         result.rows[i].id = result.rows[i].id_colonia;
+        // Asignar el campo por el que se puede identificar el id previo.
         result.rows[i].campo = `id_colonia`;
+        // Asignar la imagen final que recibira dicha direccion
         result.rows[i].imagen = 'poligono';
+        // Asignar la tabla de donde se obtuvo principalmente dicho registro
         result.rows[i].tabla = 'carto_colonia';
+        // Dejamos en 0 cada uno de los ids que conforman la colonia por adaptabilidad con el Front
         result.rows[i].id_estado = 0;
         result.rows[i].id_municipio = 0;
         result.rows[i].id_region = 0;
+        // Calificamos el registro recuperado segun los parametros coincididos
         result.rows[i].scoring = {
             fiability: 50,
             colonia: 0,
             codigo_postal: 100,
             municipio: 100
         };
+        // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
         const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+        // Hacemos match con lo que proporciono el usuario.
         const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+        // Validamos que exista Match
         if (matchColonia) {
-            const matchedText = matchColonia[0]; // Obtiene el texto coincidente
+            // Obtiene el texto coincidente
+            const matchedText = matchColonia[0];
+            // Generamos la igualdad que se tienen
             let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
+            // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
             if (igualdad > 100) igualdad = 100;
+            // Subimos el scoring en colonia
             result.rows[i].scoring.colonia += Math.round(igualdad);
+            // Subimos el scoring en fiability
             result.rows[i].scoring.fiability += Math.round(igualdad * 0.5);
         }
     }
+    // Añadimos los resultados obtenidos al arreglo rows
     rows = rows.concat(result.rows);
+    // Evaluamos que rows este vacio para seguir con la busqueda
     if (result.rows.length === 0) {
-        // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+        // Construimos la query para comenzar a generar consultas a la BD
         query = `
             SELECT *,
             ST_Y(ST_Centroid("SP_GEOMETRY")) AS x_centro,
@@ -68,8 +91,11 @@ async function sinEstado(direccionParsed) {
             AND unaccent(colonia) LIKE '%' || $2 || '%'
             ;
         `;
+        // Almacenamos en el arreglo values los campos que seran usados en la consulta
         values = [direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
+        // Guardamos en una constante el resultado obtenido
         const result = await pgClient.query(query, values);
+        // Creamos ciclo for el cual recorrera cada uno de los resultados obtenidos
         for (let i = 0; i < result.rows.length; i++) {
             // Inicializar la cadena de resultado
             let resultado = '';
@@ -83,33 +109,50 @@ async function sinEstado(direccionParsed) {
 
             // Asignar el resultado al campo "resultado"
             result.rows[i].resultado = resultado.trim();
+            // Modificamos el tipo por uno controlado para el servicio del Front
             result.rows[i].tipo = `Colonia`;
+            // Asignar el id_colonia al campo "id"
             result.rows[i].id = result.rows[i].id_colonia;
+            // Asignar el campo por el que se puede identificar el id previo.
             result.rows[i].campo = `id_colonia`;
+            // Asignar la imagen final que recibira dicha direccion
             result.rows[i].imagen = 'poligono';
+            // Asignar la tabla de donde se obtuvo principalmente dicho registro
             result.rows[i].tabla = 'carto_colonia';
+            // Dejamos en 0 cada uno de los ids que conforman la colonia por adaptabilidad con el Front
             result.rows[i].id_estado = 0;
             result.rows[i].id_municipio = 0;
             result.rows[i].id_region = 0;
+            // Calificamos el registro recuperado segun los parametros coincididos
             result.rows[i].scoring = {
                 fiability: 25,
                 colonia: 0,
                 codigo_postal: 0,
                 municipio: 100
             };
+            // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
             const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+            // Hacemos match con lo que proporciono el usuario.
             const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+            // Validamos que exista Match
             if (matchColonia) {
-                const matchedText = matchColonia[0]; // Obtiene el texto coincidente
+                // Obtiene el texto coincidente
+                const matchedText = matchColonia[0];
+                // Generamos la igualdad que se tienen
                 let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
+                // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                 if (igualdad > 100) igualdad = 100;
+                // Subimos el scoring en colonia
                 result.rows[i].scoring.colonia += Math.round(igualdad);
+                // Subimos el scoring en fiability
                 result.rows[i].scoring.fiability += Math.round(igualdad * 0.5);
             }
         }
+        // Añadimos los resultados obtenidos al arreglo rows
         rows = rows.concat(result.rows);
+        // Evaluamos que rows este vacio para seguir con la busqueda
         if (result.rows.length === 0) {
-            // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+            // Construimos la query para comenzar a generar consultas a la BD
             query = `
                 SELECT *,
                 ST_Y(ST_Centroid("SP_GEOMETRY")) AS x_centro,
@@ -119,8 +162,11 @@ async function sinEstado(direccionParsed) {
                 AND unaccent(colonia) LIKE '%' || $2 || '%'
                 ;
             `;
+            // Almacenamos en el arreglo values los campos que seran usados en la consulta
             values = [direccionParsed.CP, direccionParsed.COLONIA];
+            // Guardamos en una constante el resultado obtenido
             const result = await pgClient.query(query, values);
+            // Creamos ciclo for el cual recorrera cada uno de los resultados obtenidos
             for (let i = 0; i < result.rows.length; i++) {
                 // Inicializar la cadena de resultado
                 let resultado = '';
@@ -134,33 +180,50 @@ async function sinEstado(direccionParsed) {
 
                 // Asignar el resultado al campo "resultado"
                 result.rows[i].resultado = resultado.trim();
+                // Modificamos el tipo por uno controlado para el servicio del Front
                 result.rows[i].tipo = `Colonia`;
+                // Asignar el id_colonia al campo "id"
                 result.rows[i].id = result.rows[i].id_colonia;
+                // Asignar el campo por el que se puede identificar el id previo.
                 result.rows[i].campo = `id_colonia`;
+                // Asignar la imagen final que recibira dicha direccion
                 result.rows[i].imagen = 'poligono';
+                // Asignar la tabla de donde se obtuvo principalmente dicho registro
                 result.rows[i].tabla = 'carto_colonia';
+                // Dejamos en 0 cada uno de los ids que conforman la colonia por adaptabilidad con el Front
                 result.rows[i].id_estado = 0;
                 result.rows[i].id_municipio = 0;
                 result.rows[i].id_region = 0;
+                // Calificamos el registro recuperado segun los parametros coincididos
                 result.rows[i].scoring = {
                     fiability: 25,
                     colonia: 0,
                     codigo_postal: 100,
                     municipio: 0
                 };
+                // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
                 const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+                // Hacemos match con lo que proporciono el usuario.
                 const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                // Validamos que exista Match
                 if (matchColonia) {
-                    const matchedText = matchColonia[0]; // Obtiene el texto coincidente
+                    // Obtiene el texto coincidente
+                    const matchedText = matchColonia[0];
+                    // Generamos la igualdad que se tienen
                     let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
+                    // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                     if (igualdad > 100) igualdad = 100;
+                    // Subimos el scoring en colonia
                     result.rows[i].scoring.colonia += Math.round(igualdad);
+                    // Subimos el scoring en fiability
                     result.rows[i].scoring.fiability += Math.round(igualdad * 0.5);
                 }
             }
+            // Añadimos los resultados obtenidos al arreglo rows
             rows = rows.concat(result.rows);
+            // Evaluamos que rows este vacio para seguir con la busqueda
             if (result.rows.length === 0) {
-                // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+                // Construimos la query para comenzar a generar consultas a la BD
                 query = `
                     SELECT *,
                     ST_Y(ST_Centroid("SP_GEOMETRY")) AS x_centro,
@@ -169,8 +232,11 @@ async function sinEstado(direccionParsed) {
                     WHERE unaccent(colonia) LIKE '%' || $1 || '%'
                     ;
                 `;
+                // Almacenamos en el arreglo values los campos que seran usados en la consulta
                 values = [direccionParsed.COLONIA];
+                // Guardamos en una constante el resultado obtenido
                 const result = await pgClient.query(query, values);
+                // Creamos ciclo for el cual recorrera cada uno de los resultados obtenidos
                 for (let i = 0; i < result.rows.length; i++) {
                     // Inicializar la cadena de resultado
                     let resultado = '';
@@ -184,33 +250,50 @@ async function sinEstado(direccionParsed) {
 
                     // Asignar el resultado al campo "resultado"
                     result.rows[i].resultado = resultado.trim();
+                    // Modificamos el tipo por uno controlado para el servicio del Front
                     result.rows[i].tipo = `Colonia`;
+                    // Asignar el id_colonia al campo "id"
                     result.rows[i].id = result.rows[i].id_colonia;
+                    // Asignar el campo por el que se puede identificar el id previo.
                     result.rows[i].campo = `id_colonia`;
+                    // Asignar la imagen final que recibira dicha direccion
                     result.rows[i].imagen = 'poligono';
+                    // Asignar la tabla de donde se obtuvo principalmente dicho registro
                     result.rows[i].tabla = 'carto_colonia';
+                    // Dejamos en 0 cada uno de los ids que conforman la colonia por adaptabilidad con el Front
                     result.rows[i].id_estado = 0;
                     result.rows[i].id_municipio = 0;
                     result.rows[i].id_region = 0;
+                    // Calificamos el registro recuperado segun los parametros coincididos
                     result.rows[i].scoring = {
                         fiability: 0,
                         colonia: 0,
                         codigo_postal: 0,
                         municipio: 0
                     };
+                    // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
                     const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+                    // Hacemos match con lo que proporciono el usuario.
                     const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                    // Validamos que exista Match
                     if (matchColonia) {
-                        const matchedText = matchColonia[0]; // Obtiene el texto coincidente
+                        // Obtiene el texto coincidente
+                        const matchedText = matchColonia[0];
+                        // Generamos la igualdad que se tienen
                         let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
+                        // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                         if (igualdad > 100) igualdad = 100;
+                        // Subimos el scoring en colonia
                         result.rows[i].scoring.colonia += Math.round(igualdad);
+                        // Subimos el scoring en fiability
                         result.rows[i].scoring.fiability += Math.round(igualdad * 0.5);
                     }
                 }
+                // Añadimos los resultados obtenidos al arreglo rows
                 rows = rows.concat(result.rows);
+                // Evaluamos que rows este vacio para seguir con la busqueda
                 if (result.rows.length === 0) {
-                    // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+                    // Construimos la query para comenzar a generar consultas a la BD
                     query = `
                         SELECT *,
                         ST_Y(ST_Centroid("SP_GEOMETRY")) AS x_centro,
@@ -220,8 +303,11 @@ async function sinEstado(direccionParsed) {
                         AND unaccent(municipio) = $2
                         ;
                     `;
+                    // Almacenamos en el arreglo values los campos que seran usados en la consulta
                     values = [direccionParsed.CP, direccionParsed.MUNICIPIO];
+                    // Guardamos en una constante el resultado obtenido
                     const result = await pgClient.query(query, values);
+                    // Creamos ciclo for el cual recorrera cada uno de los resultados obtenidos
                     for (let i = 0; i < result.rows.length; i++) {
                         // Inicializar la cadena de resultado
                         let resultado = '';
@@ -235,14 +321,21 @@ async function sinEstado(direccionParsed) {
 
                         // Asignar el resultado al campo "resultado"
                         result.rows[i].resultado = resultado.trim();
+                        // Modificamos el tipo por uno controlado para el servicio del Front
                         result.rows[i].tipo = `Colonia`;
+                        // Asignar el id_colonia al campo "id"
                         result.rows[i].id = result.rows[i].id_colonia;
+                        // Asignar el campo por el que se puede identificar el id previo.
                         result.rows[i].campo = `id_colonia`;
+                        // Asignar la imagen final que recibira dicha direccion
                         result.rows[i].imagen = 'poligono';
+                        // Asignar la tabla de donde se obtuvo principalmente dicho registro
                         result.rows[i].tabla = 'carto_colonia';
+                        // Dejamos en 0 cada uno de los ids que conforman la colonia por adaptabilidad con el Front
                         result.rows[i].id_estado = 0;
                         result.rows[i].id_municipio = 0;
                         result.rows[i].id_region = 0;
+                        // Calificamos el registro recuperado segun los parametros coincididos
                         result.rows[i].scoring = {
                             fiability: 50,
                             colonia: 0,
@@ -253,15 +346,21 @@ async function sinEstado(direccionParsed) {
                         const distanceColonia = levenshteinDistance(quitarAcentos(result.rows[i].colonia), direccionParsed.COLONIA);
                         // Calcular la similitud como el inverso de la distancia de Levenshtein
                         const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
+                        // Calculamos la similitud de la colonia segun sus comparativos
                         const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
+                        // Validamos que exista similitud alguna
                         if (similarityColonia) {
+                            // Subimos el scoring en colonia
                             result.rows[i].scoring.colonia += similarityColonia;
+                            // Subimos el scoring en fiability
                             result.rows[i].scoring.fiability += (similarityColonia * 0.5);
                         }
                     }
+                    // Añadimos los resultados obtenidos al arreglo rows
                     rows = rows.concat(result.rows);
+                    // Evaluamos que rows este vacio para seguir con la busqueda
                     if (result.rows.length === 0) {
-                        // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+                        // Construimos la query para comenzar a generar consultas a la BD
                         query = `
                             SELECT *,
                             ST_Y(ST_Centroid("SP_GEOMETRY")) AS x_centro,
@@ -270,8 +369,11 @@ async function sinEstado(direccionParsed) {
                             WHERE unaccent(municipio) = $1
                             ;
                         `;
+                        // Almacenamos en el arreglo values los campos que seran usados en la consulta
                         values = [direccionParsed.MUNICIPIO];
+                        // Guardamos en una constante el resultado obtenido
                         const result = await pgClient.query(query, values);
+                        // Creamos ciclo for el cual recorrera cada uno de los resultados obtenidos
                         for (let i = 0; i < result.rows.length; i++) {
                             // Inicializar la cadena de resultado
                             let resultado = '';
@@ -285,14 +387,21 @@ async function sinEstado(direccionParsed) {
 
                             // Asignar el resultado al campo "resultado"
                             result.rows[i].resultado = resultado.trim();
+                            // Modificamos el tipo por uno controlado para el servicio del Front
                             result.rows[i].tipo = `Colonia`;
+                            // Asignar el id_colonia al campo "id"
                             result.rows[i].id = result.rows[i].id_colonia;
+                            // Asignar el campo por el que se puede identificar el id previo.
                             result.rows[i].campo = `id_colonia`;
+                            // Asignar la imagen final que recibira dicha direccion
                             result.rows[i].imagen = 'poligono';
+                            // Asignar la tabla de donde se obtuvo principalmente dicho registro
                             result.rows[i].tabla = 'carto_colonia';
+                            // Dejamos en 0 cada uno de los ids que conforman la colonia por adaptabilidad con el Front
                             result.rows[i].id_estado = 0;
                             result.rows[i].id_municipio = 0;
                             result.rows[i].id_region = 0;
+                            // Calificamos el registro recuperado segun los parametros coincididos
                             result.rows[i].scoring = {
                                 fiability: 25,
                                 colonia: 0,
@@ -303,15 +412,21 @@ async function sinEstado(direccionParsed) {
                             const distanceColonia = levenshteinDistance(quitarAcentos(result.rows[i].colonia), direccionParsed.COLONIA);
                             // Calcular la similitud como el inverso de la distancia de Levenshtein
                             const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
+                            // Calculamos la similitud de la colonia segun sus comparativos
                             const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
+                            // Validamos que exista similitud alguna
                             if (similarityColonia) {
+                                // Subimos el scoring en colonia
                                 result.rows[i].scoring.colonia += similarityColonia;
+                                // Subimos el scoring en fiability
                                 result.rows[i].scoring.fiability += (similarityColonia * 0.5);
                             }
                         }
+                        // Añadimos los resultados obtenidos al arreglo rows
                         rows = rows.concat(result.rows);
+                        // Evaluamos que rows este vacio para seguir con la busqueda
                         if (result.rows.length === 0) {
-                            // Consultar la base de datos utilizando la función ST_AsGeoJSON para obtener las coordenadas como GeoJSON
+                            // Construimos la query para comenzar a generar consultas a la BD
                             query = `
                                 SELECT *,
                                 ST_Y(ST_Centroid("SP_GEOMETRY")) AS x_centro,
@@ -320,8 +435,11 @@ async function sinEstado(direccionParsed) {
                                 WHERE codigo_postal = $1
                                 ;
                             `;
+                            // Almacenamos en el arreglo values los campos que seran usados en la consulta
                             values = [direccionParsed.CP];
+                            // Guardamos en una constante el resultado obtenido
                             const result = await pgClient.query(query, values);
+                            // Creamos ciclo for el cual recorrera cada uno de los resultados obtenidos
                             for (let i = 0; i < result.rows.length; i++) {
                                 // Inicializar la cadena de resultado
                                 let resultado = '';
@@ -335,14 +453,21 @@ async function sinEstado(direccionParsed) {
 
                                 // Asignar el resultado al campo "resultado"
                                 result.rows[i].resultado = resultado.trim();
+                                // Modificamos el tipo por uno controlado para el servicio del Front
                                 result.rows[i].tipo = `Colonia`;
+                                // Asignar el id_colonia al campo "id"
                                 result.rows[i].id = result.rows[i].id_colonia;
+                                // Asignar el campo por el que se puede identificar el id previo.
                                 result.rows[i].campo = `id_colonia`;
+                                // Asignar la imagen final que recibira dicha direccion
                                 result.rows[i].imagen = 'poligono';
+                                // Asignar la tabla de donde se obtuvo principalmente dicho registro
                                 result.rows[i].tabla = 'carto_colonia';
+                                // Dejamos en 0 cada uno de los ids que conforman la colonia por adaptabilidad con el Front
                                 result.rows[i].id_estado = 0;
                                 result.rows[i].id_municipio = 0;
                                 result.rows[i].id_region = 0;
+                                // Calificamos el registro recuperado segun los parametros coincididos
                                 result.rows[i].scoring = {
                                     fiability: 25,
                                     colonia: 0,
@@ -353,12 +478,17 @@ async function sinEstado(direccionParsed) {
                                 const distanceColonia = levenshteinDistance(quitarAcentos(result.rows[i].colonia), direccionParsed.COLONIA);
                                 // Calcular la similitud como el inverso de la distancia de Levenshtein
                                 const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
+                                // Calculamos la similitud de la colonia segun sus comparativos
                                 const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
+                                // Validamos que exista similitud alguna
                                 if (similarityColonia) {
+                                    // Subimos el scoring en colonia
                                     result.rows[i].scoring.colonia += similarityColonia;
+                                    // Subimos el scoring en fiability
                                     result.rows[i].scoring.fiability += (similarityColonia * 0.5);
                                 }
                             }
+                            // Añadimos los resultados obtenidos al arreglo rows
                             rows = rows.concat(result.rows);
                         }
                     }
@@ -366,6 +496,7 @@ async function sinEstado(direccionParsed) {
             }
         }
     }
+    // Retornamos los rows que se obtuvieron hasta el momento
     return rows;
 }
 module.exports = sinEstado;
