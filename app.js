@@ -109,7 +109,7 @@ app.post('/geolocalizadorHere', async (req, res) => {
             return { ...result, resultado: result.title };
         });
         // Validamos que el arrglo de direcciones no tenga un largo de 0.
-        if (results.length !== 0) {
+        if (sortedResults.length !== 0) {
             // Regresamos la respuesta con un estatus 200 junto con las direcciones obtenidas.
             return res.status(200).json({ ok: true, results: sortedResults });
         } else {
