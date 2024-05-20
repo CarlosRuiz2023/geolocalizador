@@ -72,7 +72,7 @@ app.post('/geolocalizar', async (req, res) => {
         // Validamos que el arrglo de direcciones no tenga un largo de 0.
         if (results.length !== 0) {
             // Regresamos la respuesta con un estatus 200 junto con las direcciones obtenidas.
-            return res.status(200).json({ ok: true, results: sortedResults });
+            return res.status(200).json({ ok: true, parse:direccionParsed,results: sortedResults });
         } else {
             // Regresamos la respuesta con un estatus 404 debido a que no se han encontrado coincidencias.
             return res.status(404).json({ ok: false, error: 'Sin resultados.' });
