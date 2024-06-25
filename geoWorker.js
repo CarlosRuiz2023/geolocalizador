@@ -36,7 +36,6 @@ module.exports = async ({ direccion, limit }) => {
 };
 
 function determineLevel(scoring) {
-  console.log(scoring);
   const { tipo_asentamiento = null, tipo_vialidad = null, calle = null, numero_exterior = null, colonia = null, codigo_postal = null, municipio = null, estado = null } = scoring;
 
   if (calle && numero_exterior && colonia && codigo_postal && municipio && estado) {
