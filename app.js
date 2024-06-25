@@ -31,7 +31,11 @@ app.use(express.urlencoded({ extended: true }));
 //     })
 // );
 // MIDDLEWARE PARA MANEJAR CORS
-app.use(cors());
+app.use(cors({
+    origin: '*',  // Puedes restringir esto a un dominio específico
+    methods: 'GET, POST, OPTIONS, PUT, DELETE',
+    allowedHeaders: 'Origin, Content-Type, Accept, Authorization'
+}));
 // MIDDLEWARE PARA SERVIR ARCHIVOS ESTÁTICOS DESDE LA CARPETA 'public'.
 app.use(express.static("public"));
 // Endpoint para geolocalizar una dirección proporcionada por el usuario.
@@ -47,6 +51,7 @@ app.post("/geolocalizar", async (req, res) => {
       .status(400)
       .json({
         ok: false,
+        level:'NG', 
         error:
           "Falta capturar alguna dirección al servicio. Intente nuevamente",
       });
@@ -59,7 +64,7 @@ app.post("/geolocalizar", async (req, res) => {
     console.error("Error al geolocalizar dirección:", error);
     res
       .status(500)
-      .json({ ok: false, error: "Error al procesar la dirección" });
+      .json({ ok: false, level:'NG', error: "Error al procesar la dirección" });
   }
 });
 

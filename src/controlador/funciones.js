@@ -20,11 +20,10 @@ async function importaciones() {
         console.error('Error al importar los estados:', error);
     }
 }
-
-// Llamamos la función para importar estados y municipios.
-importaciones();
 // Función para parsear la dirección según la Norma Técnica sobre Domicilios Geográficos.
-function parseDireccion(direccion) {
+async function parseDireccion(direccion) {
+    // Llamamos la función para importar estados y municipios.
+    await importaciones();
     // Limpiamos y expandimos abreviaciones de la entrada o lo que recibimos como direccion.
     const direccionExpandida = expandirAbreviaciones(limpiarBusqueda(direccion.toUpperCase()));
     // Una vez limpiada la direccion proporcionada la dividimos por ' ' (espacios).
