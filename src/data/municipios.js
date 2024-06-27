@@ -13,7 +13,7 @@ async function obtenerMunicipios() {
 
     try {
        // Consultar los municipios por estado desde la base de datos
-       const query = `SELECT UNACCENT(UPPER(estado)) as estado, json_agg(UNACCENT(UPPER(municipio))) AS municipios FROM carto_municipio GROUP BY estado;`;
+       const query = `SELECT UPPER(UNACCENT(estado)) as estado, json_agg(UPPER(UNACCENT(municipio))) AS municipios FROM carto_municipio GROUP BY estado;`;
        const result = await pgClient.query(query);
 
        // Mapear los resultados y almacenarlos en el caché

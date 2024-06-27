@@ -30,27 +30,21 @@ module.exports = async ({ direccion, limit }) => {
 
   sortedResults = sortedResults.slice(0, limit);
 
-  const level = determineLevel(sortedResults[0].scoring);
+  const level = determineLevel(sortedResults[0]);
 
   return { parse: direccionParsed,level, results: sortedResults };
 };
 
-function determineLevel(scoring) {
-  const { tipo_asentamiento = null, tipo_vialidad = null, calle = null, numero_exterior = null, colonia = null, codigo_postal = null, municipio = null, estado = null } = scoring;
+// FUNCION QUE DETERMINA EL NIVEL AL QUE SE BUSCO MEDIANTE LOS ATRIBUTOS QUE CONFORMAN EL SCORING.
+function determineLevel(result) {
+  const { poi, scoring } = result;
+  const { tipo_asentamiento, tipo_vialidad, calle, colonia, codigo_postal} = scoring;
 
-  if (calle && numero_exterior && colonia && codigo_postal && municipio && estado) {
-      if (tipo_asentamiento) return 'S1';
-      if (tipo_vialidad) return 'S2';
-      return 'S3';
-  }
-  if (calle && numero_exterior && colonia && municipio && estado) return 'S4';
-  if (calle && colonia && codigo_postal && municipio && estado) return 'S5';
-  if (calle && municipio && estado) return 'S6';
-  if (colonia && municipio && estado) return 'N1';
-  if (colonia && municipio) return 'N2';
-  if (colonia && estado) return 'N3';
-  if (codigo_postal && municipio && estado) return 'C1';
-  if (codigo_postal && municipio) return 'C2';
-  if (codigo_postal && estado) return 'C3';
+  if (tipo_asentamiento) return 'S1';
+  if (tipo_vialidad) return 'S2';
+  if (poi!=='') return 'S4';
+  if (calle) return 'S3';
+  if (colonia) return 'N1';
+  if (codigo_postal) return 'C1';
   return 'SD';
 }
