@@ -51,7 +51,7 @@ app.post("/geolocalizar", async (req, res) => {
       .status(400)
       .json({
         ok: false,
-        level:'NG', 
+        level:'SD', 
         error:
           "Falta capturar alguna dirección al servicio. Intente nuevamente",
       });

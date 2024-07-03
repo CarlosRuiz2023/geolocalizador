@@ -531,7 +531,7 @@ async function sinColoniaCP(direccionParsed) {
                                     lat_y AS y_centro,
                                     lon_x AS x_centro
                                     FROM carto_geolocalizador
-                                    AND unaccent(municipio) = $1
+                                    WHERE unaccent(municipio) = $1
                                     AND unaccent(estado) = $2
                                     ;
                                 `;
