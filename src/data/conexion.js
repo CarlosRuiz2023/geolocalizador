@@ -8,10 +8,10 @@ const pgClient = new Client({
     password: process.env.NEON_PASSWORD,
     database: process.env.NEON_BD,
     port: process.env.NEON_PORT,
-    // ssl: false // require
-    ssl:{
+    ssl: false // require
+    /* ssl:{
             rejectUnauthorized: false, // Esto evita errores de certificado SSL en la conexión
-        },
+        }, */
 });
 pgClient.connect();
 

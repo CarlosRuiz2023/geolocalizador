@@ -111,58 +111,6 @@ async function scoringMaestro(direccionParsed) {
     if(results.length!==0){
         return results;
     }
-    // Validamos que se halla detectado al menos lleve CALLE para buscar primero por POI.
-    if (direccionParsed.CALLE) {
-        // Validamos segun sus propiedades a que funcion debe dirigirse.
-        if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
-            results=await all_Poi(direccionParsed);
-        }
-        else if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.COLONIA) {
-            results=await sinNumeroExterior_Poi(direccionParsed);
-        }
-        else if (direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
-            results=await sinCP_Poi(direccionParsed);
-        }
-        else if (direccionParsed.CP && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
-            results=await sinMunicipio_Poi(direccionParsed);
-        }
-        else if (direccionParsed.CP && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
-            results=await sinEstado_Poi(direccionParsed);
-        }
-        else if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1) {
-            results=await sinColonia_Poi(direccionParsed);
-        }
-        else if (direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.MUNICIPIO) {
-            results=await sinColoniaCP_Poi(direccionParsed);
-        }
-        else if (direccionParsed.ESTADO && direccionParsed.CP && direccionParsed.MUNICIPIO) {
-            results=await sinColoniaNumeroExterior_Poi(direccionParsed);
-        }
-        else if (direccionParsed.ESTADO && direccionParsed.MUNICIPIO && direccionParsed.COLONIA) {
-            results=await sinNumeroExteriorCP_Poi(direccionParsed);
-        }
-        else if (direccionParsed.ESTADO && direccionParsed.MUNICIPIO) {
-            results=await municipioEstado_Poi(direccionParsed);
-        }
-        else if (direccionParsed.COLONIA && direccionParsed.NUMEXTNUM1) {
-            results=await numeroExteriorColonia_Poi(direccionParsed);
-        }
-        else if (direccionParsed.MUNICIPIO && direccionParsed.NUMEXTNUM1) {
-            results=await municipioNumeroExterior_Poi(direccionParsed);
-        }
-        else if (direccionParsed.NUMEXTNUM1) {
-            results=await numeroExterior_Poi(direccionParsed);
-        }
-        else {
-            results=await alone_Poi(direccionParsed);
-        }
-        // Ordenar scoring mas alto primero
-        sortedResults = results.sort((a, b) => b.scoring.fiability - a.scoring.fiability);
-    }
-    // Si se encontro algo y tiene un alto grado de Fiability regresalo.
-    if(results.length!==0 && sortedResults[0].scoring.fiability>80){
-        return sortedResults;
-    }
     // Validamos que se halla detectado al menos lleve CALLE para realizar una busqueda masiva.
     if (direccionParsed.CALLE) {
         // Validamos segun sus propiedades a que funcion debe dirigirse.
@@ -209,6 +157,62 @@ async function scoringMaestro(direccionParsed) {
             results=await alone_Calle(direccionParsed);
         }
     }
+    // Si se encontro algo regresalo.
+    if(results.length!==0){
+        return results;
+    }
+    // Validamos que se halla detectado al menos lleve CALLE para buscar primero por POI.
+    if (direccionParsed.CALLE) {
+        // Validamos segun sus propiedades a que funcion debe dirigirse.
+        if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
+            results=await all_Poi(direccionParsed);
+        }
+        else if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.COLONIA) {
+            results=await sinNumeroExterior_Poi(direccionParsed);
+        }
+        else if (direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
+            results=await sinCP_Poi(direccionParsed);
+        }
+        else if (direccionParsed.CP && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
+            results=await sinMunicipio_Poi(direccionParsed);
+        }
+        else if (direccionParsed.CP && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
+            results=await sinEstado_Poi(direccionParsed);
+        }
+        else if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1) {
+            results=await sinColonia_Poi(direccionParsed);
+        }
+        else if (direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.MUNICIPIO) {
+            results=await sinColoniaCP_Poi(direccionParsed);
+        }
+        else if (direccionParsed.ESTADO && direccionParsed.CP && direccionParsed.MUNICIPIO) {
+            results=await sinColoniaNumeroExterior_Poi(direccionParsed);
+        }
+        else if (direccionParsed.ESTADO && direccionParsed.MUNICIPIO && direccionParsed.COLONIA) {
+            results=await sinNumeroExteriorCP_Poi(direccionParsed);
+        }
+        else if (direccionParsed.ESTADO && direccionParsed.MUNICIPIO) {
+            results=await municipioEstado_Poi(direccionParsed);
+        }
+        else if (direccionParsed.COLONIA && direccionParsed.NUMEXTNUM1) {
+            results=await numeroExteriorColonia_Poi(direccionParsed);
+        }
+        else if (direccionParsed.MUNICIPIO && direccionParsed.NUMEXTNUM1) {
+            results=await municipioNumeroExterior_Poi(direccionParsed);
+        }
+        else if (direccionParsed.NUMEXTNUM1) {
+            results=await numeroExterior_Poi(direccionParsed);
+        }
+        else {
+            results=await alone_Poi(direccionParsed);
+        }
+        // Ordenar scoring mas alto primero
+        //sortedResults = results.sort((a, b) => b.scoring.fiability - a.scoring.fiability);
+    }
+    /* // Si se encontro algo y tiene un alto grado de Fiability regresalo.
+    if(results.length!==0 && sortedResults[0].scoring.fiability>80){
+        return sortedResults;
+    } */
     // Si se encontro algo regresalo.
     if(results.length!==0){
         return results;

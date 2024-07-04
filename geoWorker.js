@@ -54,10 +54,18 @@ function determineLevel(result) {
       if(codigo_postal ===100){
         return 'S5';
       }
+      return 'S6';
     }
-    return 'S6';
   }
-  if (colonia>0) return 'N1';
-  if (codigo_postal===100) return 'C1';
+  if (colonia>0){
+    if(municipio ===100 || estado ===100){
+      return 'S7'
+    };
+  };
+  if (codigo_postal===100){
+    if(municipio ===100 || estado ===100){
+      return 'C1'
+    };
+  }
   return 'SD';
 }

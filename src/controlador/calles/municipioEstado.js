@@ -366,8 +366,9 @@ async function municipioEstado(direccionParsed) {
                         result.rows[i].scoring.fiability += (similarity * 0.5);
                     }
                 }
+                const resultOrdenado = result.rows.sort((a, b) => b.scoring.calle - a.scoring.calle);
                 // Añadimos los resultados obtenidos al arreglo rows
-                rows = rows.concat(result.rows);
+                if(resultOrdenado[0].scoring.calle>70)rows = rows.concat(result.rows);
                 // Evaluamos que rows este vacio para seguir con la busqueda
                 if (result.rows.length === 0) {
                     // Construimos la query para comenzar a generar consultas a la BD
@@ -452,8 +453,9 @@ async function municipioEstado(direccionParsed) {
                             result.rows[i].scoring.fiability += (similarity * 0.5);
                         }
                     }
+                    const resultOrdenado = result.rows.sort((a, b) => b.scoring.calle - a.scoring.calle);
                     // Añadimos los resultados obtenidos al arreglo rows
-                    rows = rows.concat(result.rows);
+                    if(resultOrdenado[0].scoring.calle>70)rows = rows.concat(result.rows);
                     // Evaluamos que rows este vacio para seguir con la busqueda
                     if (result.rows.length === 0) {
                         // Construimos la query para comenzar a generar consultas a la BD
@@ -538,8 +540,9 @@ async function municipioEstado(direccionParsed) {
                                 result.rows[i].scoring.fiability += (similarity * 0.5);
                             }
                         }
+                        const resultOrdenado = result.rows.sort((a, b) => b.scoring.calle - a.scoring.calle);
                         // Añadimos los resultados obtenidos al arreglo rows
-                        rows = rows.concat(result.rows);
+                        if(resultOrdenado[0].scoring.calle>70)rows = rows.concat(result.rows);
                         // Evaluamos que rows este vacio para seguir con la busqueda
                         if (result.rows.length === 0) {
                             // Construimos la query para comenzar a generar consultas a la BD
@@ -631,7 +634,7 @@ async function municipioEstado(direccionParsed) {
                             // Añadimos los resultados obtenidos al arreglo rows
                             rows = rows.concat(result.rows);
                             // Evaluamos que rows este vacio para seguir con la busqueda
-                            if (result.rows.length === 0) {
+                            /* if (result.rows.length === 0) {
                                 // Construimos la query para comenzar a generar consultas a la BD
                                 query = `
                                     SELECT *,
@@ -716,7 +719,7 @@ async function municipioEstado(direccionParsed) {
                                 }
                                 // Añadimos los resultados obtenidos al arreglo rows
                                 rows = rows.concat(result.rows);
-                            }
+                            } */
                         }
                     }
                 }
