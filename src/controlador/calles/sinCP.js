@@ -2558,7 +2558,7 @@ async function sinCP(direccionParsed) {
                                                                           if (resultOrdenado[0].scoring.colonia > 70 && resultOrdenado[0].scoring.calle > 70) {
                                                                             rows = rows.concat(result.rows);
                                                                           }
-                                                                        }else{
+                                                                        }/* else{
                                                                             // Construimos la query para comenzar a generar consultas a la BD
                                                                             query = `
                                                                                 SELECT *,
@@ -2698,8 +2698,8 @@ async function sinCP(direccionParsed) {
                                                                                 if (resultOrdenado[0].scoring.colonia > 70 && resultOrdenado[0].scoring.calle > 70) {
                                                                                     rows = rows.concat(result.rows);
                                                                                 }
-                                                                            }
-                                                                        }
+                                                                            } 
+                                                                        }*/
                                                                     }
                                                                 }
                                                             }

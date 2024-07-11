@@ -29,7 +29,7 @@ async function parseDireccion(direccion) {
     // Una vez limpiada la direccion proporcionada la dividimos por ' ' (espacios).
     let componentesDireccion = direccionExpandida.split(' ');
     // Nos desacemos de aquellos dobles o triples espacios descartandolos.
-    componentesDireccion = componentesDireccion.filter(item => item !== '');
+    componentesDireccion = componentesDireccion.filter(item => item !== '' && item !== 'NULL');
     // Creamos un JSON donde se almacenara el parseo obtenido.
     const direccionParsed = {};
     // Creamos una variable llamada estado.
