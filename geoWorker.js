@@ -59,7 +59,7 @@ function determineLevel(result) {
   }
   if (colonia>0){
     if(municipio ===100 || estado ===100){
-      return 'S7'
+      return 'N1'
     };
   };
   if (codigo_postal===100){

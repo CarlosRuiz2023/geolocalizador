@@ -2022,6 +2022,8 @@ async function sinMunicipio(direccionParsed) {
                                                                     result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                                                 }
                                                             }
+                                                            // Evaluamos que rows este vacio para seguir con la busqueda
+                                                            if (result.rows.length !== 0) {
                                                             const resultOrdenado = result.rows.sort((a, b) => {
                                                                 // Ordenar por calle en orden descendente
                                                                 if (b.scoring.calle !== a.scoring.calle) {
@@ -2036,8 +2038,7 @@ async function sinMunicipio(direccionParsed) {
                                                               if (resultOrdenado[0].scoring.colonia > 70 && resultOrdenado[0].scoring.calle > 70) {
                                                                 rows = rows.concat(result.rows);
                                                               }
-                                                            // Evaluamos que rows este vacio para seguir con la busqueda
-                                                            if (result.rows.length === 0) {
+                                                            }else{
                                                                 // Construimos la query para comenzar a generar consultas a la BD
                                                                 query = `
                                                                     SELECT *,
@@ -2187,6 +2188,8 @@ async function sinMunicipio(direccionParsed) {
                                                                         result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                                                     }
                                                                 }
+                                                                // Evaluamos que rows este vacio para seguir con la busqueda
+                                                                if (result.rows.length !== 0) {
                                                                 const resultOrdenado = result.rows.sort((a, b) => {
                                                                     // Ordenar por calle en orden descendente
                                                                     if (b.scoring.calle !== a.scoring.calle) {
@@ -2201,8 +2204,7 @@ async function sinMunicipio(direccionParsed) {
                                                                   if (resultOrdenado[0].scoring.colonia > 70 && resultOrdenado[0].scoring.calle > 70) {
                                                                     rows = rows.concat(result.rows);
                                                                   }
-                                                                // Evaluamos que rows este vacio para seguir con la busqueda
-                                                                if (result.rows.length === 0) {
+                                                                }else{
                                                                     // Construimos la query para comenzar a generar consultas a la BD
                                                                     query = `
                                                                         SELECT *,
@@ -2305,6 +2307,8 @@ async function sinMunicipio(direccionParsed) {
                                                                             result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                                                         }
                                                                     }
+                                                                    // Evaluamos que rows este vacio para seguir con la busqueda
+                                                                    if (result.rows.length !== 0) {
                                                                     const resultOrdenado = result.rows.sort((a, b) => {
                                                                         // Ordenar por calle en orden descendente
                                                                         if (b.scoring.calle !== a.scoring.calle) {
@@ -2319,8 +2323,7 @@ async function sinMunicipio(direccionParsed) {
                                                                       if (resultOrdenado[0].scoring.colonia > 70 && resultOrdenado[0].scoring.calle > 70) {
                                                                         rows = rows.concat(result.rows);
                                                                       }
-                                                                    // Evaluamos que rows este vacio para seguir con la busqueda
-                                                                    if (result.rows.length === 0) {
+                                                                    }else{
                                                                         // Construimos la query para comenzar a generar consultas a la BD
                                                                         query = `
                                                                             SELECT *,
@@ -2471,6 +2474,8 @@ async function sinMunicipio(direccionParsed) {
                                                                                 result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                                                             }
                                                                         }
+                                                                        // Evaluamos que rows este vacio para seguir con la busqueda
+                                                                        if (result.rows.length !== 0) {
                                                                         const resultOrdenado = result.rows.sort((a, b) => {
                                                                             // Ordenar por calle en orden descendente
                                                                             if (b.scoring.calle !== a.scoring.calle) {
@@ -2485,8 +2490,7 @@ async function sinMunicipio(direccionParsed) {
                                                                           if (resultOrdenado[0].scoring.colonia > 70 && resultOrdenado[0].scoring.calle > 70) {
                                                                             rows = rows.concat(result.rows);
                                                                           }
-                                                                        // Evaluamos que rows este vacio para seguir con la busqueda
-                                                                        if (result.rows.length === 0) {
+                                                                        }else{
                                                                             // Construimos la query para comenzar a generar consultas a la BD
                                                                             query = `
                                                                                 SELECT *,
@@ -2636,6 +2640,8 @@ async function sinMunicipio(direccionParsed) {
                                                                                     result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                                                                 }
                                                                             }
+                                                                            // Evaluamos que rows este vacio para seguir con la busqueda
+                                                                            if (result.rows.length !== 0) {
                                                                             const resultOrdenado = result.rows.sort((a, b) => {
                                                                                 // Ordenar por calle en orden descendente
                                                                                 if (b.scoring.calle !== a.scoring.calle) {
@@ -2650,8 +2656,7 @@ async function sinMunicipio(direccionParsed) {
                                                                               if (resultOrdenado[0].scoring.colonia > 70 && resultOrdenado[0].scoring.calle > 70) {
                                                                                 rows = rows.concat(result.rows);
                                                                               }
-                                                                            // Evaluamos que rows este vacio para seguir con la busqueda
-                                                                            if (result.rows.length === 0) {
+                                                                            }else{
                                                                                 // Construimos la query para comenzar a generar consultas a la BD
                                                                                 query = `
                                                                                     SELECT *,
@@ -2801,6 +2806,8 @@ async function sinMunicipio(direccionParsed) {
                                                                                         result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                                                                     }
                                                                                 }
+                                                                                // Evaluamos que rows este vacio para seguir con la busqueda
+                                                                                if (result.rows.length !== 0) {
                                                                                 const resultOrdenado = result.rows.sort((a, b) => {
                                                                                     // Ordenar por calle en orden descendente
                                                                                     if (b.scoring.calle !== a.scoring.calle) {
@@ -2815,8 +2822,7 @@ async function sinMunicipio(direccionParsed) {
                                                                                   if (resultOrdenado[0].scoring.colonia > 70 && resultOrdenado[0].scoring.calle > 70) {
                                                                                     rows = rows.concat(result.rows);
                                                                                   }
-                                                                                // Evaluamos que rows este vacio para seguir con la busqueda
-                                                                                if (result.rows.length === 0) {
+                                                                                }else{
                                                                                     // Construimos la query para comenzar a generar consultas a la BD
                                                                                     query = `
                                                                                         SELECT *,
@@ -2920,6 +2926,8 @@ async function sinMunicipio(direccionParsed) {
                                                                                             result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                                                                         }
                                                                                     }
+                                                                                    // Evaluamos que rows este vacio para seguir con la busqueda
+                                                                                    if (result.rows.length !== 0) {
                                                                                     const resultOrdenado = result.rows.sort((a, b) => {
                                                                                         // Ordenar por calle en orden descendente
                                                                                         if (b.scoring.calle !== a.scoring.calle) {
@@ -2934,6 +2942,7 @@ async function sinMunicipio(direccionParsed) {
                                                                                       if (resultOrdenado[0].scoring.colonia > 70 && resultOrdenado[0].scoring.calle > 70) {
                                                                                         rows = rows.concat(result.rows);
                                                                                       }
+                                                                                    }
                                                                                     // Evaluamos que rows este vacio para seguir con la busqueda
                                                                                     /* if (result.rows.length === 0) {
                                                                                         // Construimos la query para comenzar a generar consultas a la BD
