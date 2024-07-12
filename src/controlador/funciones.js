@@ -629,4 +629,23 @@ function capitalizeFirstLetter(str) {
     return str;
 }
 
-module.exports = { parseDireccion, levenshteinDistance, quitarAcentos, capitalizeFirstLetter };
+function recortarTipoVialidad(cadena) {
+    for (const tipo of tiposVialidad) {
+        if (cadena.startsWith(tipo)) {
+            return cadena.slice(tipo.length).trim();
+        }
+    }
+    return cadena;
+}
+
+function recortarTipoAsentamiento(cadena) {
+    for (const tipo of tiposAsentamiento) {
+        if (cadena.startsWith(tipo)) {
+            return cadena.slice(tipo.length).trim();
+        }
+    }
+    return cadena;
+}
+
+
+module.exports = { parseDireccion, levenshteinDistance, quitarAcentos, capitalizeFirstLetter, recortarTipoAsentamiento, recortarTipoVialidad };
