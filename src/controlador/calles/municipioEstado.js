@@ -1,5 +1,5 @@
 const pgClient = require("../../data/conexion");
-const { levenshteinDistance, quitarAcentos } = require("../funciones");
+const { levenshteinDistance, quitarAcentos, recortarTipoAsentamiento, recortarTipoVialidad } = require("../funciones");
 
 // Aplicable solo en caso de llevar los campos CALLE MUNICIPIO y ESTADO
 async function municipioEstado(direccionParsed) {
@@ -80,15 +80,15 @@ async function municipioEstado(direccionParsed) {
             estado: 100
         };
         // Quitamos acentos del nombre_vialidad recuperado debido a que en la BD se tiene con acentos
-        const nombreCalleSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
+        const calleSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].nombre_vialidad)));
         // Hacemos match con lo que proporciono el usuario.
-        const matchNombreCalle = nombreCalleSinAcentos.match(new RegExp(direccionParsed.CALLE, 'i'));
+        const matchNombreCalle = calleSinAcentos.match(new RegExp(direccionParsed.CALLE, 'i'));
         // Validamos que exista Match
         if (matchNombreCalle) {
             // Obtiene el texto coincidente
             const matchedText = matchNombreCalle[0];
             // Generamos la igualdad que se tienen
-            let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
+            let igualdad = matchedText.length * 100 / calleSinAcentos.length;
             // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
             if (igualdad > 100) igualdad = 100;
             // Subimos el scoring en calle
@@ -171,15 +171,15 @@ async function municipioEstado(direccionParsed) {
                 estado: 0
             };
             // Quitamos acentos del nombre_vialidad recuperado debido a que en la BD se tiene con acentos
-            const nombreCalleSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
+            const calleSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].nombre_vialidad)));
             // Hacemos match con lo que proporciono el usuario.
-            const matchNombreCalle = nombreCalleSinAcentos.match(new RegExp(direccionParsed.CALLE, 'i'));
+            const matchNombreCalle = calleSinAcentos.match(new RegExp(direccionParsed.CALLE, 'i'));
             // Validamos que exista Match
             if (matchNombreCalle) {
                 // Obtiene el texto coincidente
                 const matchedText = matchNombreCalle[0];
                 // Generamos la igualdad que se tienen
-                let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
+                let igualdad = matchedText.length * 100 / calleSinAcentos.length;
                 // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                 if (igualdad > 100) igualdad = 100;
                 // Subimos el scoring en calle
@@ -262,15 +262,15 @@ async function municipioEstado(direccionParsed) {
                     estado: 100
                 };
                 // Quitamos acentos del nombre_vialidad recuperado debido a que en la BD se tiene con acentos
-                const nombreCalleSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
+                const calleSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].nombre_vialidad)));
                 // Hacemos match con lo que proporciono el usuario.
-                const matchNombreCalle = nombreCalleSinAcentos.match(new RegExp(direccionParsed.CALLE, 'i'));
+                const matchNombreCalle = calleSinAcentos.match(new RegExp(direccionParsed.CALLE, 'i'));
                 // Validamos que exista Match
                 if (matchNombreCalle) {
                     // Obtiene el texto coincidente
                     const matchedText = matchNombreCalle[0];
                     // Generamos la igualdad que se tienen
-                    let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
+                    let igualdad = matchedText.length * 100 / calleSinAcentos.length;
                     // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                     if (igualdad > 100) igualdad = 100;
                     // Subimos el scoring en calle
@@ -352,10 +352,11 @@ async function municipioEstado(direccionParsed) {
                         municipio: 100,
                         estado: 100
                     };
+                    const calleSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].nombre_vialidad)));
                     // Calcular la distancia de Levenshtein
-                    const distance = levenshteinDistance(quitarAcentos(result.rows[i].nombre_vialidad), direccionParsed.CALLE);
+                    const distance = levenshteinDistance(calleSinAcentos, direccionParsed.CALLE);
                     // Calcular la similitud como el inverso de la distancia de Levenshtein
-                    const maxLength = Math.max(result.rows[i].nombre_vialidad.length, direccionParsed.CALLE.length);
+                    const maxLength = Math.max(calleSinAcentos.length, direccionParsed.CALLE.length);
                     // Calculamos la similitud del nombre_vialidad segun sus comparativos
                     const similarity = ((maxLength - distance) / maxLength) * 100;
                     // Validamos que exista similitud alguna
@@ -439,10 +440,11 @@ async function municipioEstado(direccionParsed) {
                             municipio: 100,
                             estado: 0
                         };
+                        const calleSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].nombre_vialidad)));
                         // Calcular la distancia de Levenshtein
-                        const distance = levenshteinDistance(quitarAcentos(result.rows[i].nombre_vialidad), direccionParsed.CALLE);
+                        const distance = levenshteinDistance(calleSinAcentos, direccionParsed.CALLE);
                         // Calcular la similitud como el inverso de la distancia de Levenshtein
-                        const maxLength = Math.max(result.rows[i].nombre_vialidad.length, direccionParsed.CALLE.length);
+                        const maxLength = Math.max(calleSinAcentos.length, direccionParsed.CALLE.length);
                         // Calculamos la similitud del nombre_vialidad segun sus comparativos
                         const similarity = ((maxLength - distance) / maxLength) * 100;
                         // Validamos que exista similitud alguna
@@ -526,10 +528,11 @@ async function municipioEstado(direccionParsed) {
                                 municipio: 0,
                                 estado: 100
                             };
+                            const calleSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].nombre_vialidad)));
                             // Calcular la distancia de Levenshtein
-                            const distance = levenshteinDistance(quitarAcentos(result.rows[i].nombre_vialidad), direccionParsed.CALLE);
+                            const distance = levenshteinDistance(calleSinAcentos, direccionParsed.CALLE);
                             // Calcular la similitud como el inverso de la distancia de Levenshtein
-                            const maxLength = Math.max(result.rows[i].nombre_vialidad.length, direccionParsed.CALLE.length);
+                            const maxLength = Math.max(calleSinAcentos.length, direccionParsed.CALLE.length);
                             // Calculamos la similitud del nombre_vialidad segun sus comparativos
                             const similarity = ((maxLength - distance) / maxLength) * 100;
                             // Validamos que exista similitud alguna
@@ -614,15 +617,15 @@ async function municipioEstado(direccionParsed) {
                                     estado: 0
                                 };
                                 // Quitamos acentos del nombre_vialidad recuperado debido a que en la BD se tiene con acentos
-                                const nombreCalleSinAcentos = quitarAcentos(result.rows[i].nombre_vialidad);
+                                const calleSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].nombre_vialidad)));
                                 // Hacemos match con lo que proporciono el usuario.
-                                const matchNombreCalle = nombreCalleSinAcentos.match(new RegExp(direccionParsed.CALLE, 'i'));
+                                const matchNombreCalle = calleSinAcentos.match(new RegExp(direccionParsed.CALLE, 'i'));
                                 // Validamos que exista Match
                                 if (matchNombreCalle) {
                                     // Obtiene el texto coincidente
                                     const matchedText = matchNombreCalle[0];
                                     // Generamos la igualdad que se tienen
-                                    let igualdad = matchedText.length * 100 / result.rows[i].nombre_vialidad.length;
+                                    let igualdad = matchedText.length * 100 / calleSinAcentos.length;
                                     // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                                     if (igualdad > 100) igualdad = 100;
                                     // Subimos el scoring en calle
@@ -703,10 +706,11 @@ async function municipioEstado(direccionParsed) {
                                         municipio: 0,
                                         estado: 0
                                     };
+                                    const calleSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].nombre_vialidad)));
                                     // Calcular la distancia de Levenshtein
-                                    const distance = levenshteinDistance(quitarAcentos(result.rows[i].nombre_vialidad), direccionParsed.CALLE);
+                                    const distance = levenshteinDistance(calleSinAcentos, direccionParsed.CALLE);
                                     // Calcular la similitud como el inverso de la distancia de Levenshtein
-                                    const maxLength = Math.max(result.rows[i].nombre_vialidad.length, direccionParsed.CALLE.length);
+                                    const maxLength = Math.max(calleSinAcentos.length, direccionParsed.CALLE.length);
                                     // Calculamos la similitud del nombre_vialidad segun sus comparativos
                                     const similarity = ((maxLength - distance) / maxLength) * 100;
                                     // Validamos que exista similitud alguna

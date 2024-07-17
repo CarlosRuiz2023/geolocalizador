@@ -215,7 +215,7 @@ async function numeroExterior(direccionParsed) {
             // Añadimos los resultados obtenidos al arreglo rows
             rows = rows.concat(result.rows);
             // Evaluamos que rows este vacio para seguir con la busqueda
-            if (result.rows.length === 0) {
+            /* if (result.rows.length === 0) {
                 // Construimos la query para comenzar a generar consultas a la BD
                 query = `
                     SELECT *,
@@ -286,7 +286,7 @@ async function numeroExterior(direccionParsed) {
                 }
                 // Añadimos los resultados obtenidos al arreglo rows
                 rows = rows.concat(result.rows);
-            }
+            } */
         }
     }
     // Retornamos los rows que se obtuvieron hasta el momento

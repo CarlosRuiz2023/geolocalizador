@@ -30,25 +30,29 @@ module.exports = async ({ direccion, limit }) => {
 
   sortedResults = sortedResults.slice(0, limit);
 
-  const level = determineLevel(sortedResults[0].scoring);
+  let level = 'SD';
+
+  if(sortedResults.length!=0){
+    level = determineLevel(sortedResults[0].scoring);
+  }
 
   return { parse: direccionParsed,level, results: sortedResults };
 };
 
 // FUNCION QUE DETERMINA EL NIVEL AL QUE SE BUSCO MEDIANTE LOS ATRIBUTOS QUE CONFORMAN EL SCORING.
 function determineLevel(result) {
-  const { calle=0, poi=0, numero_exterior=0, colonia=0, codigo_postal=0, municipio=0, estado=0} = result;
+  const { nombre_asentamiento=0, nombre_vialidad=0, calle=0, poi=0, numero_exterior=0, colonia=0, codigo_postal=0, municipio=0, estado=0} = result;
 
-  if (calle>0 || poi>0){
+  if (calle!=0 || poi!=0 || nombre_asentamiento!=0 || nombre_vialidad!=0){
     if(municipio ===100 || estado ===100){
-      if(numero_exterior===100){
-        if(colonia >0 || codigo_postal ===100){
+      if(numero_exterior!=0){
+        if(colonia !=0 || codigo_postal ===100){
           return 'S1';
         }else{
           return 'S3';
         }
       }
-      if(colonia >0){
+      if(colonia !=0){
         return 'S4';
       }
       if(codigo_postal ===100){

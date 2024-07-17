@@ -147,15 +147,15 @@ async function sinCP(direccionParsed) {
             result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
         }
         // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
-        const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+        const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
         // Hacemos match con lo que proporciono el usuario.
-        const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+        const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
         // Validamos que exista Match
         if (matchColonia) {
             // Obtiene el texto coincidente
             const matchedText = matchColonia[0];
             // Generamos la igualdad que se tienen
-            let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
+            let igualdad = matchedText.length * 100 / coloniaSinAcentos.length;
             // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
             if (igualdad > 100) igualdad = 100;
             // Subimos el scoring en colonia
@@ -305,15 +305,15 @@ async function sinCP(direccionParsed) {
                 result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
             }
             // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
-            const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+            const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
             // Hacemos match con lo que proporciono el usuario.
-            const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+            const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
             // Validamos que exista Match
             if (matchColonia) {
                 // Obtiene el texto coincidente
                 const matchedText = matchColonia[0];
                 // Generamos la igualdad que se tienen
-                let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
+                let igualdad = matchedText.length * 100 / coloniaSinAcentos.length;
                 // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                 if (igualdad > 100) igualdad = 100;
                 // Subimos el scoring en colonia
@@ -463,15 +463,15 @@ async function sinCP(direccionParsed) {
                     result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                 }
                 // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
-                const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+                const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                 // Hacemos match con lo que proporciono el usuario.
-                const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
                 // Validamos que exista Match
                 if (matchColonia) {
                     // Obtiene el texto coincidente
                     const matchedText = matchColonia[0];
                     // Generamos la igualdad que se tienen
-                    let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
+                    let igualdad = matchedText.length * 100 / coloniaSinAcentos.length;
                     // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                     if (igualdad > 100) igualdad = 100;
                     // Subimos el scoring en colonia
@@ -730,15 +730,15 @@ async function sinCP(direccionParsed) {
                             result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                         }
                         // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
-                        const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+                        const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                         // Hacemos match con lo que proporciono el usuario.
-                        const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                        const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
                         // Validamos que exista Match
                         if (matchColonia) {
                             // Obtiene el texto coincidente
                             const matchedText = matchColonia[0];
                             // Generamos la igualdad que se tienen
-                            let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
+                            let igualdad = matchedText.length * 100 / coloniaSinAcentos.length;
                             // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                             if (igualdad > 100) igualdad = 100;
                             // Subimos el scoring en colonia
@@ -1041,15 +1041,15 @@ async function sinCP(direccionParsed) {
                                     result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                 }
                                 // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
-                                const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+                                const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                                 // Hacemos match con lo que proporciono el usuario.
-                                const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
                                 // Validamos que exista Match
                                 if (matchColonia) {
                                     // Obtiene el texto coincidente
                                     const matchedText = matchColonia[0];
                                     // Generamos la igualdad que se tienen
-                                    let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
+                                    let igualdad = matchedText.length * 100 / coloniaSinAcentos.length;
                                     // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                                     if (igualdad > 100) igualdad = 100;
                                     // Subimos el scoring en colonia
@@ -1153,15 +1153,15 @@ async function sinCP(direccionParsed) {
                                         result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                     }
                                     // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
-                                    const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+                                    const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                                     // Hacemos match con lo que proporciono el usuario.
-                                    const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                    const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
                                     // Validamos que exista Match
                                     if (matchColonia) {
                                         // Obtiene el texto coincidente
                                         const matchedText = matchColonia[0];
                                         // Generamos la igualdad que se tienen
-                                        let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
+                                        let igualdad = matchedText.length * 100 / coloniaSinAcentos.length;
                                         // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                                         if (igualdad > 100) igualdad = 100;
                                         // Subimos el scoring en colonia
@@ -1418,15 +1418,15 @@ async function sinCP(direccionParsed) {
                                                 result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                             }
                                             // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
-                                            const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+                                            const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                                             // Hacemos match con lo que proporciono el usuario.
-                                            const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                            const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
                                             // Validamos que exista Match
                                             if (matchColonia) {
                                                 // Obtiene el texto coincidente
                                                 const matchedText = matchColonia[0];
                                                 // Generamos la igualdad que se tienen
-                                                let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
+                                                let igualdad = matchedText.length * 100 / coloniaSinAcentos.length;
                                                 // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                                                 if (igualdad > 100) igualdad = 100;
                                                 // Subimos el scoring en colonia
@@ -1529,15 +1529,15 @@ async function sinCP(direccionParsed) {
                                                     result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                                 }
                                                 // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
-                                                const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+                                                const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                                                 // Hacemos match con lo que proporciono el usuario.
-                                                const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                                const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
                                                 // Validamos que exista Match
                                                 if (matchColonia) {
                                                     // Obtiene el texto coincidente
                                                     const matchedText = matchColonia[0];
                                                     // Generamos la igualdad que se tienen
-                                                    let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
+                                                    let igualdad = matchedText.length * 100 / coloniaSinAcentos.length;
                                                     // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                                                     if (igualdad > 100) igualdad = 100;
                                                     // Subimos el scoring en colonia
@@ -1794,7 +1794,7 @@ async function sinCP(direccionParsed) {
                                                         // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
                                                         const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                                                         // Hacemos match con lo que proporciono el usuario.
-                                                        const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                                        const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
                                                         // Validamos que exista Match
                                                         if (matchColonia) {
                                                             // Obtiene el texto coincidente
@@ -1962,7 +1962,7 @@ async function sinCP(direccionParsed) {
                                                             // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
                                                             const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                                                             // Hacemos match con lo que proporciono el usuario.
-                                                            const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                                            const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
                                                             // Validamos que exista Match
                                                             if (matchColonia) {
                                                                 // Obtiene el texto coincidente
@@ -2129,7 +2129,7 @@ async function sinCP(direccionParsed) {
                                                                 // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
                                                                 const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                                                                 // Hacemos match con lo que proporciono el usuario.
-                                                                const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                                                const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
                                                                 // Validamos que exista Match
                                                                 if (matchColonia) {
                                                                     // Obtiene el texto coincidente
@@ -2296,7 +2296,7 @@ async function sinCP(direccionParsed) {
                                                                     // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
                                                                     const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                                                                     // Hacemos match con lo que proporciono el usuario.
-                                                                    const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                                                    const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
                                                                     // Validamos que exista Match
                                                                     if (matchColonia) {
                                                                         // Obtiene el texto coincidente
@@ -2416,7 +2416,7 @@ async function sinCP(direccionParsed) {
                                                                         // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
                                                                         const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                                                                         // Hacemos match con lo que proporciono el usuario.
-                                                                        const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                                                        const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
                                                                         // Validamos que exista Match
                                                                         if (matchColonia) {
                                                                             // Obtiene el texto coincidente
@@ -2537,7 +2537,7 @@ async function sinCP(direccionParsed) {
                                                                             // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
                                                                             const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                                                                             // Hacemos match con lo que proporciono el usuario.
-                                                                            const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                                                            const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
                                                                             // Validamos que exista Match
                                                                             if (matchColonia) {
                                                                                 // Obtiene el texto coincidente

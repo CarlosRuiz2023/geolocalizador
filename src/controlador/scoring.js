@@ -218,7 +218,7 @@ async function scoringMaestro(direccionParsed) {
         return results;
     }
     // Validamos que lleve COLONIA y caresca de CALLE
-    if (direccionParsed.COLONIA && !direccionParsed.CALLE) {
+    if (direccionParsed.COLONIA) {
         // Validamos segun sus propiedades a que funcion debe dirigirse.
         if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO) {
             results=await all_Colonia(direccionParsed);
@@ -244,7 +244,7 @@ async function scoringMaestro(direccionParsed) {
         return results;
     }
     // Validamos que lleve CP, caresca de CALLE y COLONIA
-    if (direccionParsed.CP && !direccionParsed.CALLE && !direccionParsed.COLONIA) {
+    if (direccionParsed.CP) {
         // Validamos segun sus propiedades a que funcion debe dirigirse.
         if (direccionParsed.MUNICIPIO && direccionParsed.ESTADO) {
             results=await all_CP(direccionParsed);
