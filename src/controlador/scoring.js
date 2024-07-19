@@ -4,53 +4,52 @@ const { all : all_Calle, sinNumeroExterior: sinNumeroExterior_Calle, sinCP:sinCP
 const { all : all_Poi, sinNumeroExterior: sinNumeroExterior_Poi, sinCP:sinCP_Poi, sinMunicipio:sinMunicipio_Poi, sinEstado:sinEstado_Poi, sinColonia:sinColonia_Poi, alone:alone_Poi, sinNumeroExteriorCP:sinNumeroExteriorCP_Poi, sinColoniaCP:sinColoniaCP_Poi, sinColoniaNumeroExterior:sinColoniaNumeroExterior_Poi, municipioNumeroExterior: municipioNumeroExterior_Poi, municipioEstado: municipioEstado_Poi, numeroExterior:numeroExterior_Poi, numeroExteriorColonia:numeroExteriorColonia_Poi } = require("./pois");
 const { all: all_Colonia, alone: alone_Colonia, sinCP: sinCP_Colonia, sinEstado: sinEstado_Colonia, sinMunicipio: sinMunicipio_Colonia, sinCPEstado: sinCPEstado_Colonia } = require("./colonias");
 const { all: all_CP, alone: alone_CP, sinEstado: sinEstado_CP, sinMunicipio: sinMunicipio_CP } = require("./cps");
+const { all: all_Municipio, alone: alone_Municipio} = require("./municipios");
 
 // Función que enrutara la dirección según la Norma Técnica sobre Domicilios Geográficos.
-async function scoringMaestro(direccionParsed) {
+async function scoringMaestro(direccionParsed, level) {
     // Declaramso un arreglo vacio para las direcciones.
     let results = [];
-    // Declaramso un arreglo vacio para las direcciones TOP.
-    let sortedResults = [];
     // Validamos que sea de tipo_vialidad.
-    if (direccionParsed.TIPOVIAL) {
+    if (direccionParsed.TIPOVIAL && (level=='Master'||level.substring(0,1)=='S')) {
         // Validamos segun sus propiedades a que funcion debe dirigirse.
-        if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
+        if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA && (level=='Master'||level=='S1')) {
             results=await all_Vialidad(direccionParsed);
         }
-        else if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.COLONIA) {
+        else if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.COLONIA && (level=='Master'||level=='S4')) {
             results=await sinNumeroExterior_Vialidad(direccionParsed);
         }
-        else if (direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
+        else if (direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA && (level=='Master'||level=='S1')) {
             results=await sinCP_Vialidad(direccionParsed);
         }
-        else if (direccionParsed.CP && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
+        else if (direccionParsed.CP && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA && (level=='Master'||level=='S1')) {
             results=await sinMunicipio_Vialidad(direccionParsed);
         }
-        else if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.NUMEXTNUM1 && direccionParsed.ESTADO) {
+        else if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.NUMEXTNUM1 && direccionParsed.ESTADO && (level=='Master'||level=='S1')) {
             results=await sinColonia_Vialidad(direccionParsed);
         }
-        else if (direccionParsed.CP && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
+        else if (direccionParsed.CP && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA && (level=='Master'||level=='S1')) {
             results=await sinEstado_Vialidad(direccionParsed);
         }
-        else if (direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.MUNICIPIO) {
+        else if (direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.MUNICIPIO && (level=='Master'||level=='S3')) {
             results=await sinColoniaCP_Vialidad(direccionParsed);
         }
-        else if (direccionParsed.ESTADO && direccionParsed.CP && direccionParsed.MUNICIPIO) {
+        else if (direccionParsed.ESTADO && direccionParsed.CP && direccionParsed.MUNICIPIO && (level=='Master'||level=='S5')) {
             results=await sinColoniaNumeroExterior_Vialidad(direccionParsed);
         }
-        else if (direccionParsed.ESTADO && direccionParsed.MUNICIPIO && direccionParsed.COLONIA) {
+        else if (direccionParsed.ESTADO && direccionParsed.MUNICIPIO && direccionParsed.COLONIA && (level=='Master'||level=='S4')) {
             results=await sinNumeroExteriorCP_Vialidad(direccionParsed);
         }
-        else if (direccionParsed.ESTADO && direccionParsed.MUNICIPIO) {
+        else if (direccionParsed.ESTADO && direccionParsed.MUNICIPIO  && (level=='Master'||level=='S6')) {
             results=await municipioEstado_Vialidad(direccionParsed);
         }
-        else if (direccionParsed.COLONIA && direccionParsed.NUMEXTNUM1) {
+        else if (direccionParsed.COLONIA && direccionParsed.NUMEXTNUM1 && (level=='Master'||level=='S1')) {
             results=await numeroExteriorColonia_Vialidad(direccionParsed);
         }
-        else if (direccionParsed.MUNICIPIO && direccionParsed.NUMEXTNUM1) {
+        else if (direccionParsed.MUNICIPIO && direccionParsed.NUMEXTNUM1 && level=='Master') {
             results=await municipioNumeroExterior_Vialidad(direccionParsed);
         }
-        else if (direccionParsed.NUMEXTNUM1) {
+        else if (direccionParsed.NUMEXTNUM1 && level=='Master') {
             results=await numeroExterior_Vialidad(direccionParsed);
         }
         else {
@@ -62,45 +61,45 @@ async function scoringMaestro(direccionParsed) {
         return results;
     }
     // Validamos que sea de tipo_asentamiento.
-    if (direccionParsed.TIPOASEN) {
+    if (direccionParsed.TIPOASEN && (level=='Master'||level.substring(0,1)=='S')) {
         // Validamos segun sus propiedades a que funcion debe dirigirse.
-        if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
+        if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA  && (level=='Master'||level=='S1')) {
             results=await all_Asentamiento(direccionParsed);
         }
-        else if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.COLONIA) {
+        else if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.COLONIA && (level=='Master'||level=='S4')) {
             results=await sinNumeroExterior_Asentamiento(direccionParsed);
         }
-        else if (direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
+        else if (direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA && (level=='Master'||level=='S1')) {
             results=await sinCP_Asentamiento(direccionParsed);
         }
-        else if (direccionParsed.CP && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
+        else if (direccionParsed.CP && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA && (level=='Master'||level=='S1')) {
             results=await sinMunicipio_Asentamiento(direccionParsed);
         }
-        else if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.NUMEXTNUM1 && direccionParsed.ESTADO) {
+        else if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.NUMEXTNUM1 && direccionParsed.ESTADO && (level=='Master'||level=='S1')) {
             results=await sinColonia_Asentamiento(direccionParsed);
         }
-        else if (direccionParsed.CP && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
+        else if (direccionParsed.CP && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA && (level=='Master'||level=='S1')) {
             results=await sinEstado_Asentamiento(direccionParsed);
         }
-        else if (direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.MUNICIPIO) {
+        else if (direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.MUNICIPIO && (level=='Master'||level=='S3')) {
             results=await sinColoniaCP_Asentamiento(direccionParsed);
         }
-        else if (direccionParsed.ESTADO && direccionParsed.CP && direccionParsed.MUNICIPIO) {
+        else if (direccionParsed.ESTADO && direccionParsed.CP && direccionParsed.MUNICIPIO && (level=='Master'||level=='S5')) {
             results=await sinColoniaNumeroExterior_Asentamiento(direccionParsed);
         }
-        else if (direccionParsed.ESTADO && direccionParsed.MUNICIPIO && direccionParsed.COLONIA) {
+        else if (direccionParsed.ESTADO && direccionParsed.MUNICIPIO && direccionParsed.COLONIA && (level=='Master'||level=='S4')) {
             results=await sinNumeroExteriorCP_Asentamiento(direccionParsed);
         }
-        else if (direccionParsed.ESTADO && direccionParsed.MUNICIPIO) {
+        else if (direccionParsed.ESTADO && direccionParsed.MUNICIPIO && (level=='Master'||level=='S6')) {
             results=await municipioEstado_Asentamiento(direccionParsed);
         }
-        else if (direccionParsed.COLONIA && direccionParsed.NUMEXTNUM1) {
+        else if (direccionParsed.COLONIA && direccionParsed.NUMEXTNUM1 && (level=='Master'||level=='S1')) {
             results=await numeroExteriorColonia_Asentamiento(direccionParsed);
         }
-        else if (direccionParsed.MUNICIPIO && direccionParsed.NUMEXTNUM1) {
+        else if (direccionParsed.MUNICIPIO && direccionParsed.NUMEXTNUM1 && level=='Master') {
             results=await municipioNumeroExterior_Asentamiento(direccionParsed);
         }
-        else if (direccionParsed.NUMEXTNUM1) {
+        else if (direccionParsed.NUMEXTNUM1 && level=='Master') {
             results=await numeroExterior_Asentamiento(direccionParsed);
         }
         else {
@@ -112,45 +111,45 @@ async function scoringMaestro(direccionParsed) {
         return results;
     }
     // Validamos que se halla detectado al menos lleve CALLE para realizar una busqueda masiva.
-    if (direccionParsed.CALLE) {
+    if (direccionParsed.CALLE && (level=='Master'||level.substring(0,1)=='S')) {
         // Validamos segun sus propiedades a que funcion debe dirigirse.
-        if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
+        if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA && (level=='Master'||level=='S1')) {
             results=await all_Calle(direccionParsed);
         }
-        else if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.COLONIA) {
+        else if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.COLONIA && (level=='Master'||level=='S4')) {
             results=await sinNumeroExterior_Calle(direccionParsed);
         }
-        else if (direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
+        else if (direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA && (level=='Master'||level=='S1')) {
             results=await sinCP_Calle(direccionParsed);
         }
-        else if (direccionParsed.CP && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
+        else if (direccionParsed.CP && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA && (level=='Master'||level=='S1')) {
             results=await sinMunicipio_Calle(direccionParsed);
         }
-        else if (direccionParsed.CP && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
+        else if (direccionParsed.CP && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA && (level=='Master'||level=='S1')) {
             results=await sinEstado_Calle(direccionParsed);
         }
-        else if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1) {
+        else if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && (level=='Master'||level=='S1')) {
             results=await sinColonia_Calle(direccionParsed);
         }
-        else if (direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.MUNICIPIO) {
+        else if (direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.MUNICIPIO && (level=='Master'||level=='S3')) {
             results=await sinColoniaCP_Calle(direccionParsed);
         }
-        else if (direccionParsed.ESTADO && direccionParsed.CP && direccionParsed.MUNICIPIO) {
+        else if (direccionParsed.ESTADO && direccionParsed.CP && direccionParsed.MUNICIPIO && (level=='Master'||level=='S5')) {
             results=await sinColoniaNumeroExterior_Calle(direccionParsed);
         }
-        else if (direccionParsed.ESTADO && direccionParsed.MUNICIPIO && direccionParsed.COLONIA) {
+        else if (direccionParsed.ESTADO && direccionParsed.MUNICIPIO && direccionParsed.COLONIA && (level=='Master'||level=='S4')) {
             results=await sinNumeroExteriorCP_Calle(direccionParsed);
         }
-        else if (direccionParsed.ESTADO && direccionParsed.MUNICIPIO) {
+        else if (direccionParsed.ESTADO && direccionParsed.MUNICIPIO && (level=='Master'||level=='S6')) {
             results=await municipioEstado_Calle(direccionParsed);
         }
-        else if (direccionParsed.COLONIA && direccionParsed.NUMEXTNUM1) {
+        else if (direccionParsed.COLONIA && direccionParsed.NUMEXTNUM1 && (level=='Master'||level=='S1')) {
             results=await numeroExteriorColonia_Calle(direccionParsed);
         }
-        else if (direccionParsed.MUNICIPIO && direccionParsed.NUMEXTNUM1) {
+        else if (direccionParsed.MUNICIPIO && direccionParsed.NUMEXTNUM1 && level=='Master') {
             results=await municipioNumeroExterior_Calle(direccionParsed);
         }
-        else if (direccionParsed.NUMEXTNUM1) {
+        else if (direccionParsed.NUMEXTNUM1 && level=='Master') {
             results=await numeroExterior_Calle(direccionParsed);
         }
         else {
@@ -162,45 +161,45 @@ async function scoringMaestro(direccionParsed) {
         return results;
     }
     // Validamos que se halla detectado al menos lleve CALLE para buscar primero por POI.
-    if (direccionParsed.CALLE) {
+    if (direccionParsed.CALLE && (level=='Master'||level.substring(0,1)=='S')) {
         // Validamos segun sus propiedades a que funcion debe dirigirse.
-        if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
+        if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA && (level=='Master'||level=='S1')) {
             results=await all_Poi(direccionParsed);
         }
-        else if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.COLONIA) {
+        else if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.COLONIA && (level=='Master'||level=='S4')) {
             results=await sinNumeroExterior_Poi(direccionParsed);
         }
-        else if (direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
+        else if (direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA && (level=='Master'||level=='S1')) {
             results=await sinCP_Poi(direccionParsed);
         }
-        else if (direccionParsed.CP && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
+        else if (direccionParsed.CP && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA && (level=='Master'||level=='S1')) {
             results=await sinMunicipio_Poi(direccionParsed);
         }
-        else if (direccionParsed.CP && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA) {
+        else if (direccionParsed.CP && direccionParsed.NUMEXTNUM1 && direccionParsed.COLONIA && (level=='Master'||level=='S1')) {
             results=await sinEstado_Poi(direccionParsed);
         }
-        else if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1) {
+        else if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && (level=='Master'||level=='S1')) {
             results=await sinColonia_Poi(direccionParsed);
         }
-        else if (direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.MUNICIPIO) {
+        else if (direccionParsed.ESTADO && direccionParsed.NUMEXTNUM1 && direccionParsed.MUNICIPIO && (level=='Master'||level=='S3')) {
             results=await sinColoniaCP_Poi(direccionParsed);
         }
-        else if (direccionParsed.ESTADO && direccionParsed.CP && direccionParsed.MUNICIPIO) {
+        else if (direccionParsed.ESTADO && direccionParsed.CP && direccionParsed.MUNICIPIO && (level=='Master'||level=='S5')) {
             results=await sinColoniaNumeroExterior_Poi(direccionParsed);
         }
-        else if (direccionParsed.ESTADO && direccionParsed.MUNICIPIO && direccionParsed.COLONIA) {
+        else if (direccionParsed.ESTADO && direccionParsed.MUNICIPIO && direccionParsed.COLONIA && (level=='Master'||level=='S4')) {
             results=await sinNumeroExteriorCP_Poi(direccionParsed);
         }
-        else if (direccionParsed.ESTADO && direccionParsed.MUNICIPIO) {
+        else if (direccionParsed.ESTADO && direccionParsed.MUNICIPIO && (level=='Master'||level=='S6')) {
             results=await municipioEstado_Poi(direccionParsed);
         }
-        else if (direccionParsed.COLONIA && direccionParsed.NUMEXTNUM1) {
+        else if (direccionParsed.COLONIA && direccionParsed.NUMEXTNUM1 && (level=='Master'||level=='S1')) {
             results=await numeroExteriorColonia_Poi(direccionParsed);
         }
-        else if (direccionParsed.MUNICIPIO && direccionParsed.NUMEXTNUM1) {
+        else if (direccionParsed.MUNICIPIO && direccionParsed.NUMEXTNUM1 && level=='Master') {
             results=await municipioNumeroExterior_Poi(direccionParsed);
         }
-        else if (direccionParsed.NUMEXTNUM1) {
+        else if (direccionParsed.NUMEXTNUM1 && level=='Master') {
             results=await numeroExterior_Poi(direccionParsed);
         }
         else {
@@ -218,7 +217,7 @@ async function scoringMaestro(direccionParsed) {
         return results;
     }
     // Validamos que lleve COLONIA y caresca de CALLE
-    if (direccionParsed.COLONIA) {
+    if (direccionParsed.COLONIA && (level=='Master'||level.substring(0,1)=='N')) {
         // Validamos segun sus propiedades a que funcion debe dirigirse.
         if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO) {
             results=await all_Colonia(direccionParsed);
@@ -244,7 +243,7 @@ async function scoringMaestro(direccionParsed) {
         return results;
     }
     // Validamos que lleve CP, caresca de CALLE y COLONIA
-    if (direccionParsed.CP) {
+    if (direccionParsed.CP && (level=='Master'||level.substring(0,1)=='C')) {
         // Validamos segun sus propiedades a que funcion debe dirigirse.
         if (direccionParsed.MUNICIPIO && direccionParsed.ESTADO) {
             results=await all_CP(direccionParsed);
@@ -257,6 +256,20 @@ async function scoringMaestro(direccionParsed) {
         }
         else {
             results=await alone_CP(direccionParsed);
+        }
+    }
+    // Si se encontro algo regresalo.
+    if(results.length!==0){
+        return results;
+    }
+    // Validamos que lleve CP, caresca de CALLE y COLONIA
+    if (direccionParsed.MUNICIPIO && (level=='Master'||level.substring(0,1)=='M')) {
+        // Validamos segun sus propiedades a que funcion debe dirigirse.
+        if (direccionParsed.MUNICIPIO && direccionParsed.ESTADO) {
+            results=await all_Municipio(direccionParsed);
+        }
+        else {
+            results=await alone_Municipio(direccionParsed);
         }
     }
     // Regresa lo que se tenga de momento.

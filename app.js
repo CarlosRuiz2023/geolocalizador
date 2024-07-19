@@ -44,7 +44,7 @@ const piscina = new Piscina({
 });
 
 app.post("/geolocalizar", async (req, res) => {
-  const { direccion = "", limit = 5 } = req.body;
+  const { direccion = "", limit = 5, level = "Master" } = req.body;
 
   if (!direccion) {
     return res
@@ -58,7 +58,7 @@ app.post("/geolocalizar", async (req, res) => {
   }
 
   try {
-    const result = await piscina.run({ direccion, limit });
+    const result = await piscina.run({ direccion, limit, level });
     res.status(200).json({ ok: true, ...result });
   } catch (error) {
     console.error("Error al geolocalizar dirección:", error);
