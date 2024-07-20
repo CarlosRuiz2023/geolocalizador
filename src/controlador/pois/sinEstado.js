@@ -1,5 +1,5 @@
 const pgClient = require("../../data/conexion");
-const { levenshteinDistance, quitarAcentos } = require("../funciones");
+const { levenshteinDistance, quitarAcentos, recortarTipoAsentamiento, recortarTipoVialidad } = require("../funciones");
 
 // Aplicable solo en caso de llevar todos los campos a excepcion del ESTADO
 async function sinEstado(direccionParsed) {
@@ -82,15 +82,15 @@ async function sinEstado(direccionParsed) {
             result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
         }
         // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
-        const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+        const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
         // Hacemos match con lo que proporciono el usuario.
-        const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+        const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
         // Validamos que exista Match
         if (matchColonia) {
             // Obtiene el texto coincidente
             const matchedText = matchColonia[0];
             // Generamos la igualdad que se tienen
-            let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
+            let igualdad = matchedText.length * 100 / coloniaSinAcentos.length;
             // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
             if (igualdad > 100) igualdad = 100;
             // Subimos el scoring en colonia
@@ -99,10 +99,25 @@ async function sinEstado(direccionParsed) {
             result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
         }
     }
-    // Añadimos los resultados obtenidos al arreglo rows
-    rows = rows.concat(result.rows);
-    // Evaluamos que rows este vacio para seguir con la busqueda
-    if (result.rows.length === 0) {
+    if (result.rows.length !== 0) {
+        const resultOrdenado = result.rows.sort((a, b) => {
+          // Ordenar por poi en orden descendente
+          if (b.scoring.poi !== a.scoring.poi) {
+            return b.scoring.poi - a.scoring.poi;
+          }
+      
+          // Si las calles son iguales, ordenar por colonia en orden descendente
+          return b.scoring.colonia - a.scoring.colonia;
+        });
+      
+        // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
+        if (
+          resultOrdenado[0].scoring.colonia > 70 &&
+          resultOrdenado[0].scoring.poi > 70
+        ) {
+          rows = rows.concat(result.rows);
+        }
+      }else{
         // Construimos la query para comenzar a generar consultas a la BD
         query = `
             SELECT *,
@@ -175,15 +190,15 @@ async function sinEstado(direccionParsed) {
                 result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
             }
             // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
-            const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+            const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
             // Hacemos match con lo que proporciono el usuario.
-            const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+            const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
             // Validamos que exista Match
             if (matchColonia) {
                 // Obtiene el texto coincidente
                 const matchedText = matchColonia[0];
                 // Generamos la igualdad que se tienen
-                let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
+                let igualdad = matchedText.length * 100 / coloniaSinAcentos.length;
                 // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                 if (igualdad > 100) igualdad = 100;
                 // Subimos el scoring en colonia
@@ -192,10 +207,25 @@ async function sinEstado(direccionParsed) {
                 result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
             }
         }
-        // Añadimos los resultados obtenidos al arreglo rows
-        rows = rows.concat(result.rows);
-        // Evaluamos que rows este vacio para seguir con la busqueda
-        if (result.rows.length === 0) {
+        if (result.rows.length !== 0) {
+            const resultOrdenado = result.rows.sort((a, b) => {
+              // Ordenar por poi en orden descendente
+              if (b.scoring.poi !== a.scoring.poi) {
+                return b.scoring.poi - a.scoring.poi;
+              }
+          
+              // Si las calles son iguales, ordenar por colonia en orden descendente
+              return b.scoring.colonia - a.scoring.colonia;
+            });
+          
+            // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
+            if (
+              resultOrdenado[0].scoring.colonia > 70 &&
+              resultOrdenado[0].scoring.poi > 70
+            ) {
+              rows = rows.concat(result.rows);
+            }
+          }else{
             // Construimos la query para comenzar a generar consultas a la BD
             query = `
                 SELECT *,
@@ -268,15 +298,15 @@ async function sinEstado(direccionParsed) {
                     result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                 }
                 // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
-                const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+                const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                 // Hacemos match con lo que proporciono el usuario.
-                const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
                 // Validamos que exista Match
                 if (matchColonia) {
                     // Obtiene el texto coincidente
                     const matchedText = matchColonia[0];
                     // Generamos la igualdad que se tienen
-                    let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
+                    let igualdad = matchedText.length * 100 / coloniaSinAcentos.length;
                     // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                     if (igualdad > 100) igualdad = 100;
                     // Subimos el scoring en colonia
@@ -285,10 +315,25 @@ async function sinEstado(direccionParsed) {
                     result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                 }
             }
-            // Añadimos los resultados obtenidos al arreglo rows
-            rows = rows.concat(result.rows);
-            // Evaluamos que rows este vacio para seguir con la busqueda
-            if (result.rows.length === 0) {
+            if (result.rows.length !== 0) {
+                const resultOrdenado = result.rows.sort((a, b) => {
+                  // Ordenar por poi en orden descendente
+                  if (b.scoring.poi !== a.scoring.poi) {
+                    return b.scoring.poi - a.scoring.poi;
+                  }
+              
+                  // Si las calles son iguales, ordenar por colonia en orden descendente
+                  return b.scoring.colonia - a.scoring.colonia;
+                });
+              
+                // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
+                if (
+                  resultOrdenado[0].scoring.colonia > 70 &&
+                  resultOrdenado[0].scoring.poi > 70
+                ) {
+                  rows = rows.concat(result.rows);
+                }
+              }else{
                 // Construimos la query para comenzar a generar consultas a la BD
                 query = `
                     SELECT *,
@@ -360,10 +405,11 @@ async function sinEstado(direccionParsed) {
                         // Subimos el scoring en fiability
                         result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                     }
+                    const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                     // Calcular la distancia de Levenshtein
-                    const distanceColonia = levenshteinDistance(quitarAcentos(result.rows[i].colonia), direccionParsed.COLONIA);
+                    const distanceColonia = levenshteinDistance(coloniaSinAcentos, direccionParsed.COLONIA);
                     // Calcular la similitud como el inverso de la distancia de Levenshtein
-                    const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
+                    const maxLengthColonia = Math.max(coloniaSinAcentos.length, direccionParsed.COLONIA.length);
                     // Calculamos la similitud de la colonia segun sus comparativos
                     const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                     // Validamos que exista similitud alguna
@@ -374,10 +420,25 @@ async function sinEstado(direccionParsed) {
                         result.rows[i].scoring.fiability += (similarityColonia * 0.3);
                     }
                 }
-                // Añadimos los resultados obtenidos al arreglo rows
-                rows = rows.concat(result.rows);
-                // Evaluamos que rows este vacio para seguir con la busqueda
-                if (result.rows.length === 0) {
+                if (result.rows.length !== 0) {
+                    const resultOrdenado = result.rows.sort((a, b) => {
+                      // Ordenar por poi en orden descendente
+                      if (b.scoring.poi !== a.scoring.poi) {
+                        return b.scoring.poi - a.scoring.poi;
+                      }
+                  
+                      // Si las calles son iguales, ordenar por colonia en orden descendente
+                      return b.scoring.colonia - a.scoring.colonia;
+                    });
+                  
+                    // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
+                    if (
+                      resultOrdenado[0].scoring.colonia > 70 &&
+                      resultOrdenado[0].scoring.poi > 70
+                    ) {
+                      rows = rows.concat(result.rows);
+                    }
+                  }else{
                     // Construimos la query para comenzar a generar consultas a la BD
                     query = `
                         SELECT *,
@@ -449,10 +510,11 @@ async function sinEstado(direccionParsed) {
                             // Subimos el scoring en fiability
                             result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                         }
+                        const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                         // Calcular la distancia de Levenshtein
-                        const distanceColonia = levenshteinDistance(quitarAcentos(result.rows[i].colonia), direccionParsed.COLONIA);
+                        const distanceColonia = levenshteinDistance(coloniaSinAcentos, direccionParsed.COLONIA);
                         // Calcular la similitud como el inverso de la distancia de Levenshtein
-                        const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
+                        const maxLengthColonia = Math.max(coloniaSinAcentos.length, direccionParsed.COLONIA.length);
                         // Calculamos la similitud de la colonia segun sus comparativos
                         const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                         // Validamos que exista similitud alguna
@@ -463,10 +525,25 @@ async function sinEstado(direccionParsed) {
                             result.rows[i].scoring.fiability += (similarityColonia * 0.3);
                         }
                     }
-                    // Añadimos los resultados obtenidos al arreglo rows
-                    rows = rows.concat(result.rows);
-                    // Evaluamos que rows este vacio para seguir con la busqueda
-                    if (result.rows.length === 0) {
+                    if (result.rows.length !== 0) {
+                        const resultOrdenado = result.rows.sort((a, b) => {
+                          // Ordenar por poi en orden descendente
+                          if (b.scoring.poi !== a.scoring.poi) {
+                            return b.scoring.poi - a.scoring.poi;
+                          }
+                      
+                          // Si las calles son iguales, ordenar por colonia en orden descendente
+                          return b.scoring.colonia - a.scoring.colonia;
+                        });
+                      
+                        // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
+                        if (
+                          resultOrdenado[0].scoring.colonia > 70 &&
+                          resultOrdenado[0].scoring.poi > 70
+                        ) {
+                          rows = rows.concat(result.rows);
+                        }
+                      }else{
                         // Construimos la query para comenzar a generar consultas a la BD
                         query = `
                             SELECT *,
@@ -537,10 +614,11 @@ async function sinEstado(direccionParsed) {
                                 // Subimos el scoring en fiability
                                 result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                             }
+                            const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                             // Calcular la distancia de Levenshtein
-                            const distanceColonia = levenshteinDistance(quitarAcentos(result.rows[i].colonia), direccionParsed.COLONIA);
+                            const distanceColonia = levenshteinDistance(coloniaSinAcentos, direccionParsed.COLONIA);
                             // Calcular la similitud como el inverso de la distancia de Levenshtein
-                            const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
+                            const maxLengthColonia = Math.max(coloniaSinAcentos.length, direccionParsed.COLONIA.length);
                             // Calculamos la similitud de la colonia segun sus comparativos
                             const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                             // Validamos que exista similitud alguna
@@ -551,10 +629,25 @@ async function sinEstado(direccionParsed) {
                                 result.rows[i].scoring.fiability += (similarityColonia * 0.3);
                             }
                         }
-                        // Añadimos los resultados obtenidos al arreglo rows
-                        rows = rows.concat(result.rows);
-                        // Evaluamos que rows este vacio para seguir con la busqueda
-                        if (result.rows.length === 0) {
+                        if (result.rows.length !== 0) {
+                            const resultOrdenado = result.rows.sort((a, b) => {
+                              // Ordenar por poi en orden descendente
+                              if (b.scoring.poi !== a.scoring.poi) {
+                                return b.scoring.poi - a.scoring.poi;
+                              }
+                          
+                              // Si las calles son iguales, ordenar por colonia en orden descendente
+                              return b.scoring.colonia - a.scoring.colonia;
+                            });
+                          
+                            // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
+                            if (
+                              resultOrdenado[0].scoring.colonia > 70 &&
+                              resultOrdenado[0].scoring.poi > 70
+                            ) {
+                              rows = rows.concat(result.rows);
+                            }
+                          }else{
                             // Construimos la query para comenzar a generar consultas a la BD
                             query = `
                                 SELECT *,
@@ -627,15 +720,15 @@ async function sinEstado(direccionParsed) {
                                     result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                 }
                                 // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
-                                const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+                                const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                                 // Hacemos match con lo que proporciono el usuario.
-                                const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
                                 // Validamos que exista Match
                                 if (matchColonia) {
                                     // Obtiene el texto coincidente
                                     const matchedText = matchColonia[0];
                                     // Generamos la igualdad que se tienen
-                                    let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
+                                    let igualdad = matchedText.length * 100 / coloniaSinAcentos.length;
                                     // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                                     if (igualdad > 100) igualdad = 100;
                                     // Subimos el scoring en colonia
@@ -644,10 +737,25 @@ async function sinEstado(direccionParsed) {
                                     result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                 }
                             }
-                            // Añadimos los resultados obtenidos al arreglo rows
-                            rows = rows.concat(result.rows);
-                            // Evaluamos que rows este vacio para seguir con la busqueda
-                            if (result.rows.length === 0) {
+                            if (result.rows.length !== 0) {
+                                const resultOrdenado = result.rows.sort((a, b) => {
+                                  // Ordenar por poi en orden descendente
+                                  if (b.scoring.poi !== a.scoring.poi) {
+                                    return b.scoring.poi - a.scoring.poi;
+                                  }
+                              
+                                  // Si las calles son iguales, ordenar por colonia en orden descendente
+                                  return b.scoring.colonia - a.scoring.colonia;
+                                });
+                              
+                                // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
+                                if (
+                                  resultOrdenado[0].scoring.colonia > 70 &&
+                                  resultOrdenado[0].scoring.poi > 70
+                                ) {
+                                  rows = rows.concat(result.rows);
+                                }
+                              }else{
                                 // Construimos la query para comenzar a generar consultas a la BD
                                 query = `
                                     SELECT *,
@@ -719,15 +827,15 @@ async function sinEstado(direccionParsed) {
                                         result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                     }
                                     // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
-                                    const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+                                    const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                                     // Hacemos match con lo que proporciono el usuario.
-                                    const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                    const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
                                     // Validamos que exista Match
                                     if (matchColonia) {
                                         // Obtiene el texto coincidente
                                         const matchedText = matchColonia[0];
                                         // Generamos la igualdad que se tienen
-                                        let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
+                                        let igualdad = matchedText.length * 100 / coloniaSinAcentos.length;
                                         // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                                         if (igualdad > 100) igualdad = 100;
                                         // Subimos el scoring en colonia
@@ -736,10 +844,25 @@ async function sinEstado(direccionParsed) {
                                         result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                     }
                                 }
-                                // Añadimos los resultados obtenidos al arreglo rows
-                                rows = rows.concat(result.rows);
-                                // Evaluamos que rows este vacio para seguir con la busqueda
-                                if (result.rows.length === 0) {
+                                if (result.rows.length !== 0) {
+                                    const resultOrdenado = result.rows.sort((a, b) => {
+                                      // Ordenar por poi en orden descendente
+                                      if (b.scoring.poi !== a.scoring.poi) {
+                                        return b.scoring.poi - a.scoring.poi;
+                                      }
+                                  
+                                      // Si las calles son iguales, ordenar por colonia en orden descendente
+                                      return b.scoring.colonia - a.scoring.colonia;
+                                    });
+                                  
+                                    // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
+                                    if (
+                                      resultOrdenado[0].scoring.colonia > 70 &&
+                                      resultOrdenado[0].scoring.poi > 70
+                                    ) {
+                                      rows = rows.concat(result.rows);
+                                    }
+                                  }else{
                                     // Construimos la query para comenzar a generar consultas a la BD
                                     query = `
                                         SELECT *,
@@ -811,15 +934,15 @@ async function sinEstado(direccionParsed) {
                                             result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                         }
                                         // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
-                                        const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+                                        const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                                         // Hacemos match con lo que proporciono el usuario.
-                                        const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                        const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
                                         // Validamos que exista Match
                                         if (matchColonia) {
                                             // Obtiene el texto coincidente
                                             const matchedText = matchColonia[0];
                                             // Generamos la igualdad que se tienen
-                                            let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
+                                            let igualdad = matchedText.length * 100 / coloniaSinAcentos.length;
                                             // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                                             if (igualdad > 100) igualdad = 100;
                                             // Subimos el scoring en colonia
@@ -828,10 +951,25 @@ async function sinEstado(direccionParsed) {
                                             result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                         }
                                     }
-                                    // Añadimos los resultados obtenidos al arreglo rows
-                                    rows = rows.concat(result.rows);
-                                    // Evaluamos que rows este vacio para seguir con la busqueda
-                                    if (result.rows.length === 0) {
+                                    if (result.rows.length !== 0) {
+                                        const resultOrdenado = result.rows.sort((a, b) => {
+                                          // Ordenar por poi en orden descendente
+                                          if (b.scoring.poi !== a.scoring.poi) {
+                                            return b.scoring.poi - a.scoring.poi;
+                                          }
+                                      
+                                          // Si las calles son iguales, ordenar por colonia en orden descendente
+                                          return b.scoring.colonia - a.scoring.colonia;
+                                        });
+                                      
+                                        // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
+                                        if (
+                                          resultOrdenado[0].scoring.colonia > 70 &&
+                                          resultOrdenado[0].scoring.poi > 70
+                                        ) {
+                                          rows = rows.concat(result.rows);
+                                        }
+                                      }else{
                                         // Construimos la query para comenzar a generar consultas a la BD
                                         query = `
                                             SELECT *,
@@ -902,10 +1040,11 @@ async function sinEstado(direccionParsed) {
                                                 // Subimos el scoring en fiability
                                                 result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                             }
+                                            const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                                             // Calcular la distancia de Levenshtein
-                                            const distanceColonia = levenshteinDistance(quitarAcentos(result.rows[i].colonia), direccionParsed.COLONIA);
+                                            const distanceColonia = levenshteinDistance(coloniaSinAcentos, direccionParsed.COLONIA);
                                             // Calcular la similitud como el inverso de la distancia de Levenshtein
-                                            const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
+                                            const maxLengthColonia = Math.max(coloniaSinAcentos.length, direccionParsed.COLONIA.length);
                                             // Calculamos la similitud de la colonia segun sus comparativos
                                             const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                                             // Validamos que exista similitud alguna
@@ -916,10 +1055,25 @@ async function sinEstado(direccionParsed) {
                                                 result.rows[i].scoring.fiability += (similarityColonia * 0.3);
                                             }
                                         }
-                                        // Añadimos los resultados obtenidos al arreglo rows
-                                        rows = rows.concat(result.rows);
-                                        // Evaluamos que rows este vacio para seguir con la busqueda
-                                        if (result.rows.length === 0) {
+                                        if (result.rows.length !== 0) {
+                                            const resultOrdenado = result.rows.sort((a, b) => {
+                                              // Ordenar por poi en orden descendente
+                                              if (b.scoring.poi !== a.scoring.poi) {
+                                                return b.scoring.poi - a.scoring.poi;
+                                              }
+                                          
+                                              // Si las calles son iguales, ordenar por colonia en orden descendente
+                                              return b.scoring.colonia - a.scoring.colonia;
+                                            });
+                                          
+                                            // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
+                                            if (
+                                              resultOrdenado[0].scoring.colonia > 70 &&
+                                              resultOrdenado[0].scoring.poi > 70
+                                            ) {
+                                              rows = rows.concat(result.rows);
+                                            }
+                                          }else{
                                             // Construimos la query para comenzar a generar consultas a la BD
                                             query = `
                                                 SELECT *,
@@ -986,15 +1140,15 @@ async function sinEstado(direccionParsed) {
                                                     result.rows[i].scoring.fiability += (similarity * 0.3);
                                                 }
                                                 // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
-                                                const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+                                                const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                                                 // Hacemos match con lo que proporciono el usuario.
-                                                const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                                const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
                                                 // Validamos que exista Match
                                                 if (matchColonia) {
                                                     // Obtiene el texto coincidente
                                                     const matchedText = matchColonia[0];
                                                     // Generamos la igualdad que se tienen
-                                                    let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
+                                                    let igualdad = matchedText.length * 100 / coloniaSinAcentos.length;
                                                     // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                                                     if (igualdad > 100) igualdad = 100;
                                                     // Subimos el scoring en colonia
@@ -1003,10 +1157,25 @@ async function sinEstado(direccionParsed) {
                                                     result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                                 }
                                             }
-                                            // Añadimos los resultados obtenidos al arreglo rows
-                                            rows = rows.concat(result.rows);
-                                            // Evaluamos que rows este vacio para seguir con la busqueda
-                                            if (result.rows.length === 0) {
+                                            if (result.rows.length !== 0) {
+                                                const resultOrdenado = result.rows.sort((a, b) => {
+                                                  // Ordenar por poi en orden descendente
+                                                  if (b.scoring.poi !== a.scoring.poi) {
+                                                    return b.scoring.poi - a.scoring.poi;
+                                                  }
+                                              
+                                                  // Si las calles son iguales, ordenar por colonia en orden descendente
+                                                  return b.scoring.colonia - a.scoring.colonia;
+                                                });
+                                              
+                                                // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
+                                                if (
+                                                  resultOrdenado[0].scoring.colonia > 70 &&
+                                                  resultOrdenado[0].scoring.poi > 70
+                                                ) {
+                                                  rows = rows.concat(result.rows);
+                                                }
+                                              }else{
                                                 // Construimos la query para comenzar a generar consultas a la BD
                                                 query = `
                                                     SELECT *,
@@ -1076,10 +1245,11 @@ async function sinEstado(direccionParsed) {
                                                         // Subimos el scoring en fiability
                                                         result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                                     }
+                                                    const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                                                     // Calcular la distancia de Levenshtein
-                                                    const distanceColonia = levenshteinDistance(quitarAcentos(result.rows[i].colonia), direccionParsed.COLONIA);
+                                                    const distanceColonia = levenshteinDistance(coloniaSinAcentos, direccionParsed.COLONIA);
                                                     // Calcular la similitud como el inverso de la distancia de Levenshtein
-                                                    const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
+                                                    const maxLengthColonia = Math.max(coloniaSinAcentos.length, direccionParsed.COLONIA.length);
                                                     // Calculamos la similitud de la colonia segun sus comparativos
                                                     const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                                                     // Validamos que exista similitud alguna
@@ -1090,10 +1260,25 @@ async function sinEstado(direccionParsed) {
                                                         result.rows[i].scoring.fiability += (similarityColonia * 0.3);
                                                     }
                                                 }
-                                                // Añadimos los resultados obtenidos al arreglo rows
-                                                rows = rows.concat(result.rows);
-                                                // Evaluamos que rows este vacio para seguir con la busqueda
-                                                if (result.rows.length === 0) {
+                                                if (result.rows.length !== 0) {
+                                                    const resultOrdenado = result.rows.sort((a, b) => {
+                                                      // Ordenar por poi en orden descendente
+                                                      if (b.scoring.poi !== a.scoring.poi) {
+                                                        return b.scoring.poi - a.scoring.poi;
+                                                      }
+                                                  
+                                                      // Si las calles son iguales, ordenar por colonia en orden descendente
+                                                      return b.scoring.colonia - a.scoring.colonia;
+                                                    });
+                                                  
+                                                    // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
+                                                    if (
+                                                      resultOrdenado[0].scoring.colonia > 70 &&
+                                                      resultOrdenado[0].scoring.poi > 70
+                                                    ) {
+                                                      rows = rows.concat(result.rows);
+                                                    }
+                                                  }else{
                                                     // Construimos la query para comenzar a generar consultas a la BD
                                                     query = `
                                                         SELECT *,
@@ -1160,15 +1345,15 @@ async function sinEstado(direccionParsed) {
                                                             result.rows[i].scoring.fiability += (similarity * 0.3);
                                                         }
                                                         // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
-                                                        const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+                                                        const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                                                         // Hacemos match con lo que proporciono el usuario.
-                                                        const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                                        const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
                                                         // Validamos que exista Match
                                                         if (matchColonia) {
                                                             // Obtiene el texto coincidente
                                                             const matchedText = matchColonia[0];
                                                             // Generamos la igualdad que se tienen
-                                                            let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
+                                                            let igualdad = matchedText.length * 100 / coloniaSinAcentos.length;
                                                             // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                                                             if (igualdad > 100) igualdad = 100;
                                                             // Subimos el scoring en colonia
@@ -1177,10 +1362,25 @@ async function sinEstado(direccionParsed) {
                                                             result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                                         }
                                                     }
-                                                    // Añadimos los resultados obtenidos al arreglo rows
-                                                    rows = rows.concat(result.rows);
-                                                    // Evaluamos que rows este vacio para seguir con la busqueda
-                                                    if (result.rows.length === 0) {
+                                                    if (result.rows.length !== 0) {
+                                                        const resultOrdenado = result.rows.sort((a, b) => {
+                                                          // Ordenar por poi en orden descendente
+                                                          if (b.scoring.poi !== a.scoring.poi) {
+                                                            return b.scoring.poi - a.scoring.poi;
+                                                          }
+                                                      
+                                                          // Si las calles son iguales, ordenar por colonia en orden descendente
+                                                          return b.scoring.colonia - a.scoring.colonia;
+                                                        });
+                                                      
+                                                        // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
+                                                        if (
+                                                          resultOrdenado[0].scoring.colonia > 70 &&
+                                                          resultOrdenado[0].scoring.poi > 70
+                                                        ) {
+                                                          rows = rows.concat(result.rows);
+                                                        }
+                                                      }else{
                                                         // Construimos la query para comenzar a generar consultas a la BD
                                                         query = `
                                                             SELECT *,
@@ -1248,15 +1448,15 @@ async function sinEstado(direccionParsed) {
                                                                 result.rows[i].scoring.fiability += (similarity * 0.3);
                                                             }
                                                             // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
-                                                            const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+                                                            const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                                                             // Hacemos match con lo que proporciono el usuario.
-                                                            const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                                            const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
                                                             // Validamos que exista Match
                                                             if (matchColonia) {
                                                                 // Obtiene el texto coincidente
                                                                 const matchedText = matchColonia[0];
                                                                 // Generamos la igualdad que se tienen
-                                                                let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
+                                                                let igualdad = matchedText.length * 100 / coloniaSinAcentos.length;
                                                                 // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                                                                 if (igualdad > 100) igualdad = 100;
                                                                 // Subimos el scoring en colonia
@@ -1265,10 +1465,25 @@ async function sinEstado(direccionParsed) {
                                                                 result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                                             }
                                                         }
-                                                        // Añadimos los resultados obtenidos al arreglo rows
-                                                        rows = rows.concat(result.rows);
-                                                        // Evaluamos que rows este vacio para seguir con la busqueda
-                                                        if (result.rows.length === 0) {
+                                                        if (result.rows.length !== 0) {
+                                                            const resultOrdenado = result.rows.sort((a, b) => {
+                                                              // Ordenar por poi en orden descendente
+                                                              if (b.scoring.poi !== a.scoring.poi) {
+                                                                return b.scoring.poi - a.scoring.poi;
+                                                              }
+                                                          
+                                                              // Si las calles son iguales, ordenar por colonia en orden descendente
+                                                              return b.scoring.colonia - a.scoring.colonia;
+                                                            });
+                                                          
+                                                            // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
+                                                            if (
+                                                              resultOrdenado[0].scoring.colonia > 70 &&
+                                                              resultOrdenado[0].scoring.poi > 70
+                                                            ) {
+                                                              rows = rows.concat(result.rows);
+                                                            }
+                                                          }else{
                                                             // Construimos la query para comenzar a generar consultas a la BD
                                                             query = `
                                                                 SELECT *,
@@ -1337,15 +1552,15 @@ async function sinEstado(direccionParsed) {
                                                                     result.rows[i].scoring.fiability += (similarity * 0.3);
                                                                 }
                                                                 // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
-                                                                const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+                                                                const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                                                                 // Hacemos match con lo que proporciono el usuario.
-                                                                const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                                                const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
                                                                 // Validamos que exista Match
                                                                 if (matchColonia) {
                                                                     // Obtiene el texto coincidente
                                                                     const matchedText = matchColonia[0];
                                                                     // Generamos la igualdad que se tienen
-                                                                    let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
+                                                                    let igualdad = matchedText.length * 100 / coloniaSinAcentos.length;
                                                                     // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                                                                     if (igualdad > 100) igualdad = 100;
                                                                     // Subimos el scoring en colonia
@@ -1354,10 +1569,25 @@ async function sinEstado(direccionParsed) {
                                                                     result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                                                 }
                                                             }
-                                                            // Añadimos los resultados obtenidos al arreglo rows
-                                                            rows = rows.concat(result.rows);
-                                                            // Evaluamos que rows este vacio para seguir con la busqueda
-                                                            if (result.rows.length === 0) {
+                                                            if (result.rows.length !== 0) {
+                                                                const resultOrdenado = result.rows.sort((a, b) => {
+                                                                  // Ordenar por poi en orden descendente
+                                                                  if (b.scoring.poi !== a.scoring.poi) {
+                                                                    return b.scoring.poi - a.scoring.poi;
+                                                                  }
+                                                              
+                                                                  // Si las calles son iguales, ordenar por colonia en orden descendente
+                                                                  return b.scoring.colonia - a.scoring.colonia;
+                                                                });
+                                                              
+                                                                // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
+                                                                if (
+                                                                  resultOrdenado[0].scoring.colonia > 70 &&
+                                                                  resultOrdenado[0].scoring.poi > 70
+                                                                ) {
+                                                                  rows = rows.concat(result.rows);
+                                                                }
+                                                              }else{
                                                                 // Construimos la query para comenzar a generar consultas a la BD
                                                                 query = `
                                                                     SELECT *,
@@ -1425,15 +1655,15 @@ async function sinEstado(direccionParsed) {
                                                                         result.rows[i].scoring.fiability += (similarity * 0.3);
                                                                     }
                                                                     // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
-                                                                    const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+                                                                    const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                                                                     // Hacemos match con lo que proporciono el usuario.
-                                                                    const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                                                    const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
                                                                     // Validamos que exista Match
                                                                     if (matchColonia) {
                                                                         // Obtiene el texto coincidente
                                                                         const matchedText = matchColonia[0];
                                                                         // Generamos la igualdad que se tienen
-                                                                        let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
+                                                                        let igualdad = matchedText.length * 100 / coloniaSinAcentos.length;
                                                                         // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                                                                         if (igualdad > 100) igualdad = 100;
                                                                         // Subimos el scoring en colonia
@@ -1442,10 +1672,25 @@ async function sinEstado(direccionParsed) {
                                                                         result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                                                     }
                                                                 }
-                                                                // Añadimos los resultados obtenidos al arreglo rows
-                                                                rows = rows.concat(result.rows);
-                                                                // Evaluamos que rows este vacio para seguir con la busqueda
-                                                                if (result.rows.length === 0) {
+                                                                if (result.rows.length !== 0) {
+                                                                    const resultOrdenado = result.rows.sort((a, b) => {
+                                                                      // Ordenar por poi en orden descendente
+                                                                      if (b.scoring.poi !== a.scoring.poi) {
+                                                                        return b.scoring.poi - a.scoring.poi;
+                                                                      }
+                                                                  
+                                                                      // Si las calles son iguales, ordenar por colonia en orden descendente
+                                                                      return b.scoring.colonia - a.scoring.colonia;
+                                                                    });
+                                                                  
+                                                                    // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
+                                                                    if (
+                                                                      resultOrdenado[0].scoring.colonia > 70 &&
+                                                                      resultOrdenado[0].scoring.poi > 70
+                                                                    ) {
+                                                                      rows = rows.concat(result.rows);
+                                                                    }
+                                                                  }else{
                                                                     // Construimos la query para comenzar a generar consultas a la BD
                                                                     query = `
                                                                         SELECT *,
@@ -1513,15 +1758,15 @@ async function sinEstado(direccionParsed) {
                                                                             result.rows[i].scoring.fiability += (similarity * 0.3);
                                                                         }
                                                                         // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
-                                                                        const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+                                                                        const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                                                                         // Hacemos match con lo que proporciono el usuario.
-                                                                        const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                                                        const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
                                                                         // Validamos que exista Match
                                                                         if (matchColonia) {
                                                                             // Obtiene el texto coincidente
                                                                             const matchedText = matchColonia[0];
                                                                             // Generamos la igualdad que se tienen
-                                                                            let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
+                                                                            let igualdad = matchedText.length * 100 / coloniaSinAcentos.length;
                                                                             // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                                                                             if (igualdad > 100) igualdad = 100;
                                                                             // Subimos el scoring en colonia
@@ -1530,10 +1775,25 @@ async function sinEstado(direccionParsed) {
                                                                             result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                                                         }
                                                                     }
-                                                                    // Añadimos los resultados obtenidos al arreglo rows
-                                                                    rows = rows.concat(result.rows);
-                                                                    // Evaluamos que rows este vacio para seguir con la busqueda
-                                                                    if (result.rows.length === 0) {
+                                                                    if (result.rows.length !== 0) {
+                                                                        const resultOrdenado = result.rows.sort((a, b) => {
+                                                                          // Ordenar por poi en orden descendente
+                                                                          if (b.scoring.poi !== a.scoring.poi) {
+                                                                            return b.scoring.poi - a.scoring.poi;
+                                                                          }
+                                                                      
+                                                                          // Si las calles son iguales, ordenar por colonia en orden descendente
+                                                                          return b.scoring.colonia - a.scoring.colonia;
+                                                                        });
+                                                                      
+                                                                        // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
+                                                                        if (
+                                                                          resultOrdenado[0].scoring.colonia > 70 &&
+                                                                          resultOrdenado[0].scoring.poi > 70
+                                                                        ) {
+                                                                          rows = rows.concat(result.rows);
+                                                                        }
+                                                                      }else{
                                                                         // Construimos la query para comenzar a generar consultas a la BD
                                                                         query = `
                                                                             SELECT *,
@@ -1601,15 +1861,15 @@ async function sinEstado(direccionParsed) {
                                                                                 result.rows[i].scoring.fiability += (similarity * 0.3);
                                                                             }
                                                                             // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
-                                                                            const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
+                                                                            const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                                                                             // Hacemos match con lo que proporciono el usuario.
-                                                                            const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
+                                                                            const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
                                                                             // Validamos que exista Match
                                                                             if (matchColonia) {
                                                                                 // Obtiene el texto coincidente
                                                                                 const matchedText = matchColonia[0];
                                                                                 // Generamos la igualdad que se tienen
-                                                                                let igualdad = matchedText.length * 100 / result.rows[i].colonia.length;
+                                                                                let igualdad = matchedText.length * 100 / coloniaSinAcentos.length;
                                                                                 // Hacemos que la igualdad no pueda ser mayor a 100 y afecte el scoring
                                                                                 if (igualdad > 100) igualdad = 100;
                                                                                 // Subimos el scoring en colonia
@@ -1618,8 +1878,25 @@ async function sinEstado(direccionParsed) {
                                                                                 result.rows[i].scoring.fiability += Math.round(igualdad * 0.3);
                                                                             }
                                                                         }
-                                                                        // Añadimos los resultados obtenidos al arreglo rows
-                                                                        rows = rows.concat(result.rows);
+                                                                        if (result.rows.length !== 0) {
+                                                                            const resultOrdenado = result.rows.sort((a, b) => {
+                                                                              // Ordenar por poi en orden descendente
+                                                                              if (b.scoring.poi !== a.scoring.poi) {
+                                                                                return b.scoring.poi - a.scoring.poi;
+                                                                              }
+                                                                          
+                                                                              // Si las calles son iguales, ordenar por colonia en orden descendente
+                                                                              return b.scoring.colonia - a.scoring.colonia;
+                                                                            });
+                                                                          
+                                                                            // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
+                                                                            if (
+                                                                              resultOrdenado[0].scoring.colonia > 70 &&
+                                                                              resultOrdenado[0].scoring.poi > 70
+                                                                            ) {
+                                                                              rows = rows.concat(result.rows);
+                                                                            }
+                                                                          }
                                                                         // Evaluamos que rows este vacio para seguir con la busqueda
                                                                         /* if (result.rows.length === 0) {
                                                                             // Construimos la query para comenzar a generar consultas a la BD
@@ -1677,10 +1954,11 @@ async function sinEstado(direccionParsed) {
                                                                                     // Subimos el scoring en fiability
                                                                                     result.rows[i].scoring.fiability += (similarity * 0.3);
                                                                                 }
+                                                                                const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                                                                                 // Calcular la distancia de Levenshtein
-                                                                                const distanceColonia = levenshteinDistance(quitarAcentos(result.rows[i].colonia), direccionParsed.COLONIA);
+                                                                                const distanceColonia = levenshteinDistance(coloniaSinAcentos, direccionParsed.COLONIA);
                                                                                 // Calcular la similitud como el inverso de la distancia de Levenshtein
-                                                                                const maxLengthColonia = Math.max(result.rows[i].colonia.length, direccionParsed.COLONIA.length);
+                                                                                const maxLengthColonia = Math.max(coloniaSinAcentos.length, direccionParsed.COLONIA.length);
                                                                                 // Calculamos la similitud de la colonia segun sus comparativos
                                                                                 const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                                                                                 // Validamos que exista similitud alguna
