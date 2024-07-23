@@ -1,8 +1,8 @@
 const pgClient = require("../../data/conexion");
 const { levenshteinDistance, quitarAcentos, recortarTipoAsentamiento, recortarTipoVialidad } = require("../funciones");
 
-// Aplicable solo en caso de llevar todos los campos a excepcion del ESTADO
-async function sinEstado(direccionParsed) {
+// Aplicable solo en caso de llevar todos los campos a excepcion de CP
+async function sinCP(direccionParsed) {
     // Declaramos un valor nulo para la query de tipo String
     let query = '';
     // Generamos un arreglo para los valores que suplantaran "$X" en la query
@@ -15,13 +15,13 @@ async function sinEstado(direccionParsed) {
         ST_Y(ST_Centroid("SP_GEOMETRY")) AS x_centro,
         ST_X(ST_Centroid("SP_GEOMETRY")) AS y_centro
         FROM carto_colonia
-        WHERE codigo_postal = $1
-        AND unaccent(municipio) = $2
+        WHERE unaccent(municipio) = $1
+        AND unaccent(estado) = $2
         AND unaccent(colonia) LIKE '%' || $3 || '%'
         ;
     `;
     // Almacenamos en el arreglo values los campos que seran usados en la consulta
-    values = [direccionParsed.CP, direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
+    values = [direccionParsed.MUNICIPIO, direccionParsed.ESTADO, direccionParsed.COLONIA];
     // Guardamos en una constante el resultado obtenido
     const result = await pgClient.query(query, values);
     // Creamos ciclo for el cual recorrera cada uno de los resultados obtenidos
@@ -56,13 +56,13 @@ async function sinEstado(direccionParsed) {
         result.rows[i].scoring = {
             fiability: 50,
             colonia: 0,
-            codigo_postal: 100,
-            municipio: 100
+            municipio: 100,
+            estado: 100
         };
         // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
-        const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
+        const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
         // Hacemos match con lo que proporciono el usuario.
-        const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
+        const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
         // Validamos que exista Match
         if (matchColonia) {
             // Obtiene el texto coincidente
@@ -87,12 +87,12 @@ async function sinEstado(direccionParsed) {
             ST_Y(ST_Centroid("SP_GEOMETRY")) AS x_centro,
             ST_X(ST_Centroid("SP_GEOMETRY")) AS y_centro
             FROM carto_colonia
-            WHERE unaccent(municipio) = $1
+            WHERE unaccent(estado) = $1
             AND unaccent(colonia) LIKE '%' || $2 || '%'
             ;
         `;
         // Almacenamos en el arreglo values los campos que seran usados en la consulta
-        values = [direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
+        values = [direccionParsed.ESTADO, direccionParsed.COLONIA];
         // Guardamos en una constante el resultado obtenido
         const result = await pgClient.query(query, values);
         // Creamos ciclo for el cual recorrera cada uno de los resultados obtenidos
@@ -127,13 +127,13 @@ async function sinEstado(direccionParsed) {
             result.rows[i].scoring = {
                 fiability: 25,
                 colonia: 0,
-                codigo_postal: 0,
-                municipio: 100
+                municipio: 0,
+                estado: 100
             };
             // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
-            const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
+            const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
             // Hacemos match con lo que proporciono el usuario.
-            const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
+            const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
             // Validamos que exista Match
             if (matchColonia) {
                 // Obtiene el texto coincidente
@@ -158,12 +158,12 @@ async function sinEstado(direccionParsed) {
                 ST_Y(ST_Centroid("SP_GEOMETRY")) AS x_centro,
                 ST_X(ST_Centroid("SP_GEOMETRY")) AS y_centro
                 FROM carto_colonia
-                WHERE codigo_postal = $1
+                WHERE unaccent(municipio) = $1
                 AND unaccent(colonia) LIKE '%' || $2 || '%'
                 ;
             `;
             // Almacenamos en el arreglo values los campos que seran usados en la consulta
-            values = [direccionParsed.CP, direccionParsed.COLONIA];
+            values = [direccionParsed.MUNICIPIO, direccionParsed.COLONIA];
             // Guardamos en una constante el resultado obtenido
             const result = await pgClient.query(query, values);
             // Creamos ciclo for el cual recorrera cada uno de los resultados obtenidos
@@ -198,13 +198,13 @@ async function sinEstado(direccionParsed) {
                 result.rows[i].scoring = {
                     fiability: 25,
                     colonia: 0,
-                    codigo_postal: 100,
-                    municipio: 0
+                    municipio: 100,
+                    estado: 0
                 };
                 // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
-                const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
+                const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                 // Hacemos match con lo que proporciono el usuario.
-                const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
+                const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
                 // Validamos que exista Match
                 if (matchColonia) {
                     // Obtiene el texto coincidente
@@ -268,13 +268,13 @@ async function sinEstado(direccionParsed) {
                     result.rows[i].scoring = {
                         fiability: 0,
                         colonia: 0,
-                        codigo_postal: 0,
-                        municipio: 0
+                        municipio: 0,
+                        estado: 0
                     };
                     // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
-                    const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
+                    const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                     // Hacemos match con lo que proporciono el usuario.
-                    const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
+                    const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
                     // Validamos que exista Match
                     if (matchColonia) {
                         // Obtiene el texto coincidente
@@ -299,12 +299,12 @@ async function sinEstado(direccionParsed) {
                         ST_Y(ST_Centroid("SP_GEOMETRY")) AS x_centro,
                         ST_X(ST_Centroid("SP_GEOMETRY")) AS y_centro
                         FROM carto_colonia
-                        WHERE codigo_postal = $1
-                        AND unaccent(municipio) = $2
+                        WHERE unaccent(municipio) = $1
+                        AND unaccent(estado) = $2
                         ;
                     `;
                     // Almacenamos en el arreglo values los campos que seran usados en la consulta
-                    values = [direccionParsed.CP, direccionParsed.MUNICIPIO];
+                    values = [direccionParsed.MUNICIPIO, direccionParsed.ESTADO];
                     // Guardamos en una constante el resultado obtenido
                     const result = await pgClient.query(query, values);
                     // Creamos ciclo for el cual recorrera cada uno de los resultados obtenidos
@@ -339,14 +339,14 @@ async function sinEstado(direccionParsed) {
                         result.rows[i].scoring = {
                             fiability: 50,
                             colonia: 0,
-                            codigo_postal: 100,
-                            municipio: 100
+                            municipio: 100,
+                            estado: 100
                         };
-                        const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
+                        const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                         // Calcular la distancia de Levenshtein
-                        const distanceColonia = levenshteinDistance(coloniaSinAcentos, recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)));
+                        const distanceColonia = levenshteinDistance(coloniaSinAcentos, direccionParsed.COLONIA);
                         // Calcular la similitud como el inverso de la distancia de Levenshtein
-                        const maxLengthColonia = Math.max(coloniaSinAcentos.length,recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)).length);
+                        const maxLengthColonia = Math.max(coloniaSinAcentos.length,direccionParsed.COLONIA.length);
                         // Calculamos la similitud de la colonia segun sus comparativos
                         const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                         // Validamos que exista similitud alguna
@@ -367,11 +367,11 @@ async function sinEstado(direccionParsed) {
                             ST_Y(ST_Centroid("SP_GEOMETRY")) AS x_centro,
                             ST_X(ST_Centroid("SP_GEOMETRY")) AS y_centro
                             FROM carto_colonia
-                            WHERE unaccent(municipio) = $1
+                            WHERE unaccent(estado) = $1
                             ;
                         `;
                         // Almacenamos en el arreglo values los campos que seran usados en la consulta
-                        values = [direccionParsed.MUNICIPIO];
+                        values = [direccionParsed.ESTADO];
                         // Guardamos en una constante el resultado obtenido
                         const result = await pgClient.query(query, values);
                         // Creamos ciclo for el cual recorrera cada uno de los resultados obtenidos
@@ -406,14 +406,14 @@ async function sinEstado(direccionParsed) {
                             result.rows[i].scoring = {
                                 fiability: 25,
                                 colonia: 0,
-                                codigo_postal: 0,
-                                municipio: 100
+                                municipio: 0,
+                                estado: 100
                             };
-                            const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
+                            const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                             // Calcular la distancia de Levenshtein
-                            const distanceColonia = levenshteinDistance(coloniaSinAcentos, recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)));
+                            const distanceColonia = levenshteinDistance(coloniaSinAcentos, direccionParsed.COLONIA);
                             // Calcular la similitud como el inverso de la distancia de Levenshtein
-                            const maxLengthColonia = Math.max(coloniaSinAcentos.length,recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)).length);
+                            const maxLengthColonia = Math.max(coloniaSinAcentos.length,direccionParsed.COLONIA.length);
                             // Calculamos la similitud de la colonia segun sus comparativos
                             const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                             // Validamos que exista similitud alguna
@@ -434,11 +434,11 @@ async function sinEstado(direccionParsed) {
                                 ST_Y(ST_Centroid("SP_GEOMETRY")) AS x_centro,
                                 ST_X(ST_Centroid("SP_GEOMETRY")) AS y_centro
                                 FROM carto_colonia
-                                WHERE codigo_postal = $1
+                                WHERE unaccent(municipio) = $1
                                 ;
                             `;
                             // Almacenamos en el arreglo values los campos que seran usados en la consulta
-                            values = [direccionParsed.CP];
+                            values = [direccionParsed.MUNICIPIO];
                             // Guardamos en una constante el resultado obtenido
                             const result = await pgClient.query(query, values);
                             // Creamos ciclo for el cual recorrera cada uno de los resultados obtenidos
@@ -473,14 +473,14 @@ async function sinEstado(direccionParsed) {
                                 result.rows[i].scoring = {
                                     fiability: 25,
                                     colonia: 0,
-                                    codigo_postal: 100,
-                                    municipio: 0
+                                    municipio: 100,
+                                    estado: 0
                                 };
-                                const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
+                                const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                                 // Calcular la distancia de Levenshtein
-                                const distanceColonia = levenshteinDistance(coloniaSinAcentos, recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)));
+                                const distanceColonia = levenshteinDistance(coloniaSinAcentos, direccionParsed.COLONIA);
                                 // Calcular la similitud como el inverso de la distancia de Levenshtein
-                                const maxLengthColonia = Math.max(coloniaSinAcentos.length,recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)).length);
+                                const maxLengthColonia = Math.max(coloniaSinAcentos.length,direccionParsed.COLONIA.length);
                                 // Calculamos la similitud de la colonia segun sus comparativos
                                 const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                                 // Validamos que exista similitud alguna
@@ -502,4 +502,4 @@ async function sinEstado(direccionParsed) {
     // Retornamos los rows que se obtuvieron hasta el momento
     return rows;
 }
-module.exports = sinEstado;
+module.exports = sinCP;

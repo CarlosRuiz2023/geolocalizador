@@ -679,9 +679,9 @@ async function sinCP(direccionParsed) {
                     }
                     const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                     // Calcular la distancia de Levenshtein
-                    const distanceColonia = levenshteinDistance(coloniaSinAcentos, direccionParsed.COLONIA);
+                    const distanceColonia = levenshteinDistance(coloniaSinAcentos,recortarTipoVialidad(recortarTipoAsentamiento( direccionParsed.COLONIA)));
                     // Calcular la similitud como el inverso de la distancia de Levenshtein
-                    const maxLengthColonia = Math.max(coloniaSinAcentos.length, direccionParsed.COLONIA.length);
+                    const maxLengthColonia = Math.max(coloniaSinAcentos.length, recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)).length);
                     // Calculamos la similitud de la colonia segun sus comparativos
                     const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                     // Validamos que exista similitud alguna
@@ -851,9 +851,9 @@ async function sinCP(direccionParsed) {
                         }
                         const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                         // Calcular la distancia de Levenshtein
-                        const distanceColonia = levenshteinDistance(coloniaSinAcentos, direccionParsed.COLONIA);
+                        const distanceColonia = levenshteinDistance(coloniaSinAcentos,recortarTipoVialidad(recortarTipoAsentamiento( direccionParsed.COLONIA)));
                         // Calcular la similitud como el inverso de la distancia de Levenshtein
-                        const maxLengthColonia = Math.max(coloniaSinAcentos.length, direccionParsed.COLONIA.length);
+                        const maxLengthColonia = Math.max(coloniaSinAcentos.length, recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)).length);
                         // Calculamos la similitud de la colonia segun sus comparativos
                         const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                         // Validamos que exista similitud alguna
@@ -1328,9 +1328,9 @@ async function sinCP(direccionParsed) {
                                     }
                                     const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                                     // Calcular la distancia de Levenshtein
-                                    const distanceColonia = levenshteinDistance(coloniaSinAcentos, direccionParsed.COLONIA);
+                                    const distanceColonia = levenshteinDistance(coloniaSinAcentos,recortarTipoVialidad(recortarTipoAsentamiento( direccionParsed.COLONIA)));
                                     // Calcular la similitud como el inverso de la distancia de Levenshtein
-                                    const maxLengthColonia = Math.max(coloniaSinAcentos.length, direccionParsed.COLONIA.length);
+                                    const maxLengthColonia = Math.max(coloniaSinAcentos.length, recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)).length);
                                     // Calculamos la similitud de la colonia segun sus comparativos
                                     const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                                     // Validamos que exista similitud alguna
@@ -1712,9 +1712,9 @@ async function sinCP(direccionParsed) {
                                                 }
                                                 const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                                                 // Calcular la distancia de Levenshtein
-                                                const distanceColonia = levenshteinDistance(coloniaSinAcentos, direccionParsed.COLONIA);
+                                                const distanceColonia = levenshteinDistance(coloniaSinAcentos,recortarTipoVialidad(recortarTipoAsentamiento( direccionParsed.COLONIA)));
                                                 // Calcular la similitud como el inverso de la distancia de Levenshtein
-                                                const maxLengthColonia = Math.max(coloniaSinAcentos.length, direccionParsed.COLONIA.length);
+                                                const maxLengthColonia = Math.max(coloniaSinAcentos.length, recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)).length);
                                                 // Calculamos la similitud de la colonia segun sus comparativos
                                                 const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                                                 // Validamos que exista similitud alguna
@@ -2474,9 +2474,9 @@ async function sinCP(direccionParsed) {
                                                                     }
                                                                     const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
                                                                     // Calcular la distancia de Levenshtein
-                                                                    const distanceColonia = levenshteinDistance(coloniaSinAcentos, direccionParsed.COLONIA);
+                                                                    const distanceColonia = levenshteinDistance(coloniaSinAcentos,recortarTipoVialidad(recortarTipoAsentamiento( direccionParsed.COLONIA)));
                                                                     // Calcular la similitud como el inverso de la distancia de Levenshtein
-                                                                    const maxLengthColonia = Math.max(coloniaSinAcentos.length, direccionParsed.COLONIA.length);
+                                                                    const maxLengthColonia = Math.max(coloniaSinAcentos.length, recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)).length);
                                                                     // Calculamos la similitud de la colonia segun sus comparativos
                                                                     const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                                                                     // Validamos que exista similitud alguna

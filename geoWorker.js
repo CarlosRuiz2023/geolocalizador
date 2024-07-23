@@ -5,9 +5,14 @@ const {
 const scoringMaestro = require("./src/controlador/scoring");
 
 module.exports = async ({ direccion, limit, level }) => {
-  const direccionParsed = await parseDireccion(direccion);
+  const direccionParsed = await parseDireccion(direccion,level);
   if(Object.keys(direccionParsed).length === 0){
     return { parse: direccionParsed,level:'SD', results: [] };
+  }
+  if(direccionParsed.ESTADO){
+    if(direccionParsed.ESTADO!='GUANAJUATO'){
+      return { parse: direccionParsed,level:'NG', results: [] };
+    }
   }
   const results = await scoringMaestro(direccionParsed, level);
   let sortedResults = results.sort(
@@ -36,14 +41,14 @@ module.exports = async ({ direccion, limit, level }) => {
   let levelFinal = 'NG';
 
   if(sortedResults.length!=0){
-    levelFinal = determineLevel(sortedResults[0].scoring);
+    levelFinal = determineLevel(sortedResults[0].scoring,direccionParsed.N2,direccionParsed.M2);
   }
 
   return { parse: direccionParsed,level:levelFinal, results: sortedResults };
 };
 
 // FUNCION QUE DETERMINA EL NIVEL AL QUE SE BUSCO MEDIANTE LOS ATRIBUTOS QUE CONFORMAN EL SCORING.
-function determineLevel(result) {
+function determineLevel(result,n2=0,m2=0) {
   const { nombre_asentamiento=0, nombre_vialidad=0, calle=0, poi=0, numero_exterior=0, colonia=0, codigo_postal=0, municipio=0, estado=0} = result;
 
   if (calle!=0 || poi!=0 || nombre_asentamiento!=0 || nombre_vialidad!=0){
@@ -66,7 +71,8 @@ function determineLevel(result) {
   }
   if (colonia>0){
     if(municipio ===100 || estado ===100){
-      return 'N1'
+      if(n2===1)return 'N2';
+      return 'N1';
     }
   }
   if (codigo_postal===100){
@@ -76,6 +82,7 @@ function determineLevel(result) {
   }
   if (municipio===100){
     if(estado ===100){
+      if(m2===1) return 'M2';
       return 'M1'
     }
   }

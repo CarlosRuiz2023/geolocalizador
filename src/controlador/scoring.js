@@ -3,6 +3,7 @@ const { all : all_Asentamiento, sinNumeroExterior: sinNumeroExterior_Asentamient
 const { all : all_Calle, sinNumeroExterior: sinNumeroExterior_Calle, sinCP:sinCP_Calle, sinMunicipio:sinMunicipio_Calle, sinEstado:sinEstado_Calle, sinColonia:sinColonia_Calle, alone:alone_Calle, sinNumeroExteriorCP:sinNumeroExteriorCP_Calle, sinColoniaCP:sinColoniaCP_Calle, sinColoniaNumeroExterior:sinColoniaNumeroExterior_Calle, municipioNumeroExterior: municipioNumeroExterior_Calle, municipioEstado: municipioEstado_Calle, numeroExterior:numeroExterior_Calle, numeroExteriorColonia:numeroExteriorColonia_Calle } = require("./calles");
 const { all : all_Poi, sinNumeroExterior: sinNumeroExterior_Poi, sinCP:sinCP_Poi, sinMunicipio:sinMunicipio_Poi, sinEstado:sinEstado_Poi, sinColonia:sinColonia_Poi, alone:alone_Poi, sinNumeroExteriorCP:sinNumeroExteriorCP_Poi, sinColoniaCP:sinColoniaCP_Poi, sinColoniaNumeroExterior:sinColoniaNumeroExterior_Poi, municipioNumeroExterior: municipioNumeroExterior_Poi, municipioEstado: municipioEstado_Poi, numeroExterior:numeroExterior_Poi, numeroExteriorColonia:numeroExteriorColonia_Poi } = require("./pois");
 const { all: all_Colonia, alone: alone_Colonia, sinCP: sinCP_Colonia, sinEstado: sinEstado_Colonia, sinMunicipio: sinMunicipio_Colonia, sinCPEstado: sinCPEstado_Colonia } = require("./colonias");
+const { all: all_ColoniaN2, alone: alone_ColoniaN2, sinCP: sinCP_ColoniaN2, sinEstado: sinEstado_ColoniaN2, sinMunicipio: sinMunicipio_ColoniaN2, sinCPEstado: sinCPEstado_ColoniaN2 } = require("./coloniasN2");
 const { all: all_CP, alone: alone_CP, sinEstado: sinEstado_CP, sinMunicipio: sinMunicipio_CP } = require("./cps");
 const { all: all_Municipio, alone: alone_Municipio} = require("./municipios");
 
@@ -217,7 +218,33 @@ async function scoringMaestro(direccionParsed, level) {
         return results;
     }
     // Validamos que lleve COLONIA y caresca de CALLE
-    if (direccionParsed.COLONIA && (level=='Master'||level.substring(0,1)=='N')) {
+    if (direccionParsed.COLONIA && direccionParsed.N2 && (level=='Master'||level=='N2')) {
+        // Validamos segun sus propiedades a que funcion debe dirigirse.
+        if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO) {
+            results=await all_ColoniaN2(direccionParsed);
+        }
+        else if (direccionParsed.MUNICIPIO && direccionParsed.ESTADO) {
+            results=await sinCP_ColoniaN2(direccionParsed);
+        }
+        else if (direccionParsed.CP && direccionParsed.MUNICIPIO) {
+            results=await sinEstado_ColoniaN2(direccionParsed);
+        }
+        else if (direccionParsed.CP && direccionParsed.ESTADO) {
+            results=await sinMunicipio_ColoniaN2(direccionParsed);
+        }
+        else if (direccionParsed.MUNICIPIO) {
+            results=await sinCPEstado_ColoniaN2(direccionParsed);
+        }
+        else {
+            results=await alone_ColoniaN2(direccionParsed);
+        }
+    }
+    // Si se encontro algo regresalo.
+    if(results.length!==0){
+        return results;
+    }
+    // Validamos que lleve COLONIA y caresca de CALLE
+    if (direccionParsed.COLONIA && (level=='Master'||level=='N1')) {
         // Validamos segun sus propiedades a que funcion debe dirigirse.
         if (direccionParsed.CP && direccionParsed.MUNICIPIO && direccionParsed.ESTADO) {
             results=await all_Colonia(direccionParsed);

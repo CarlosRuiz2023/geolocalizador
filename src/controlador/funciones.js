@@ -8,26 +8,28 @@ const obtenerMunicipiosPromise = require("../data/municipios");
 let estados = [];
 // Creamos arreglo de municipios vacio.
 let municipiosEstado = [];
-// Función para manejar la importación de estados y municipios
+// Función para manejar la importación de estados y municipios.
 async function importaciones() {
     try {
-        // Espera a que se resuelva la promesa que obtiene los estados
+        // Espera a que se resuelva la promesa que obtiene los estados.
         estados = await obtenerEstadosPromise;
-        // Espera a que se resuelva la promesa que obtiene los municipios
+        // Espera a que se resuelva la promesa que obtiene los municipios.
         municipiosEstado = await obtenerMunicipiosPromise;
     } catch (error) {
-        // Maneja cualquier error que ocurra
+        // Maneja cualquier error que ocurra.
         console.error('Error al importar los estados:', error);
     }
 }
 // Función para parsear la dirección según la Norma Técnica sobre Domicilios Geográficos.
-async function parseDireccion(direccion) {
+async function parseDireccion(direccion,level) {
     // Llamamos la función para importar estados y municipios.
     await importaciones();
     // Limpiamos y expandimos abreviaciones de la entrada o lo que recibimos como direccion.
     const direccionExpandida = expandirAbreviaciones(limpiarBusqueda(direccion.toUpperCase()));
     // Una vez limpiada la direccion proporcionada la dividimos por ' ' (espacios).
     let componentesDireccion = direccionExpandida.split(' ');
+    let componentesEstado = 0;
+    let municipioParse = 0;
     // Nos desacemos de aquellos dobles o triples espacios descartandolos.
     componentesDireccion = componentesDireccion.filter(item => item !== '' && item !== 'NULL');
     // Creamos un JSON donde se almacenara el parseo obtenido.
@@ -46,28 +48,39 @@ async function parseDireccion(direccion) {
     let cont = 0;
     // Creamos un segundo contador en 0.
     let cont2 = 0;
-    // Buscar el estado
+    // Buscar el estado.
     estado = obtenerEstado(componentesDireccion);
     // Validamos que se halla recuperado un estado entre sus ultimos componentes.
     if (estado) {
         // Añadimos el estado encontrado al JSON.
         direccionParsed.ESTADO = estado;
+        try{
+            componentesEstado = estado.split(" ");
+        }catch{
+
+        }
     }
     // Hacemos un recorrido entre sus componentes.
     for (let i = 0; i < componentesDireccion.length; i++) {
         // Tomamos un componente del arreglo.
-        const componente = componentesDireccion[i].trim();
+        let componente = componentesDireccion[i].trim();
+        if(i===0){
+            const autocorrector = encontrarSimilitud(componente,[...tiposAsentamiento, ...tiposVialidad]);
+            if(autocorrector){
+                componente=autocorrector;
+            }
+        }
         // Buscar el tipo de vialidad.
         const tipoVialidad = obtenerTipoVialidad(componente);
         // Validamos que el componente sea de tipo_vialidad.
-        if (tipoVialidad && !direccionParsed.CALLE && !direccionParsed.TIPOVIAL && (!direccionParsed.COLONIA && componentesDireccion[i - 1] != 'COLONIA') && !direccionParsed.TIPOASEN) {
+        if (tipoVialidad && !direccionParsed.CALLE && !direccionParsed.TIPOVIAL && (!direccionParsed.COLONIA && componentesDireccion[i - 1] != 'COLONIA') && !direccionParsed.TIPOASEN && !obtenerMunicipio(estado, componentesDireccion,componentesEstado, i, direccionParsed,level)) {
             // Añadimos al JSON el tipo_vialidad que es.
             direccionParsed.TIPOVIAL = tipoVialidad;
             // calle = componente.replace(tipoVialidad, '').trim();
             // Seguimos con el siguiente componente
             i++;
             // Creamos ciclo While donde buscaremos el nombre_vialidad que porporciono el usuario.
-            while (i < componentesDireccion.length && (!obtenerNumeroExterior(componentesDireccion[i]) || i === 0) && !obtenerCodigoPostal(componentesDireccion[i]) && !obtenerMunicipio(estado, componentesDireccion, i) && componentesDireccion[i] !== "COLONIA" && i !== componentesDireccion.length - (estado ? estado.split(" ").length : 0)) {
+            while (i < componentesDireccion.length && (!obtenerNumeroExterior(componentesDireccion[i]) || i === 1) && !obtenerCodigoPostal(componentesDireccion[i]) && !obtenerMunicipio(estado, componentesDireccion,componentesEstado, i, direccionParsed,level) && componentesDireccion[i] !== "COLONIA" && i !== componentesDireccion.length - (estado ? estado.split(" ").length : 0)) {
                 // En caso de pasar las validaciones concatenamos el siguiente componente a la variable calle.
                 calle += ' ' + componentesDireccion[i];
                 // Aumentamos el iterador.
@@ -106,14 +119,14 @@ async function parseDireccion(direccion) {
         // Buscar el tipo de asentamiento humano
         const tipoAsentamiento = obtenerTipoAsentamiento(componente);
         // Validamos que se halla encontrado un tipo_asentamiento dentro del componente.
-        if (tipoAsentamiento && !direccionParsed.CALLE && !direccionParsed.TIPOASEN && !direccionParsed.TIPOVIAL && (!direccionParsed.COLONIA && componentesDireccion[i - 1] != 'COLONIA')) {
+        if (tipoAsentamiento && !direccionParsed.CALLE && !direccionParsed.TIPOASEN && !direccionParsed.TIPOVIAL && (!direccionParsed.COLONIA && componentesDireccion[i - 1] != 'COLONIA') && !obtenerMunicipio(estado, componentesDireccion,componentesEstado, i, direccionParsed,level)) {
             // Añadimos al JSON el tipo_asentamiento encontrado.
             direccionParsed.TIPOASEN = tipoAsentamiento;
             // calle = componente.replace(tipoAsentamiento, '').trim();
             // Seguimos con el siguiente componente
             i++;
             // Creamos ciclo While donde buscaremos el nombre_asentamiento que porporciono el usuario.
-            while (i < componentesDireccion.length && !obtenerNumeroExterior(componentesDireccion[i]) && !obtenerCodigoPostal(componentesDireccion[i]) && !obtenerMunicipio(estado, componentesDireccion, i) && componentesDireccion[i] !== "COLONIA" && i !== componentesDireccion.length - (estado ? estado.split(" ").length : 0)) {
+            while (i < componentesDireccion.length && (!obtenerNumeroExterior(componentesDireccion[i]) || i === 1) && !obtenerCodigoPostal(componentesDireccion[i]) && !obtenerMunicipio(estado, componentesDireccion,componentesEstado, i, direccionParsed,level) && componentesDireccion[i] !== "COLONIA" && i !== componentesDireccion.length - (estado ? estado.split(" ").length : 0)) {
                 // En caso de pasar las validaciones concatenamos el siguiente componente a la variable calle.
                 calle += ' ' + componentesDireccion[i];
                 // Aumentamos el iterador.
@@ -128,8 +141,8 @@ async function parseDireccion(direccion) {
         }
         // Validamos que no se halla encontrado aun un municipio y q no se hallan hecho acciones por el momento.
         if (!municipio && activo) {
-            // Buscar el municipio
-            municipio = obtenerMunicipio(estado, componentesDireccion, i);
+            // Buscar el municipio.
+            municipio = obtenerMunicipio(estado, componentesDireccion,componentesEstado, i, direccionParsed,level);
             // Validamos que se halla obtenido un municipio dentro del componente basandose en el estado.
             if (municipio) {
                 // Añadimos al JSON el municipio detectado.
@@ -139,22 +152,22 @@ async function parseDireccion(direccion) {
             }
         }
         // Validamos que no se halla detectado nada aun y la colonia no este escondida.
-        if (activo && coloniaConCalle && (i < componentesDireccion.length - (estado ? estado.split(" ").length : 0))) {
-            // Validamos que no lleve CALLE y no es tipo_vialidad ni tipo_asentamiento
+        if (activo && coloniaConCalle && (i < componentesDireccion.length - (estado ? estado.split(" ").length : 0)- (municipio ? municipio.split(" ").length : 0))) {
+            // Validamos que no lleve CALLE y no es tipo_vialidad ni tipo_asentamiento.
             if (!direccionParsed.CALLE && !direccionParsed.TIPOVIAL && !direccionParsed.TIPOASEN) {
-                // Validamos si el componente = 'COLONIA'
+                // Validamos si el componente = 'COLONIA'.
                 if (componente === 'COLONIA') {
                     // De ser asi cambiamos el estatus de la variable coloniaConCalle debido a que ya se encontro donde comienza la COLONIA.
                     coloniaConCalle = false;
                 } else {
                     // Validamos que se trate de una calle abreviada.
-                    if (componente === 'C' || componente === 'C.') {
+                    if (componente === 'C' || componente === 'C.' ) {
                         // Añadimos al JSON el tipo_vialidad detectado.
                         direccionParsed.TIPOVIAL = 'CALLE';
-                        // Seguimos con el siguiente componente
+                        // Seguimos con el siguiente componente.
                         i++;
                         // Creamos ciclo While donde buscaremos la calle que porporciono el usuario.
-                        while (i < componentesDireccion.length && (!obtenerNumeroExterior(componentesDireccion[i]) || i === 1) && !obtenerCodigoPostal(componentesDireccion[i]) && !obtenerMunicipio(estado, componentesDireccion, i) && componentesDireccion[i] !== "COLONIA" && i !== componentesDireccion.length - (estado ? estado.split(" ").length : 0)) {
+                        while (i < componentesDireccion.length && (!obtenerNumeroExterior(componentesDireccion[i]) || i === 1) && !obtenerCodigoPostal(componentesDireccion[i]) && !obtenerMunicipio(estado, componentesDireccion,componentesEstado, i, direccionParsed,level) && componentesDireccion[i] !== "COLONIA" && i !== componentesDireccion.length - (estado ? estado.split(" ").length : 0)) {
                             // En caso de pasar las validaciones concatenamos el siguiente componente a la variable calle.
                             calle += ' ' + componentesDireccion[i];
                             // Aumentamos el iterador.
@@ -186,13 +199,18 @@ async function parseDireccion(direccion) {
             }
         }
         // Validamos que no se halla encontrada nada para este componente mediante el boolean activo
-        if (activo && !direccionParsed.MUNICIPIO && (!obtenerNumeroExterior(componentesDireccion[i]) || i === 1 || componentesDireccion[i + 1] === 'DE') && !obtenerCodigoPostal(componente) && !obtenerMunicipio(estado, componentesDireccion, i) && i !== componentesDireccion.length - (estado ? estado.split(" ").length : 0)) {
+        if (activo && !direccionParsed.MUNICIPIO && (!obtenerNumeroExterior(componentesDireccion[i]) || i === 1 || componentesDireccion[i + 1] === 'DE') && !obtenerCodigoPostal(componente) && !obtenerMunicipio(estado, componentesDireccion, i, direccionParsed,level) && i !== componentesDireccion.length - (estado ? estado.split(" ").length : 0)) {
             // Validamos que la COLONIA no halla sido detectada aun.
             if (!direccionParsed.COLONIA) {
                 // Cambiamos el valor del contador 2 al valor de iteracion actual.
                 cont2 = i;
                 // Validamos que sea diferente de COLONIA, A, B, C, D debido a que el usuario aveces pone ' ' entre el numero_exterior y la colonia ejemplo '219 A'
                 if (componente !== 'COLONIA' && componente !== 'A' && componente !== 'B' && componente !== 'C' && componente !== 'D' && componente !== 'E' && componente !== 'F') {
+                    const autocorrector = encontrarSimilitud(componente,[...tiposAsentamiento, ...tiposVialidad]);
+                    if(autocorrector && level !="N1"){
+                        componente=autocorrector;
+                        direccionParsed.N2 = 1;
+                    }
                     // Añadimos al JSON la colonia detectada.
                     direccionParsed.COLONIA = componente;
                 }
@@ -228,11 +246,11 @@ async function parseDireccion(direccion) {
     // Regresamos el JSON con cada propiedad encontrada
     return direccionParsed;
 }
-// Función auxiliar para obtener el tipo de vialidad
+// Función auxiliar para obtener el tipo de vialidad.
 function obtenerTipoVialidad(componente) {
-    // Recorremos el arreglo de tiposVialidad
+    // Recorremos el arreglo de tiposVialidad.
     for (const tipoVialidad of tiposVialidad) {
-        // Validamos que el componente coincida con algun tipo_vialidad
+        // Validamos que el componente coincida con algun tipo_vialidad.
         if (componente.toUpperCase().startsWith(tipoVialidad)) {
             // Regresamos el tipoVialidad encontrado.
             return tipoVialidad;
@@ -241,9 +259,9 @@ function obtenerTipoVialidad(componente) {
     // Si no se encontro coincidenacia alguna regresamos nulo.
     return null;
 }
-// Función auxiliar para obtener el número exterior
+// Función auxiliar para obtener el número exterior.
 function obtenerNumeroExterior(componente) {
-    // Expresión regular para detectar números exteriores como "123A"
+    // Expresión regular para detectar números exteriores como "123A".
     const numeroExteriorRegex = /\b(?!(\d{5})$)(\d+)\s*([A-Z])?\b/;
     // Quitamos '-' del componente en caso de que lo porte.
     componente = componente.replace("-", "");
@@ -404,26 +422,27 @@ function obtenerEstado(componentesDireccion) {
     return null;
 }
 // Función auxiliar para obtener el municipio segun el estado proporcionado.
-function obtenerMunicipio(estado, componentesDireccion, i) {
+function obtenerMunicipio(estado, componentesDireccion,componentesEstado, i,direccionParsed,level) {
     try {
         // Validamos que se halla detectado un estado previamente.
         if (estado) {
             // Obtenemos los municipios de ese estado
             const municipios = municipiosEstado[estado];
-            // Dividimos el estado segun los ' ' que tenga.
-            const parseo = estado.split(' ');
-            // Creamos variable que contendra el tamaño del estado detectado.
-            let count = parseo.length;
             // Recorremos cada uno de los municipios de ese estado.
             for (const municipio of municipios) {
-                // Verificar si el municipio contiene el componente actual
-                if (municipio.includes(componentesDireccion[i])) {
-                    // Si coincide exactamente con el municipio, lo devolvemos
-                    if (municipio === componentesDireccion[i]) {
+                const similarity = calcularSimilitud(componentesDireccion[i],municipio);
+                const componentesMunicipio = municipio.split(" ");
+                const inicioDelMunicipio = componentesMunicipio[0];
+                const similarityInicial = calcularSimilitud(componentesDireccion[i],inicioDelMunicipio);
+                if (municipio.includes(componentesDireccion[i]) || similarity>70 || similarityInicial>70) {
+                    if ((municipio === componentesDireccion[i] || similarity>70)) {
                         // Validamos que se encuentre dicho municipio a un lado del estado.
-                        if (i === componentesDireccion.length - (count + 1)) return municipio;
-                        // De no estar a un lado regresamos nulo.
-                        return null;
+                        if(level!='M1' && similarity!=100){
+                            direccionParsed.M2=1;
+                            return municipio;
+                        }else if (similarity===100 && i != componentesDireccion.length-componentesEstado.length){
+                            return municipio;
+                        }
                     }
                     // Variable para almacenar el municipio
                     let municipioConcat = componentesDireccion[i];
@@ -432,20 +451,28 @@ function obtenerMunicipio(estado, componentesDireccion, i) {
                     // Aumentamos el iterador j
                     j++;
                     // Creamos ciclo While para concatenar el municipio proporcionado.
-                    while (j < (componentesDireccion.length - count)) {
+                    while (j < (componentesDireccion.length - componentesEstado.length)) {
                         // Concatenacion del municipio sin tocar el estado en el ciclo.
                         municipioConcat += ' ' + componentesDireccion[j];
                         // Aumento del iterador j.
                         j++;
                     }
-                    // Validacion de municipioConcat con uno de los municipios del estado.
+                    const similarityConcat = calcularSimilitud(municipioConcat,municipio);
                     if (municipio === municipioConcat) {
-                        // Parseamos el municipioConcat segun sus ' '
-                        const parseo = municipioConcat.split(' ');
                         // Validamos que el municipio detectado se encuentre junto a el estado.
-                        if (i === componentesDireccion.length - parseo.length - count) return municipio;
-                        // De no estar a un lado regresamos nulo.
-                        return null;
+                        if (i === componentesDireccion.length - componentesMunicipio.length - componentesEstado.length) return municipio;
+                    }
+                    else if(similarityConcat>90){
+                        if(similarityConcat<100 && level!='M1'){
+                            direccionParsed.M2=1;
+                            return municipio;
+                        }
+                    }
+                    else if(similarityInicial>70){
+                        if(componentesDireccion[i]!="CALLE" && level!='M1' && (i==0 || i=== componentesDireccion.length-componentesEstado.length-1)){
+                            direccionParsed.M2=1;
+                            return municipio;
+                        }
                     }
                 }
             }
@@ -458,14 +485,19 @@ function obtenerMunicipio(estado, componentesDireccion, i) {
                 const municipios = municipiosEstado[estado];
                 // Recorremos cada uno de los municipios de ese estado.
                 for (const municipio of municipios) {
-                    // Verificar si el municipio contiene el componente actual
-                    if (municipio.includes(componentesDireccion[i])) {
-                        // Si coincide exactamente con el municipio, lo devolvemos
-                        if (municipio === componentesDireccion[i]) {
+                    const similarity = calcularSimilitud(componentesDireccion[i],municipio);
+                    const componentesMunicipio = municipio.split(" ");
+                    const inicioDelMunicipio = componentesMunicipio[0];
+                    const similarityInicial = calcularSimilitud(componentesDireccion[i],inicioDelMunicipio);
+                    if (municipio.includes(componentesDireccion[i]) || similarity>70 || similarityInicial>70) {
+                        if ((municipio === componentesDireccion[i] || similarity>70)) {
                             // Validamos que se encuentre dicho municipio a un lado del estado.
-                            if (i === componentesDireccion.length - 1) return municipio;
-                            // De no estar a un lado regresamos nulo.
-                            return null;
+                            if(level!='M1' && similarity!=100){
+                                direccionParsed.M2=1;
+                                return municipio;
+                            }else if (similarity===100){
+                                return municipio;
+                            }
                         }
                         // Variable para almacenar el municipio
                         let municipioConcat = componentesDireccion[i];
@@ -474,20 +506,28 @@ function obtenerMunicipio(estado, componentesDireccion, i) {
                         // Aumentamos el iterador j
                         j++;
                         // Creamos ciclo While para concatenar el municipio proporcionado.
-                        while (j < (componentesDireccion.length - 1)) {
-                            // Concatenacion del municipio.
+                        while (j < (componentesDireccion.length - componentesEstado.length)) {
+                            // Concatenacion del municipio sin tocar el estado en el ciclo.
                             municipioConcat += ' ' + componentesDireccion[j];
                             // Aumento del iterador j.
                             j++;
                         }
-                        // Validacion de municipioConcat con uno de los municipios del estado.
+                        const similarityConcat = calcularSimilitud(municipioConcat,municipio);
                         if (municipio === municipioConcat) {
-                            // Parseamos el municipioConcat segun sus ' '
-                            const parseo = municipioConcat.split(' ');
-                            // Validamos que el municipio detectado se encuentre al final.
-                            if (i === componentesDireccion.length - parseo.length) return municipio;
-                            // De no estar al final regresamos nulo.
-                            return null;
+                            // Validamos que el municipio detectado se encuentre junto a el estado.
+                            if (i === componentesDireccion.length - componentesMunicipio.length - componentesEstado.length) return municipio;
+                        }
+                        else if(similarityConcat>90){
+                            if(similarityConcat<100 && level!='M1'){
+                                direccionParsed.M2=1;
+                                return municipio;
+                            }
+                        }
+                        else if(similarityInicial>70){
+                            if(level!='M1' && (i==0 || i=== componentesDireccion.length-componentesEstado.length-1)){
+                                direccionParsed.M2=1;
+                                return municipio;
+                            }
                         }
                     }
                 }
@@ -645,6 +685,23 @@ function recortarTipoAsentamiento(cadena) {
         }
     }
     return cadena;
+}
+// Función para calcular la similitud
+function calcularSimilitud(str1, str2) {
+    const distance = levenshteinDistance(quitarAcentos(str1), quitarAcentos(str2));
+    const maxLength = Math.max(str1.length, str2.length);
+    return ((maxLength - distance) / maxLength) * 100;
+}
+
+// Función para encontrar similitud con los arreglos
+function encontrarSimilitud(cadena ,diccionarios, umbral = 80) {
+    for (const tipo of diccionarios) {
+        const similitud = calcularSimilitud(tipo, cadena);
+        if (similitud >= umbral && similitud!=100) {
+            return tipo; // Devuelve el tipo que coincide
+        }
+    }
+    return null; // Si no se encontró ninguna coincidencia
 }
 
 

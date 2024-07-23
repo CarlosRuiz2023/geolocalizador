@@ -62,9 +62,9 @@ async function all(direccionParsed) {
             estado: 100
         };
         // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
-        const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
+        const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
         // Hacemos match con lo que proporciono el usuario.
-        const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
+        const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
         // Validamos que exista Match
         if (matchColonia) {
             // Obtiene el texto coincidente
@@ -135,9 +135,9 @@ async function all(direccionParsed) {
                 estado: 100
             };
             // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
-            const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
+            const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
             // Hacemos match con lo que proporciono el usuario.
-            const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
+            const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
             // Validamos que exista Match
             if (matchColonia) {
                 // Obtiene el texto coincidente
@@ -208,9 +208,9 @@ async function all(direccionParsed) {
                     estado: 100
                 };
                 // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
-                const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
+                const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                 // Hacemos match con lo que proporciono el usuario.
-                const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
+                const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
                 // Validamos que exista Match
                 if (matchColonia) {
                     // Obtiene el texto coincidente
@@ -281,9 +281,9 @@ async function all(direccionParsed) {
                         estado: 0
                     };
                     // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
-                    const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
+                    const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                     // Hacemos match con lo que proporciono el usuario.
-                    const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
+                    const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
                     // Validamos que exista Match
                     if (matchColonia) {
                         // Obtiene el texto coincidente
@@ -353,9 +353,9 @@ async function all(direccionParsed) {
                             estado: 0
                         };
                         // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
-                        const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
+                        const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                         // Hacemos match con lo que proporciono el usuario.
-                        const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
+                        const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
                         // Validamos que exista Match
                         if (matchColonia) {
                             // Obtiene el texto coincidente
@@ -425,9 +425,9 @@ async function all(direccionParsed) {
                                 estado: 0
                             };
                             // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
-                            const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
+                            const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                             // Hacemos match con lo que proporciono el usuario.
-                            const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
+                            const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
                             // Validamos que exista Match
                             if (matchColonia) {
                                 // Obtiene el texto coincidente
@@ -497,9 +497,9 @@ async function all(direccionParsed) {
                                     estado: 100
                                 };
                                 // Quitamos acentos de la colonia recuperada debido a que en la BD se tiene con acentos
-                                const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
+                                const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                                 // Hacemos match con lo que proporciono el usuario.
-                                const matchColonia = coloniaSinAcentos.match(new RegExp(recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)), 'i'));
+                                const matchColonia = coloniaSinAcentos.match(new RegExp(direccionParsed.COLONIA, 'i'));
                                 // Validamos que exista Match
                                 if (matchColonia) {
                                     // Obtiene el texto coincidente
@@ -569,11 +569,11 @@ async function all(direccionParsed) {
                                         municipio: 100,
                                         estado: 100
                                     };
-                                    const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
+                                    const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                                     // Calcular la distancia de Levenshtein
-                                    const distanceColonia = levenshteinDistance(coloniaSinAcentos, recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)));
+                                    const distanceColonia = levenshteinDistance(coloniaSinAcentos, direccionParsed.COLONIA);
                                     // Calcular la similitud como el inverso de la distancia de Levenshtein
-                                    const maxLengthColonia = Math.max(coloniaSinAcentos.length,recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)).length);
+                                    const maxLengthColonia = Math.max(coloniaSinAcentos.length,direccionParsed.COLONIA.length);
                                     // Calculamos la similitud de la colonia segun sus comparativos
                                     const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                                     // Validamos que exista similitud alguna
@@ -638,11 +638,11 @@ async function all(direccionParsed) {
                                             municipio: 100,
                                             estado: 100
                                         };
-                                        const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
+                                        const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                                         // Calcular la distancia de Levenshtein
-                                        const distanceColonia = levenshteinDistance(coloniaSinAcentos, recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)));
+                                        const distanceColonia = levenshteinDistance(coloniaSinAcentos, direccionParsed.COLONIA);
                                         // Calcular la similitud como el inverso de la distancia de Levenshtein
-                                        const maxLengthColonia = Math.max(coloniaSinAcentos.length,recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)).length);
+                                        const maxLengthColonia = Math.max(coloniaSinAcentos.length,direccionParsed.COLONIA.length);
                                         // Calculamos la similitud de la colonia segun sus comparativos
                                         const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                                         // Validamos que exista similitud alguna
@@ -707,11 +707,11 @@ async function all(direccionParsed) {
                                                 municipio: 0,
                                                 estado: 100
                                             };
-                                            const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
+                                            const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                                             // Calcular la distancia de Levenshtein
-                                            const distanceColonia = levenshteinDistance(coloniaSinAcentos, recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)));
+                                            const distanceColonia = levenshteinDistance(coloniaSinAcentos, direccionParsed.COLONIA);
                                             // Calcular la similitud como el inverso de la distancia de Levenshtein
-                                            const maxLengthColonia = Math.max(coloniaSinAcentos.length,recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)).length);
+                                            const maxLengthColonia = Math.max(coloniaSinAcentos.length,direccionParsed.COLONIA.length);
                                             // Calculamos la similitud de la colonia segun sus comparativos
                                             const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                                             // Validamos que exista similitud alguna
@@ -776,11 +776,11 @@ async function all(direccionParsed) {
                                                     municipio: 100,
                                                     estado: 0
                                                 };
-                                                const coloniaSinAcentos = recortarTipoVialidad(recortarTipoAsentamiento(quitarAcentos(result.rows[i].colonia)));
+                                                const coloniaSinAcentos = quitarAcentos(result.rows[i].colonia);
                                                 // Calcular la distancia de Levenshtein
-                                                const distanceColonia = levenshteinDistance(coloniaSinAcentos, recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)));
+                                                const distanceColonia = levenshteinDistance(coloniaSinAcentos, direccionParsed.COLONIA);
                                                 // Calcular la similitud como el inverso de la distancia de Levenshtein
-                                                const maxLengthColonia = Math.max(coloniaSinAcentos.length,recortarTipoVialidad(recortarTipoAsentamiento(direccionParsed.COLONIA)).length);
+                                                const maxLengthColonia = Math.max(coloniaSinAcentos.length,direccionParsed.COLONIA.length);
                                                 // Calculamos la similitud de la colonia segun sus comparativos
                                                 const similarityColonia = ((maxLengthColonia - distanceColonia) / maxLengthColonia) * 100;
                                                 // Validamos que exista similitud alguna
