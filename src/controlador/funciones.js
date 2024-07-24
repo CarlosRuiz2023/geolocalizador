@@ -207,7 +207,7 @@ async function parseDireccion(direccion,level) {
                 // Validamos que sea diferente de COLONIA, A, B, C, D debido a que el usuario aveces pone ' ' entre el numero_exterior y la colonia ejemplo '219 A'
                 if (componente !== 'COLONIA' && componente !== 'A' && componente !== 'B' && componente !== 'C' && componente !== 'D' && componente !== 'E' && componente !== 'F') {
                     const autocorrector = encontrarSimilitud(componente,[...tiposAsentamiento, ...tiposVialidad]);
-                    if(autocorrector && level !="N1"){
+                    if(autocorrector && !level.includes('N1')){
                         componente=autocorrector;
                         direccionParsed.N2 = 1;
                     }
@@ -437,7 +437,7 @@ function obtenerMunicipio(estado, componentesDireccion,componentesEstado, i,dire
                 if (municipio.includes(componentesDireccion[i]) || similarity>70 || similarityInicial>70) {
                     if ((municipio === componentesDireccion[i] || similarity>70)) {
                         // Validamos que se encuentre dicho municipio a un lado del estado.
-                        if(level!='M1' && similarity!=100){
+                        if(!level.includes('M1') && similarity!=100){
                             direccionParsed.M2=1;
                             return municipio;
                         }else if (similarity===100 && i != componentesDireccion.length-componentesEstado.length){
@@ -463,13 +463,13 @@ function obtenerMunicipio(estado, componentesDireccion,componentesEstado, i,dire
                         if (i === componentesDireccion.length - componentesMunicipio.length - componentesEstado.length) return municipio;
                     }
                     else if(similarityConcat>90){
-                        if(similarityConcat<100 && level!='M1'){
+                        if(similarityConcat<100 && !level.includes('M1')){
                             direccionParsed.M2=1;
                             return municipio;
                         }
                     }
                     else if(similarityInicial>70){
-                        if(componentesDireccion[i]!="CALLE" && level!='M1' && (i==0 || i=== componentesDireccion.length-componentesEstado.length-1)){
+                        if(componentesDireccion[i]!="CALLE" && !level.includes('M1') && (i==0 || i=== componentesDireccion.length-componentesEstado.length-1)){
                             direccionParsed.M2=1;
                             return municipio;
                         }
@@ -492,7 +492,7 @@ function obtenerMunicipio(estado, componentesDireccion,componentesEstado, i,dire
                     if (municipio.includes(componentesDireccion[i]) || similarity>70 || similarityInicial>70) {
                         if ((municipio === componentesDireccion[i] || similarity>70)) {
                             // Validamos que se encuentre dicho municipio a un lado del estado.
-                            if(level!='M1' && similarity!=100){
+                            if(!level.includes('M1') && similarity!=100){
                                 direccionParsed.M2=1;
                                 return municipio;
                             }else if (similarity===100){
@@ -518,13 +518,13 @@ function obtenerMunicipio(estado, componentesDireccion,componentesEstado, i,dire
                             if (i === componentesDireccion.length - componentesMunicipio.length - componentesEstado.length) return municipio;
                         }
                         else if(similarityConcat>90){
-                            if(similarityConcat<100 && level!='M1'){
+                            if(similarityConcat<100 && !level.includes('M1')){
                                 direccionParsed.M2=1;
                                 return municipio;
                             }
                         }
                         else if(similarityInicial>70){
-                            if(level!='M1' && (i==0 || i=== componentesDireccion.length-componentesEstado.length-1)){
+                            if(!level.includes('M1') && (i==0 || i=== componentesDireccion.length-componentesEstado.length-1)){
                                 direccionParsed.M2=1;
                                 return municipio;
                             }

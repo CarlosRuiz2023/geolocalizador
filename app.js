@@ -44,7 +44,7 @@ const piscina = new Piscina({
 });
 
 app.post("/geolocalizar", async (req, res) => {
-  const { direccion = "", limit = 5, level = "Master" } = req.body;
+  const { direccion = "", limit = 5, level = ["Master"] } = req.body;
 
   if (!direccion) {
     return res
