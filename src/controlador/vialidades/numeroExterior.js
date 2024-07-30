@@ -487,7 +487,7 @@ async function numeroExterior(direccionParsed) {
                     });
                   
                     // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
-                    if (resultOrdenado[0].scoring.nombre_vialidad > 70)rows = rows.concat(result.rows);
+                    if (resultOrdenado[0].scoring.nombre_vialidad > 50)rows = rows.concat(result.rows);
                   }
             }
         }

@@ -683,9 +683,7 @@ async function municipioEstado(direccionParsed) {
                               
                                 // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
                                 if (resultOrdenado[0].scoring.calle > 70)rows = rows.concat(result.rows);
-                              }
-                            // Evaluamos que rows este vacio para seguir con la busqueda
-                            /* if (result.rows.length === 0) {
+                              }else{
                                 // Construimos la query para comenzar a generar consultas a la BD
                                 query = `
                                     SELECT *,
@@ -769,9 +767,18 @@ async function municipioEstado(direccionParsed) {
                                         result.rows[i].scoring.fiability += (similarity * 0.5);
                                     }
                                 }
-                                // Añadimos los resultados obtenidos al arreglo rows
-                                rows = rows.concat(result.rows);
-                            } */
+                                if (result.rows.length !== 0) {
+                                    const resultOrdenado = result.rows.sort((a, b) => {
+                                      // Ordenar por calle en orden descendente
+                                      if (b.scoring.calle !== a.scoring.calle) {
+                                        return b.scoring.calle - a.scoring.calle;
+                                      }
+                                    });
+                                  
+                                    // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
+                                    if (resultOrdenado[0].scoring.calle > 50)rows = rows.concat(result.rows);
+                                }
+                            }
                         }
                     }
                 }
