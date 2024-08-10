@@ -87,7 +87,7 @@ async function municipioEstado(direccionParsed) {
         });
       
         // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
-        if (resultOrdenado[0].scoring.poi > 70)rows = rows.concat(result.rows);
+        if (resultOrdenado[0].scoring.poi > 70 )rows = rows.concat(result.rows);
       }else{
         // Construimos la query para comenzar a generar consultas a la BD
         query = `
@@ -166,7 +166,7 @@ async function municipioEstado(direccionParsed) {
             });
           
             // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
-            if (resultOrdenado[0].scoring.poi > 70)rows = rows.concat(result.rows);
+            if (resultOrdenado[0].scoring.poi > 70 )rows = rows.concat(result.rows);
           }else{
             // Construimos la query para comenzar a generar consultas a la BD
             query = `
@@ -245,7 +245,7 @@ async function municipioEstado(direccionParsed) {
                 });
               
                 // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
-                if (resultOrdenado[0].scoring.poi > 70)rows = rows.concat(result.rows);
+                if (resultOrdenado[0].scoring.poi > 70 )rows = rows.concat(result.rows);
               }else{
                 // Construimos la query para comenzar a generar consultas a la BD
                 query = `
@@ -320,7 +320,7 @@ async function municipioEstado(direccionParsed) {
                     });
                   
                     // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
-                    if (resultOrdenado[0].scoring.poi > 70)rows = rows.concat(result.rows);
+                    if (resultOrdenado[0].scoring.poi > 70 )rows = rows.concat(result.rows);
                   }else{
                     // Construimos la query para comenzar a generar consultas a la BD
                     query = `
@@ -394,7 +394,7 @@ async function municipioEstado(direccionParsed) {
                         });
                       
                         // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
-                        if (resultOrdenado[0].scoring.poi > 70)rows = rows.concat(result.rows);
+                        if (resultOrdenado[0].scoring.poi > 70 )rows = rows.concat(result.rows);
                       }else{
                         // Construimos la query para comenzar a generar consultas a la BD
                         query = `
@@ -468,7 +468,7 @@ async function municipioEstado(direccionParsed) {
                             });
                           
                             // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
-                            if (resultOrdenado[0].scoring.poi > 70)rows = rows.concat(result.rows);
+                            if (resultOrdenado[0].scoring.poi > 70 )rows = rows.concat(result.rows);
                           }else{
                             // Construimos la query para comenzar a generar consultas a la BD
                             query = `
@@ -546,7 +546,7 @@ async function municipioEstado(direccionParsed) {
                                 });
                               
                                 // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
-                                if (resultOrdenado[0].scoring.poi > 50)rows = rows.concat(result.rows);
+                                if (resultOrdenado[0].scoring.poi > 50 )rows = rows.concat(result.rows);
                               }
                             // Evaluamos que rows este vacio para seguir con la busqueda
                             /* if (result.rows.length === 0) {

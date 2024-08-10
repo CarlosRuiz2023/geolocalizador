@@ -28,12 +28,12 @@ async function sinEstado(direccionParsed) {
                                                                   END
                                                               WHEN $6 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                   CASE 
-                                                                      WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($6 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                      WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($6 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                       ELSE 0.5
                                                                   END
                                                               WHEN $6 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
                                                                   CASE 
-                                                                      WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($6 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                      WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($6 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                       ELSE 0.5
                                                                   END
                                                            END))
@@ -56,12 +56,12 @@ async function sinEstado(direccionParsed) {
                                                                   END
                                                               WHEN $6 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                   CASE 
-                                                                      WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($6 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                      WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($6 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                       ELSE 0.5
                                                                   END
                                                               WHEN $6 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
                                                                   CASE 
-                                                                      WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($6 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                      WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($6 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                       ELSE 0.5
                                                                   END
                                                            END))
@@ -181,7 +181,7 @@ async function sinEstado(direccionParsed) {
         // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
         if (
           resultOrdenado[0].scoring.colonia > 70 &&
-          resultOrdenado[0].scoring.nombre_asentamiento > 70
+          resultOrdenado[0].scoring.nombre_asentamiento > 70 || resultOrdenado[0].scoring.colonia > 90
         ) {
           rows = rows.concat(result.rows);
         }
@@ -205,12 +205,12 @@ async function sinEstado(direccionParsed) {
                                                                       END
                                                                   WHEN $5 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                       CASE 
-                                                                          WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($5 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                          WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($5 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                           ELSE 0.5
                                                                       END
                                                                   WHEN $5 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
                                                                       CASE 
-                                                                          WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($5 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                          WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($5 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                           ELSE 0.5
                                                                       END
                                                                END))
@@ -233,12 +233,12 @@ async function sinEstado(direccionParsed) {
                                                                       END
                                                                   WHEN $5 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                       CASE 
-                                                                          WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($5 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                          WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($5 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                           ELSE 0.5
                                                                       END
                                                                   WHEN $5 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
                                                                       CASE 
-                                                                          WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($5 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                          WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($5 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                           ELSE 0.5
                                                                       END
                                                                END))
@@ -357,7 +357,7 @@ async function sinEstado(direccionParsed) {
             // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
             if (
               resultOrdenado[0].scoring.colonia > 70 &&
-              resultOrdenado[0].scoring.nombre_asentamiento > 70
+              resultOrdenado[0].scoring.nombre_asentamiento > 70 || resultOrdenado[0].scoring.colonia > 90
             ) {
               rows = rows.concat(result.rows);
             }
@@ -381,12 +381,12 @@ async function sinEstado(direccionParsed) {
                                                                           END
                                                                       WHEN $5 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                           CASE 
-                                                                              WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($5 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                              WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($5 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                               ELSE 0.5
                                                                           END
                                                                       WHEN $5 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
                                                                           CASE 
-                                                                              WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($5 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                              WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($5 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                               ELSE 0.5
                                                                           END
                                                                    END))
@@ -409,12 +409,12 @@ async function sinEstado(direccionParsed) {
                                                                           END
                                                                       WHEN $5 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                           CASE 
-                                                                              WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($5 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                              WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($5 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                               ELSE 0.5
                                                                           END
                                                                       WHEN $5 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
                                                                           CASE 
-                                                                              WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($5 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                              WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($5 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                               ELSE 0.5
                                                                           END
                                                                    END))
@@ -533,7 +533,7 @@ async function sinEstado(direccionParsed) {
                 // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
                 if (
                   resultOrdenado[0].scoring.colonia > 70 &&
-                  resultOrdenado[0].scoring.nombre_asentamiento > 70
+                  resultOrdenado[0].scoring.nombre_asentamiento > 70 || resultOrdenado[0].scoring.colonia > 90
                 ) {
                   rows = rows.concat(result.rows);
                 }
@@ -557,12 +557,12 @@ async function sinEstado(direccionParsed) {
                                                                               END
                                                                           WHEN $5 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                               CASE 
-                                                                                  WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($5 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                                  WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($5 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                                   ELSE 0.5
                                                                               END
                                                                           WHEN $5 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
                                                                               CASE 
-                                                                                  WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($5 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                                  WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($5 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                                   ELSE 0.5
                                                                               END
                                                                        END))
@@ -585,12 +585,12 @@ async function sinEstado(direccionParsed) {
                                                                               END
                                                                           WHEN $5 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                               CASE 
-                                                                                  WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($5 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                                  WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($5 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                                   ELSE 0.5
                                                                               END
                                                                           WHEN $5 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
                                                                               CASE 
-                                                                                  WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($5 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                                  WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($5 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                                   ELSE 0.5
                                                                               END
                                                                        END))
@@ -706,7 +706,7 @@ async function sinEstado(direccionParsed) {
                     // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
                     if (
                       resultOrdenado[0].scoring.colonia > 70 &&
-                      resultOrdenado[0].scoring.nombre_asentamiento > 70
+                      resultOrdenado[0].scoring.nombre_asentamiento > 70 || resultOrdenado[0].scoring.colonia > 90
                     ) {
                       rows = rows.concat(result.rows);
                     }
@@ -730,12 +730,12 @@ async function sinEstado(direccionParsed) {
                                                                                   END
                                                                               WHEN $4 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                                   CASE 
-                                                                                      WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                                      WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                                       ELSE 0.5
                                                                                   END
                                                                               WHEN $4 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
                                                                                   CASE 
-                                                                                      WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                                      WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                                       ELSE 0.5
                                                                                   END
                                                                            END))
@@ -758,12 +758,12 @@ async function sinEstado(direccionParsed) {
                                                                                   END
                                                                               WHEN $4 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                                   CASE 
-                                                                                      WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                                      WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                                       ELSE 0.5
                                                                                   END
                                                                               WHEN $4 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
                                                                                   CASE 
-                                                                                      WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                                      WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                                       ELSE 0.5
                                                                                   END
                                                                            END))
@@ -879,7 +879,7 @@ async function sinEstado(direccionParsed) {
                         // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
                         if (
                           resultOrdenado[0].scoring.colonia > 70 &&
-                          resultOrdenado[0].scoring.nombre_asentamiento > 70
+                          resultOrdenado[0].scoring.nombre_asentamiento > 70 || resultOrdenado[0].scoring.colonia > 90
                         ) {
                           rows = rows.concat(result.rows);
                         }
@@ -903,12 +903,12 @@ async function sinEstado(direccionParsed) {
                                                                                       END
                                                                                   WHEN $4 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                                       CASE 
-                                                                                          WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                                          WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                                           ELSE 0.5
                                                                                       END
                                                                                   WHEN $4 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
                                                                                       CASE 
-                                                                                          WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                                          WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                                           ELSE 0.5
                                                                                       END
                                                                                END))
@@ -931,12 +931,12 @@ async function sinEstado(direccionParsed) {
                                                                                       END
                                                                                   WHEN $4 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                                       CASE 
-                                                                                          WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                                          WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                                           ELSE 0.5
                                                                                       END
                                                                                   WHEN $4 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
                                                                                       CASE 
-                                                                                          WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                                          WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                                           ELSE 0.5
                                                                                       END
                                                                                END))
@@ -1052,7 +1052,7 @@ async function sinEstado(direccionParsed) {
                             // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
                             if (
                               resultOrdenado[0].scoring.colonia > 70 &&
-                              resultOrdenado[0].scoring.nombre_asentamiento > 70
+                              resultOrdenado[0].scoring.nombre_asentamiento > 70 || resultOrdenado[0].scoring.colonia > 90
                             ) {
                               rows = rows.concat(result.rows);
                             }
@@ -1182,7 +1182,7 @@ async function sinEstado(direccionParsed) {
                                 // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
                                 if (
                                   resultOrdenado[0].scoring.colonia > 70 &&
-                                  resultOrdenado[0].scoring.nombre_asentamiento > 70
+                                  resultOrdenado[0].scoring.nombre_asentamiento > 70 || resultOrdenado[0].scoring.colonia > 90
                                 ) {
                                   rows = rows.concat(result.rows);
                                 }
@@ -1311,7 +1311,7 @@ async function sinEstado(direccionParsed) {
                                     // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
                                     if (
                                       resultOrdenado[0].scoring.colonia > 70 &&
-                                      resultOrdenado[0].scoring.nombre_asentamiento > 70
+                                      resultOrdenado[0].scoring.nombre_asentamiento > 70 || resultOrdenado[0].scoring.colonia > 90
                                     ) {
                                       rows = rows.concat(result.rows);
                                     }
@@ -1440,7 +1440,7 @@ async function sinEstado(direccionParsed) {
                                         // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
                                         if (
                                           resultOrdenado[0].scoring.colonia > 70 &&
-                                          resultOrdenado[0].scoring.nombre_asentamiento > 70
+                                          resultOrdenado[0].scoring.nombre_asentamiento > 70 || resultOrdenado[0].scoring.colonia > 90
                                         ) {
                                           rows = rows.concat(result.rows);
                                         }
@@ -1566,7 +1566,7 @@ async function sinEstado(direccionParsed) {
                                             // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
                                             if (
                                               resultOrdenado[0].scoring.colonia > 70 &&
-                                              resultOrdenado[0].scoring.nombre_asentamiento > 70
+                                              resultOrdenado[0].scoring.nombre_asentamiento > 70 || resultOrdenado[0].scoring.colonia > 90
                                             ) {
                                               rows = rows.concat(result.rows);
                                             }
@@ -1690,7 +1690,7 @@ async function sinEstado(direccionParsed) {
                                                 // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
                                                 if (
                                                   resultOrdenado[0].scoring.colonia > 70 &&
-                                                  resultOrdenado[0].scoring.nombre_asentamiento > 70
+                                                  resultOrdenado[0].scoring.nombre_asentamiento > 70 || resultOrdenado[0].scoring.colonia > 90
                                                 ) {
                                                   rows = rows.concat(result.rows);
                                                 }
@@ -1815,7 +1815,7 @@ async function sinEstado(direccionParsed) {
                                                     // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
                                                     if (
                                                       resultOrdenado[0].scoring.colonia > 70 &&
-                                                      resultOrdenado[0].scoring.nombre_asentamiento > 70
+                                                      resultOrdenado[0].scoring.nombre_asentamiento > 70 || resultOrdenado[0].scoring.colonia > 90
                                                     ) {
                                                       rows = rows.concat(result.rows);
                                                     }
@@ -1939,7 +1939,7 @@ async function sinEstado(direccionParsed) {
                                                         // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
                                                         if (
                                                           resultOrdenado[0].scoring.colonia > 70 &&
-                                                          resultOrdenado[0].scoring.nombre_asentamiento > 70
+                                                          resultOrdenado[0].scoring.nombre_asentamiento > 70 || resultOrdenado[0].scoring.colonia > 90
                                                         ) {
                                                           rows = rows.concat(result.rows);
                                                         }
@@ -1963,7 +1963,7 @@ async function sinEstado(direccionParsed) {
                                                                                                                       END
                                                                                                                   WHEN $3 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                                                                       CASE 
-                                                                                                                          WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($3 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                                                                          WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($3 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                                                                           ELSE 0.5
                                                                                                                       END
                                                                                                                   WHEN $3 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
@@ -1991,7 +1991,7 @@ async function sinEstado(direccionParsed) {
                                                                                                                       END
                                                                                                                   WHEN $3 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                                                                       CASE 
-                                                                                                                          WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($3 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                                                                          WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($3 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                                                                           ELSE 0.5
                                                                                                                       END
                                                                                                                   WHEN $3 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
@@ -2110,7 +2110,7 @@ async function sinEstado(direccionParsed) {
                                                             // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
                                                             if (
                                                               resultOrdenado[0].scoring.colonia > 70 &&
-                                                              resultOrdenado[0].scoring.nombre_asentamiento > 70
+                                                              resultOrdenado[0].scoring.nombre_asentamiento > 70 || resultOrdenado[0].scoring.colonia > 90
                                                             ) {
                                                               rows = rows.concat(result.rows);
                                                             }
@@ -2134,12 +2134,12 @@ async function sinEstado(direccionParsed) {
                                                                                                                           END
                                                                                                                       WHEN $5 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                                                                           CASE 
-                                                                                                                              WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($5 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                                                                              WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($5 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                                                                               ELSE 0.5
                                                                                                                           END
                                                                                                                       WHEN $5 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
                                                                                                                           CASE 
-                                                                                                                              WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($5 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                                                                              WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($5 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                                                                               ELSE 0.5
                                                                                                                           END
                                                                                                                    END))
@@ -2162,12 +2162,12 @@ async function sinEstado(direccionParsed) {
                                                                                                                           END
                                                                                                                       WHEN $5 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                                                                           CASE 
-                                                                                                                              WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($5 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                                                                              WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($5 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                                                                               ELSE 0.5
                                                                                                                           END
                                                                                                                       WHEN $5 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
                                                                                                                           CASE 
-                                                                                                                              WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($5 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                                                                              WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($5 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                                                                               ELSE 0.5
                                                                                                                           END
                                                                                                                    END))
@@ -2282,7 +2282,7 @@ async function sinEstado(direccionParsed) {
                                                                 // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
                                                                 if (
                                                                   resultOrdenado[0].scoring.colonia > 70 &&
-                                                                  resultOrdenado[0].scoring.nombre_asentamiento > 70
+                                                                  resultOrdenado[0].scoring.nombre_asentamiento > 70 || resultOrdenado[0].scoring.colonia > 90
                                                                 ) {
                                                                   rows = rows.concat(result.rows);
                                                                 }
@@ -2306,12 +2306,12 @@ async function sinEstado(direccionParsed) {
                                                                                                                               END
                                                                                                                           WHEN $4 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                                                                               CASE 
-                                                                                                                                  WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                                                                                  WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                                                                                   ELSE 0.5
                                                                                                                               END
                                                                                                                           WHEN $4 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
                                                                                                                               CASE 
-                                                                                                                                  WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                                                                                  WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                                                                                   ELSE 0.5
                                                                                                                               END
                                                                                                                        END))
@@ -2334,12 +2334,12 @@ async function sinEstado(direccionParsed) {
                                                                                                                               END
                                                                                                                           WHEN $4 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                                                                               CASE 
-                                                                                                                                  WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                                                                                  WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                                                                                   ELSE 0.5
                                                                                                                               END
                                                                                                                           WHEN $4 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
                                                                                                                               CASE 
-                                                                                                                                  WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                                                                                  WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                                                                                   ELSE 0.5
                                                                                                                               END
                                                                                                                        END))
@@ -2453,7 +2453,7 @@ async function sinEstado(direccionParsed) {
                                                                     // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
                                                                     if (
                                                                       resultOrdenado[0].scoring.colonia > 70 &&
-                                                                      resultOrdenado[0].scoring.nombre_asentamiento > 70
+                                                                      resultOrdenado[0].scoring.nombre_asentamiento > 70 || resultOrdenado[0].scoring.colonia > 90
                                                                     ) {
                                                                       rows = rows.concat(result.rows);
                                                                     }
@@ -2477,12 +2477,12 @@ async function sinEstado(direccionParsed) {
                                                                                                                                   END
                                                                                                                               WHEN $4 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                                                                                   CASE 
-                                                                                                                                      WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                                                                                      WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                                                                                       ELSE 0.5
                                                                                                                                   END
                                                                                                                               WHEN $4 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
                                                                                                                                   CASE 
-                                                                                                                                      WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                                                                                      WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                                                                                       ELSE 0.5
                                                                                                                                   END
                                                                                                                            END))
@@ -2505,12 +2505,12 @@ async function sinEstado(direccionParsed) {
                                                                                                                                   END
                                                                                                                               WHEN $4 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                                                                                   CASE 
-                                                                                                                                      WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                                                                                      WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($4 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                                                                                       ELSE 0.5
                                                                                                                                   END
                                                                                                                               WHEN $4 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
                                                                                                                                   CASE 
-                                                                                                                                      WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                                                                                      WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($4 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                                                                                       ELSE 0.5
                                                                                                                                   END
                                                                                                                            END))
@@ -2624,7 +2624,7 @@ async function sinEstado(direccionParsed) {
                                                                         // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
                                                                         if (
                                                                           resultOrdenado[0].scoring.colonia > 70 &&
-                                                                          resultOrdenado[0].scoring.nombre_asentamiento > 70
+                                                                          resultOrdenado[0].scoring.nombre_asentamiento > 70 || resultOrdenado[0].scoring.colonia > 90
                                                                         ) {
                                                                           rows = rows.concat(result.rows);
                                                                         }
@@ -2749,7 +2749,7 @@ async function sinEstado(direccionParsed) {
                                                                             // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
                                                                             if (
                                                                               resultOrdenado[0].scoring.colonia > 50 &&
-                                                                              resultOrdenado[0].scoring.nombre_asentamiento > 50
+                                                                              resultOrdenado[0].scoring.nombre_asentamiento > 50 || resultOrdenado[0].scoring.colonia > 90
                                                                             ) {
                                                                               rows = rows.concat(result.rows);
                                                                             }

@@ -28,7 +28,7 @@ async function numeroExterior(direccionParsed) {
                                                                   END
                                                               WHEN $3 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                   CASE 
-                                                                      WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($3 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                      WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($3 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                       ELSE 0.5
                                                                   END
                                                               WHEN $3 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
@@ -56,7 +56,7 @@ async function numeroExterior(direccionParsed) {
                                                                   END
                                                               WHEN $3 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                   CASE 
-                                                                      WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($3 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                      WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($3 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                       ELSE 0.5
                                                                   END
                                                               WHEN $3 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
@@ -273,12 +273,12 @@ async function numeroExterior(direccionParsed) {
                                                                           END
                                                                       WHEN $1 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                           CASE 
-                                                                              WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($1 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                              WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($1 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                               ELSE 0.5
                                                                           END
                                                                       WHEN $1 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
                                                                           CASE 
-                                                                              WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($1 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                              WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($1 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                               ELSE 0.5
                                                                           END
                                                                    END))
@@ -301,12 +301,12 @@ async function numeroExterior(direccionParsed) {
                                                                           END
                                                                       WHEN $1 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                           CASE 
-                                                                              WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($1 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                              WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($1 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                               ELSE 0.5
                                                                           END
                                                                       WHEN $1 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
                                                                           CASE 
-                                                                              WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($1 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                              WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($1 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                               ELSE 0.5
                                                                           END
                                                                    END))

@@ -28,7 +28,7 @@ async function numeroExteriorColonia(direccionParsed) {
                                                                   END
                                                               WHEN $3 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                   CASE 
-                                                                      WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($3 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                      WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($3 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                       ELSE 0.5
                                                                   END
                                                               WHEN $3 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
@@ -56,7 +56,7 @@ async function numeroExteriorColonia(direccionParsed) {
                                                                   END
                                                               WHEN $3 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                   CASE 
-                                                                      WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($3 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                      WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($3 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                       ELSE 0.5
                                                                   END
                                                               WHEN $3 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
@@ -174,7 +174,7 @@ async function numeroExteriorColonia(direccionParsed) {
         // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
         if (
           resultOrdenado[0].scoring.colonia > 70 &&
-          resultOrdenado[0].scoring.calle > 70
+          resultOrdenado[0].scoring.calle > 70 || resultOrdenado[0].scoring.colonia > 90
         ) {
           rows = rows.concat(result.rows);
         }
@@ -297,7 +297,7 @@ async function numeroExteriorColonia(direccionParsed) {
             // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
             if (
               resultOrdenado[0].scoring.colonia > 70 &&
-              resultOrdenado[0].scoring.calle > 70
+              resultOrdenado[0].scoring.calle > 70 || resultOrdenado[0].scoring.colonia > 90
             ) {
               rows = rows.concat(result.rows);
             }
@@ -321,12 +321,12 @@ async function numeroExteriorColonia(direccionParsed) {
                                                                           END
                                                                       WHEN $2 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                           CASE 
-                                                                              WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($2 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                              WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($2 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                               ELSE 0.5
                                                                           END
                                                                       WHEN $2 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
                                                                           CASE 
-                                                                              WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($2 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                              WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($2 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                               ELSE 0.5
                                                                           END
                                                                    END))
@@ -349,12 +349,12 @@ async function numeroExteriorColonia(direccionParsed) {
                                                                           END
                                                                       WHEN $2 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                           CASE 
-                                                                              WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($2 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                              WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($2 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                               ELSE 0.5
                                                                           END
                                                                       WHEN $2 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
                                                                           CASE 
-                                                                              WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($2 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                              WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($2 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                               ELSE 0.5
                                                                           END
                                                                    END))
@@ -463,7 +463,7 @@ async function numeroExteriorColonia(direccionParsed) {
                 // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
                 if (
                   resultOrdenado[0].scoring.colonia > 70 &&
-                  resultOrdenado[0].scoring.calle > 70
+                  resultOrdenado[0].scoring.calle > 70 || resultOrdenado[0].scoring.colonia > 90
                 ) {
                   rows = rows.concat(result.rows);
                 }
@@ -487,12 +487,12 @@ async function numeroExteriorColonia(direccionParsed) {
                                                                               END
                                                                           WHEN $2 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                               CASE 
-                                                                                  WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($2 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                                  WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($2 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                                   ELSE 0.5
                                                                               END
                                                                           WHEN $2 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
                                                                               CASE 
-                                                                                  WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($2 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                                  WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($2 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                                   ELSE 0.5
                                                                               END
                                                                        END))
@@ -515,12 +515,12 @@ async function numeroExteriorColonia(direccionParsed) {
                                                                               END
                                                                           WHEN $2 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                               CASE 
-                                                                                  WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($2 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                                  WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($2 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                                   ELSE 0.5
                                                                               END
                                                                           WHEN $2 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
                                                                               CASE 
-                                                                                  WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($2 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                                  WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($2 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                                   ELSE 0.5
                                                                               END
                                                                        END))
@@ -628,7 +628,7 @@ async function numeroExteriorColonia(direccionParsed) {
                   });
                   
                   // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
-                  if (resultOrdenado[0].scoring.colonia > 70 && resultOrdenado[0].scoring.calle > 70) {
+                  if (resultOrdenado[0].scoring.colonia > 70 && resultOrdenado[0].scoring.calle > 70 || resultOrdenado[0].scoring.colonia > 90) {
                     rows = rows.concat(result.rows);
                   }
                 }else{
@@ -745,7 +745,7 @@ async function numeroExteriorColonia(direccionParsed) {
                       });
                       
                       // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
-                      if (resultOrdenado[0].scoring.colonia > 70 && resultOrdenado[0].scoring.calle > 70) {
+                      if (resultOrdenado[0].scoring.colonia > 70 && resultOrdenado[0].scoring.calle > 70 || resultOrdenado[0].scoring.colonia > 90) {
                         rows = rows.concat(result.rows);
                       }
                     }else{
@@ -768,12 +768,12 @@ async function numeroExteriorColonia(direccionParsed) {
                                                                                       END
                                                                                   WHEN $1 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                                       CASE 
-                                                                                          WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($1 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                                          WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($1 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                                           ELSE 0.5
                                                                                       END
                                                                                   WHEN $1 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
                                                                                       CASE 
-                                                                                          WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($1 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                                          WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($1 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                                           ELSE 0.5
                                                                                       END
                                                                                END))
@@ -796,12 +796,12 @@ async function numeroExteriorColonia(direccionParsed) {
                                                                                       END
                                                                                   WHEN $1 BETWEEN l_nrefaddr::float AND l_refaddr::float THEN 
                                                                                       CASE 
-                                                                                          WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($1 - l_nrefaddr::float) * 100 / (l_refaddr::float - l_nrefaddr::float) / 100
+                                                                                          WHEN l_refaddr::float - l_nrefaddr::float != 0 THEN ($1 - l_refaddr::float) * 100 / (l_nrefaddr::float - l_refaddr::float) / 100
                                                                                           ELSE 0.5
                                                                                       END
                                                                                   WHEN $1 BETWEEN r_nrefaddr::float AND r_refaddr::float THEN 
                                                                                       CASE 
-                                                                                          WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($1 - r_nrefaddr::float) * 100 / (r_refaddr::float - r_nrefaddr::float) / 100
+                                                                                          WHEN r_refaddr::float - r_nrefaddr::float != 0 THEN ($1 - r_refaddr::float) * 100 / (r_nrefaddr::float - r_refaddr::float) / 100
                                                                                           ELSE 0.5
                                                                                       END
                                                                                END))
@@ -905,7 +905,7 @@ async function numeroExteriorColonia(direccionParsed) {
                           });
                           
                           // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
-                          if (resultOrdenado[0].scoring.colonia > 70 && resultOrdenado[0].scoring.calle > 70) {
+                          if (resultOrdenado[0].scoring.colonia > 70 && resultOrdenado[0].scoring.calle > 70 || resultOrdenado[0].scoring.colonia > 90) {
                             rows = rows.concat(result.rows);
                           }
                         }else{
@@ -1024,7 +1024,7 @@ async function numeroExteriorColonia(direccionParsed) {
                                 // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
                                 if (
                                   resultOrdenado[0].scoring.colonia > 70 &&
-                                  resultOrdenado[0].scoring.calle > 70
+                                  resultOrdenado[0].scoring.calle > 70 || resultOrdenado[0].scoring.colonia > 90
                                 ) {
                                   rows = rows.concat(result.rows);
                                 }
@@ -1164,7 +1164,7 @@ async function numeroExteriorColonia(direccionParsed) {
                                     });
                                     
                                     // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
-                                    if (resultOrdenado[0].scoring.colonia > 50 && resultOrdenado[0].scoring.calle > 50) {
+                                    if (resultOrdenado[0].scoring.colonia > 50 && resultOrdenado[0].scoring.calle > 50 || resultOrdenado[0].scoring.colonia > 90) {
                                         rows = rows.concat(result.rows);
                                     }
                                 }

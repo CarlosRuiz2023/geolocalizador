@@ -29,7 +29,6 @@ async function parseDireccion(direccion,level) {
     // Una vez limpiada la direccion proporcionada la dividimos por ' ' (espacios).
     let componentesDireccion = direccionExpandida.split(' ');
     let componentesEstado = 0;
-    let municipioParse = 0;
     // Nos desacemos de aquellos dobles o triples espacios descartandolos.
     componentesDireccion = componentesDireccion.filter(item => item !== '' && item !== 'NULL');
     // Creamos un JSON donde se almacenara el parseo obtenido.
@@ -64,7 +63,7 @@ async function parseDireccion(direccion,level) {
     for (let i = 0; i < componentesDireccion.length; i++) {
         // Tomamos un componente del arreglo.
         let componente = componentesDireccion[i].trim();
-        if(i===0){
+        if(i===0 && componente !== 'VALLE'){
             const autocorrector = encontrarSimilitud(componente,[...tiposAsentamiento, ...tiposVialidad]);
             if(autocorrector){
                 componente=autocorrector;
@@ -207,7 +206,7 @@ async function parseDireccion(direccion,level) {
                 // Validamos que sea diferente de COLONIA, A, B, C, D debido a que el usuario aveces pone ' ' entre el numero_exterior y la colonia ejemplo '219 A'
                 if (componente !== 'COLONIA' && componente !== 'A' && componente !== 'B' && componente !== 'C' && componente !== 'D' && componente !== 'E' && componente !== 'F') {
                     const autocorrector = encontrarSimilitud(componente,[...tiposAsentamiento, ...tiposVialidad]);
-                    if(autocorrector && !level.includes('N1')){
+                    if(componente !== 'VALLE' && autocorrector && !level.includes('N1')){
                         componente=autocorrector;
                         direccionParsed.N2 = 1;
                     }
@@ -468,7 +467,7 @@ function obtenerMunicipio(estado, componentesDireccion,componentesEstado, i,dire
                             return municipio;
                         }
                     }
-                    else if(similarityInicial>70){
+                    else if(similarityInicial>70 && similarityConcat>50){
                         if(componentesDireccion[i]!="CALLE" && !level.includes('M1') && (i==0 || i=== componentesDireccion.length-componentesEstado.length-1)){
                             direccionParsed.M2=1;
                             return municipio;

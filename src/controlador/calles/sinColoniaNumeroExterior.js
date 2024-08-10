@@ -108,7 +108,7 @@ async function sinColoniaNumeroExterior(direccionParsed) {
         });
       
         // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
-        if (resultOrdenado[0].scoring.calle > 70)rows = rows.concat(result.rows);
+        if (resultOrdenado[0].scoring.calle > 70 )rows = rows.concat(result.rows);
       }else{
         // Construimos la query para comenzar a generar consultas a la BD
         query = `
@@ -208,7 +208,7 @@ async function sinColoniaNumeroExterior(direccionParsed) {
             });
           
             // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
-            if (resultOrdenado[0].scoring.calle > 70)rows = rows.concat(result.rows);
+            if (resultOrdenado[0].scoring.calle > 70 )rows = rows.concat(result.rows);
           }else{
             // Construimos la query para comenzar a generar consultas a la BD
             query = `
@@ -308,7 +308,7 @@ async function sinColoniaNumeroExterior(direccionParsed) {
                 });
               
                 // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
-                if (resultOrdenado[0].scoring.calle > 70)rows = rows.concat(result.rows);
+                if (resultOrdenado[0].scoring.calle > 70 )rows = rows.concat(result.rows);
               }else{
                 // Construimos la query para comenzar a generar consultas a la BD
                 query = `
@@ -408,7 +408,7 @@ async function sinColoniaNumeroExterior(direccionParsed) {
                     });
                   
                     // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
-                    if (resultOrdenado[0].scoring.calle > 70)rows = rows.concat(result.rows);
+                    if (resultOrdenado[0].scoring.calle > 70 )rows = rows.concat(result.rows);
                   }else{
                     // Construimos la query para comenzar a generar consultas a la BD
                     query = `
@@ -508,7 +508,7 @@ async function sinColoniaNumeroExterior(direccionParsed) {
                         });
                       
                         // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
-                        if (resultOrdenado[0].scoring.calle > 70)rows = rows.concat(result.rows);
+                        if (resultOrdenado[0].scoring.calle > 70 )rows = rows.concat(result.rows);
                       }else{
                         // Construimos la query para comenzar a generar consultas a la BD
                         query = `
@@ -607,7 +607,7 @@ async function sinColoniaNumeroExterior(direccionParsed) {
                             });
                           
                             // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
-                            if (resultOrdenado[0].scoring.calle > 70)rows = rows.concat(result.rows);
+                            if (resultOrdenado[0].scoring.calle > 70 )rows = rows.concat(result.rows);
                           }else{
                             // Construimos la query para comenzar a generar consultas a la BD
                             query = `
@@ -707,7 +707,7 @@ async function sinColoniaNumeroExterior(direccionParsed) {
                                 });
                               
                                 // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
-                                if (resultOrdenado[0].scoring.calle > 50)rows = rows.concat(result.rows);
+                                if (resultOrdenado[0].scoring.calle > 50 )rows = rows.concat(result.rows);
                             }
                         }
                     }

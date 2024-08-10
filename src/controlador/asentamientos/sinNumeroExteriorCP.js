@@ -133,7 +133,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
         // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
         if (
           resultOrdenado[0].scoring.colonia > 70 &&
-          resultOrdenado[0].scoring.nombre_asentamiento > 70
+          resultOrdenado[0].scoring.nombre_asentamiento > 70 || resultOrdenado[0].scoring.colonia > 90
         ) {
           rows = rows.concat(result.rows);
         }
@@ -261,7 +261,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
             // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
             if (
               resultOrdenado[0].scoring.colonia > 70 &&
-              resultOrdenado[0].scoring.nombre_asentamiento > 70
+              resultOrdenado[0].scoring.nombre_asentamiento > 70 || resultOrdenado[0].scoring.colonia > 90
             ) {
               rows = rows.concat(result.rows);
             }
@@ -389,7 +389,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                 // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
                 if (
                   resultOrdenado[0].scoring.colonia > 70 &&
-                  resultOrdenado[0].scoring.nombre_asentamiento > 70
+                  resultOrdenado[0].scoring.nombre_asentamiento > 70 || resultOrdenado[0].scoring.colonia > 90
                 ) {
                   rows = rows.concat(result.rows);
                 }
@@ -514,7 +514,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                     // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
                     if (
                       resultOrdenado[0].scoring.colonia > 70 &&
-                      resultOrdenado[0].scoring.nombre_asentamiento > 70
+                      resultOrdenado[0].scoring.nombre_asentamiento > 70 || resultOrdenado[0].scoring.colonia > 90
                     ) {
                       rows = rows.concat(result.rows);
                     }
@@ -639,7 +639,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                         // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
                         if (
                           resultOrdenado[0].scoring.colonia > 70 &&
-                          resultOrdenado[0].scoring.nombre_asentamiento > 70
+                          resultOrdenado[0].scoring.nombre_asentamiento > 70 || resultOrdenado[0].scoring.colonia > 90
                         ) {
                           rows = rows.concat(result.rows);
                         }
@@ -766,7 +766,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                             // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
                             if (
                               resultOrdenado[0].scoring.colonia > 70 &&
-                              resultOrdenado[0].scoring.nombre_asentamiento > 70
+                              resultOrdenado[0].scoring.nombre_asentamiento > 70 || resultOrdenado[0].scoring.colonia > 90
                             ) {
                               rows = rows.concat(result.rows);
                             }
@@ -890,7 +890,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                                 // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
                                 if (
                                   resultOrdenado[0].scoring.colonia > 70 &&
-                                  resultOrdenado[0].scoring.nombre_asentamiento > 70
+                                  resultOrdenado[0].scoring.nombre_asentamiento > 70 || resultOrdenado[0].scoring.colonia > 90
                                 ) {
                                   rows = rows.concat(result.rows);
                                 }
@@ -1014,7 +1014,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                                     // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
                                     if (
                                       resultOrdenado[0].scoring.colonia > 70 &&
-                                      resultOrdenado[0].scoring.nombre_asentamiento > 70
+                                      resultOrdenado[0].scoring.nombre_asentamiento > 70 || resultOrdenado[0].scoring.colonia > 90
                                     ) {
                                       rows = rows.concat(result.rows);
                                     }
@@ -1137,7 +1137,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                                         // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
                                         if (
                                           resultOrdenado[0].scoring.colonia > 70 &&
-                                          resultOrdenado[0].scoring.nombre_asentamiento > 70
+                                          resultOrdenado[0].scoring.nombre_asentamiento > 70 || resultOrdenado[0].scoring.colonia > 90
                                         ) {
                                           rows = rows.concat(result.rows);
                                         }
@@ -1260,7 +1260,7 @@ async function sinNumeroExteriorCP(direccionParsed) {
                                             // Añadimos los resultados obtenidos al arreglo rows si el puntaje de la calle es mayor a 70
                                             if (
                                               resultOrdenado[0].scoring.colonia > 50 &&
-                                              resultOrdenado[0].scoring.nombre_asentamiento > 50
+                                              resultOrdenado[0].scoring.nombre_asentamiento > 50 || resultOrdenado[0].scoring.colonia > 90
                                             ) {
                                               rows = rows.concat(result.rows);
                                             }
