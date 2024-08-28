@@ -467,8 +467,8 @@ function obtenerMunicipio(estado, componentesDireccion,componentesEstado, i,dire
                             return municipio;
                         }
                     }
-                    else if(similarityInicial>70 && similarityConcat>50){
-                        if(componentesDireccion[i]!="CALLE" && !level.includes('M1') && (i==0 || i=== componentesDireccion.length-componentesEstado.length-1)){
+                    else if((similarityInicial>70 && similarityConcat>50) || similarityInicial===100){
+                        if(componentesDireccion[i]!="CALLE" && !level.includes('M1') && (0=== componentesDireccion.length-componentesEstado.length-1 || i === componentesDireccion.length-componentesEstado.length-1)){
                             direccionParsed.M2=1;
                             return municipio;
                         }
@@ -522,8 +522,8 @@ function obtenerMunicipio(estado, componentesDireccion,componentesEstado, i,dire
                                 return municipio;
                             }
                         }
-                        else if(similarityInicial>70){
-                            if(!level.includes('M1') && (i==0 || i=== componentesDireccion.length-componentesEstado.length-1)){
+                        else if((similarityInicial>70 && similarityConcat>50) || similarityInicial===100){
+                            if(componentesDireccion[i]!="CALLE" && !level.includes('M1') && (0=== componentesDireccion.length-componentesEstado.length-1 || i === componentesDireccion.length-componentesEstado.length-1)){
                                 direccionParsed.M2=1;
                                 return municipio;
                             }

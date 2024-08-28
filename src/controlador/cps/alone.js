@@ -11,8 +11,8 @@ async function alone(direccionParsed) {
     // Construimos la query para comenzar a generar consultas a la BD
     query = `
         SELECT *,
-        ST_Y(ST_Centroid("SP_GEOMETRY")) AS x_centro,
-        ST_X(ST_Centroid("SP_GEOMETRY")) AS y_centro
+        ST_Y(ST_Centroid("SP_GEOMETRY")) AS y_centro,
+        ST_X(ST_Centroid("SP_GEOMETRY")) AS x_centro
         FROM carto_codigo_postal
         WHERE codigo_postal = $1
         ;

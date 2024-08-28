@@ -12,8 +12,8 @@ async function all(direccionParsed) {
     // Construimos la query para comenzar a generar consultas a la BD
     query = `
         SELECT *,
-        ST_Y(ST_Centroid("SP_GEOMETRY")) AS x_centro,
-        ST_X(ST_Centroid("SP_GEOMETRY")) AS y_centro
+        ST_Y(ST_Centroid("SP_GEOMETRY")) AS y_centro,
+        ST_X(ST_Centroid("SP_GEOMETRY")) AS x_centro
         FROM carto_colonia
         WHERE codigo_postal = $1
         AND unaccent(municipio) = $2
@@ -86,8 +86,8 @@ async function all(direccionParsed) {
         // Construimos la query para comenzar a generar consultas a la BD
         query = `
             SELECT *,
-            ST_Y(ST_Centroid("SP_GEOMETRY")) AS x_centro,
-            ST_X(ST_Centroid("SP_GEOMETRY")) AS y_centro
+            ST_Y(ST_Centroid("SP_GEOMETRY")) AS y_centro,
+            ST_X(ST_Centroid("SP_GEOMETRY")) AS x_centro
             FROM carto_colonia
             WHERE unaccent(municipio) = $1
             AND unaccent(estado) = $2
@@ -159,8 +159,8 @@ async function all(direccionParsed) {
             // Construimos la query para comenzar a generar consultas a la BD
             query = `
                 SELECT *,
-                ST_Y(ST_Centroid("SP_GEOMETRY")) AS x_centro,
-                ST_X(ST_Centroid("SP_GEOMETRY")) AS y_centro
+                ST_Y(ST_Centroid("SP_GEOMETRY")) AS y_centro,
+                ST_X(ST_Centroid("SP_GEOMETRY")) AS x_centro
                 FROM carto_colonia
                 WHERE codigo_postal = $1
                 AND unaccent(estado) = $2
@@ -232,8 +232,8 @@ async function all(direccionParsed) {
                 // Construimos la query para comenzar a generar consultas a la BD
                 query = `
                     SELECT *,
-                    ST_Y(ST_Centroid("SP_GEOMETRY")) AS x_centro,
-                    ST_X(ST_Centroid("SP_GEOMETRY")) AS y_centro
+                    ST_Y(ST_Centroid("SP_GEOMETRY")) AS y_centro,
+                    ST_X(ST_Centroid("SP_GEOMETRY")) AS x_centro
                     FROM carto_colonia
                     WHERE codigo_postal = $1
                     AND unaccent(municipio) = $2
@@ -305,8 +305,8 @@ async function all(direccionParsed) {
                     // Construimos la query para comenzar a generar consultas a la BD
                     query = `
                         SELECT *,
-                        ST_Y(ST_Centroid("SP_GEOMETRY")) AS x_centro,
-                        ST_X(ST_Centroid("SP_GEOMETRY")) AS y_centro
+                        ST_Y(ST_Centroid("SP_GEOMETRY")) AS y_centro,
+                        ST_X(ST_Centroid("SP_GEOMETRY")) AS x_centro
                         FROM carto_colonia
                         WHERE unaccent(municipio) = $1
                         AND unaccent(colonia) LIKE '%' || $2 || '%'
@@ -377,8 +377,8 @@ async function all(direccionParsed) {
                         // Construimos la query para comenzar a generar consultas a la BD
                         query = `
                             SELECT *,
-                            ST_Y(ST_Centroid("SP_GEOMETRY")) AS x_centro,
-                            ST_X(ST_Centroid("SP_GEOMETRY")) AS y_centro
+                            ST_Y(ST_Centroid("SP_GEOMETRY")) AS y_centro,
+                            ST_X(ST_Centroid("SP_GEOMETRY")) AS x_centro
                             FROM carto_colonia
                             WHERE codigo_postal = $1
                             AND unaccent(colonia) LIKE '%' || $2 || '%'
@@ -449,8 +449,8 @@ async function all(direccionParsed) {
                             // Construimos la query para comenzar a generar consultas a la BD
                             query = `
                                 SELECT *,
-                                ST_Y(ST_Centroid("SP_GEOMETRY")) AS x_centro,
-                                ST_X(ST_Centroid("SP_GEOMETRY")) AS y_centro
+                                ST_Y(ST_Centroid("SP_GEOMETRY")) AS y_centro,
+                                ST_X(ST_Centroid("SP_GEOMETRY")) AS x_centro
                                 FROM carto_colonia
                                 WHERE unaccent(estado) = $1
                                 AND unaccent(colonia) LIKE '%' || $2 || '%'
@@ -521,8 +521,8 @@ async function all(direccionParsed) {
                                 // Construimos la query para comenzar a generar consultas a la BD
                                 query = `
                                     SELECT *,
-                                    ST_Y(ST_Centroid("SP_GEOMETRY")) AS x_centro,
-                                    ST_X(ST_Centroid("SP_GEOMETRY")) AS y_centro
+                                    ST_Y(ST_Centroid("SP_GEOMETRY")) AS y_centro,
+                                    ST_X(ST_Centroid("SP_GEOMETRY")) AS x_centro
                                     FROM carto_colonia
                                     WHERE codigo_postal = $1
                                     AND unaccent(municipio) = $2
@@ -591,8 +591,8 @@ async function all(direccionParsed) {
                                     // Construimos la query para comenzar a generar consultas a la BD
                                     query = `
                                         SELECT *,
-                                        ST_Y(ST_Centroid("SP_GEOMETRY")) AS x_centro,
-                                        ST_X(ST_Centroid("SP_GEOMETRY")) AS y_centro
+                                        ST_Y(ST_Centroid("SP_GEOMETRY")) AS y_centro,
+                                        ST_X(ST_Centroid("SP_GEOMETRY")) AS x_centro
                                         FROM carto_colonia
                                         WHERE unaccent(municipio) = $1
                                         AND unaccent(estado) = $2
@@ -660,8 +660,8 @@ async function all(direccionParsed) {
                                         // Construimos la query para comenzar a generar consultas a la BD
                                         query = `
                                             SELECT *,
-                                            ST_Y(ST_Centroid("SP_GEOMETRY")) AS x_centro,
-                                            ST_X(ST_Centroid("SP_GEOMETRY")) AS y_centro
+                                            ST_Y(ST_Centroid("SP_GEOMETRY")) AS y_centro,
+                                            ST_X(ST_Centroid("SP_GEOMETRY")) AS x_centro
                                             FROM carto_colonia
                                             WHERE codigo_postal = $1
                                             AND unaccent(estado) = $2
@@ -729,8 +729,8 @@ async function all(direccionParsed) {
                                             // Construimos la query para comenzar a generar consultas a la BD
                                             query = `
                                                 SELECT *,
-                                                ST_Y(ST_Centroid("SP_GEOMETRY")) AS x_centro,
-                                                ST_X(ST_Centroid("SP_GEOMETRY")) AS y_centro
+                                                ST_Y(ST_Centroid("SP_GEOMETRY")) AS y_centro,
+                                                ST_X(ST_Centroid("SP_GEOMETRY")) AS x_centro
                                                 FROM carto_colonia
                                                 WHERE codigo_postal = $1
                                                 AND unaccent(municipio) = $2
